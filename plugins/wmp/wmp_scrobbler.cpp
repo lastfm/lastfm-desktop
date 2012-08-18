@@ -174,10 +174,11 @@ CStdString	CWmp_scrobbler::GetPlayerVersion()
 {
 	USES_CONVERSION;
 	CStdString strVersion;
-	BSTR bstrVersion;
+	CComBSTR bstrVersion;
 
 	if(m_spCore)
 	{
+        bstrVersion.Empty();
 		m_spCore->get_versionInfo(&bstrVersion);
 		
 		strVersion = "Windows Media Player ";
@@ -240,7 +241,7 @@ CStdString CWmp_scrobbler::GetCurrentSongFileName()
 {
 	USES_CONVERSION;
 	CStdString strSong;
-	IWMPMedia* pMedia = NULL;
+	CComPtr<IWMPMedia> pMedia;
 	BSTR bstrSong;
 
 	if(m_spCore)
@@ -267,7 +268,7 @@ int CWmp_scrobbler::GetTrackLength()
 {
 	double dDuration = -1;
 
-	IWMPMedia* pMedia = NULL;
+	CComPtr<IWMPMedia> pMedia;
 	
 	if(m_spCore)
 	{
@@ -286,7 +287,7 @@ int CWmp_scrobbler::GetTrackPosition()
 {
 	double dPosition = -1;
 
-	IWMPControls* pControls = NULL;
+	CComPtr<IWMPControls> pControls;
 	
 	if(m_spCore)
 	{
@@ -304,8 +305,8 @@ int CWmp_scrobbler::GetTrackPosition()
 BOOL CWmp_scrobbler::GetCurrentSong(SONG_INFO* pSong)
 {
 	USES_CONVERSION;
-	IWMPMedia* pMedia = NULL;
-	BSTR bstrValue;
+	CComPtr<IWMPMedia> pMedia;
+	CComBSTR bstrValue;
 	//BSTR bstrName;
 	BOOL bRet = FALSE;
 	long lCount = 0;
@@ -323,30 +324,41 @@ BOOL CWmp_scrobbler::GetCurrentSong(SONG_INFO* pSong)
 			for(long i = 0; i <= lCount; i++)
 			{
 				pMedia->getAttributeName(i, &bstrName);
+				bstrValue.Empty();
 				pMedia->getItemInfo(bstrName, &bstrValue);
 				PRINTF(DEBUG_INFO, "WMPMEDIA", "Attribute %s - value %s", W2A(bstrName), W2A(bstrValue));
 			}
             // Better check for local/streaming for the future
+			bstrValue.Empty();
     		pMedia->getItemInfo(L"type", &bstrValue);
 */    		
 
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"Author", &bstrValue);
             EncodingUtils::UnicodeToUtf8(bstrValue, -1, pSong->m_strArtist, SONG_INFO_FIELD_SIZE);
+            bstrValue.Empty();
             pMedia->getItemInfo(L"Title", &bstrValue);
             EncodingUtils::UnicodeToUtf8(bstrValue, -1, pSong->m_strTrack, SONG_INFO_FIELD_SIZE);
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"Album", &bstrValue);
             EncodingUtils::UnicodeToUtf8(bstrValue, -1, pSong->m_strAlbum, SONG_INFO_FIELD_SIZE);
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"Genre", &bstrValue);
             EncodingUtils::UnicodeToUtf8(bstrValue, -1, pSong->m_strGenre, SONG_INFO_FIELD_SIZE);
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"Comment", &bstrValue);
             EncodingUtils::UnicodeToUtf8(bstrValue, -1, pSong->m_strComment, SONG_INFO_FIELD_SIZE);
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"SourceURL", &bstrValue);
             EncodingUtils::UnicodeToUtf8(bstrValue, -1, pSong->m_strFileName, SONG_INFO_FIELD_SIZE);
 			
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"Duration", &bstrValue);
 			pSong->m_nLength = atoi(W2A(bstrValue));
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"Track", &bstrValue);
 			pSong->m_nTrackNo = atoi(W2A(bstrValue));
+            bstrValue.Empty();
 			pMedia->getItemInfo(L"Year", &bstrValue);
 			pSong->m_nYear = atoi(W2A(bstrValue));
 			

@@ -32,11 +32,11 @@ bool wmpBootStrap::start()
     
     #define TEST_OR_RETURN( function ) if( function != S_OK ) \
                                          return false
-    IWMPMediaCollection* mediaCollection;
+    CComPtr<IWMPMediaCollection> mediaCollection;
 
     TEST_OR_RETURN( m_core->get_mediaCollection( &mediaCollection ) );
 
-    IWMPPlaylist* allMediaPlaylist;
+    CComPtr<IWMPPlaylist> allMediaPlaylist;
     
     TEST_OR_RETURN( mediaCollection->getAll( &allMediaPlaylist ) );
 
@@ -44,7 +44,7 @@ bool wmpBootStrap::start()
     
     TEST_OR_RETURN( allMediaPlaylist->get_count( &mediaCount ) );
 
-    IWMPMedia *currentMedia;
+    CComPtr<IWMPMedia> currentMedia;
         
     setProgressRange( mediaCount );
 
