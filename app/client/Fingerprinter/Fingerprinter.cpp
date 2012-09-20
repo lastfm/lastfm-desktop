@@ -88,6 +88,7 @@ Fingerprinter::run()
             {
                 qWarning() << "Fingerprint error: " << error;
             }
+            delete fingerprintableSource;
         }
     }
 }
