@@ -29,6 +29,8 @@
 #include "common/c++/win/scrobSubPipeName.cpp"
 #include <tchar.h>
 #include <strsafe.h>
+#else
+#include <lastfm/misc.h>
 #endif
 
 #define NUM_LISTENERS 8
@@ -63,11 +65,11 @@ PlayerListener::PlayerListener( QObject* parent ) throw( std::runtime_error )
     // on windows we use named pipes which auto-delete
     // *nix platforms need more help:
 
-    // todo: need to make this user-unique
-    if( QFile::exists( QDir::tempPath() + "/" + name ))
-        QFile::remove( QDir::tempPath() + "/" + name );
+    QString fullPath = lastfm::dir::runtimeData().absolutePath() + "/" + name;
+    if( QFile::exists( fullPath ))
+        QFile::remove( fullPath );
 
-    if (!listen( name ))
+    if (!listen( fullPath ))
         throw std::runtime_error( errorString().toStdString() );
 #endif
 }

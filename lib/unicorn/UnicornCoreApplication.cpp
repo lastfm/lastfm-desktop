@@ -56,6 +56,10 @@ unicorn::CoreApplication::init()
     lastfm::ws::SharedSecret = QString( API_SECRET ).isEmpty() ? "147320ea9b8930fe196a4231da50ada4" : API_SECRET;
 
     dir::runtimeData().mkpath( "." );
+#ifndef WIN32
+    QFile runtimeDataPerms( dir::runtimeData().absolutePath() );
+    runtimeDataPerms.setPermissions( QFile::ReadOwner | QFile::WriteOwner | QFile::ExeOwner );
+#endif
     dir::cache().mkpath( "." );
     dir::logs().mkpath( "." );
 

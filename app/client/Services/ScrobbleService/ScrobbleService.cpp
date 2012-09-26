@@ -24,7 +24,6 @@
 #ifdef QT_DBUS_LIB
 #include "lib/listener/DBusListener.h"
 #endif
-#include "lib/listener/legacy/LegacyPlayerListener.h"
 #include "lib/listener/PlayerConnection.h"
 #include "lib/listener/PlayerListener.h"
 #include "lib/listener/PlayerMediator.h"
@@ -61,8 +60,6 @@ ScrobbleService::ScrobbleService()
 #endif
 
         QObject* o = new PlayerListener(m_mediator);
-        connect(o, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
-        o = new LegacyPlayerListener(m_mediator);
         connect(o, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
 
 #ifdef QT_DBUS_LIB

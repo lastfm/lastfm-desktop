@@ -16,6 +16,8 @@
 #include "SignalBlocker.h"
 #ifdef Q_OS_WIN
 	#include <QSharedMemory>
+#else
+    #include <lastfm/misc.h>
 #endif
 
 
@@ -50,6 +52,9 @@ public:
 	 ,m_sharedMemory( name )
 #endif
     {
+#ifndef Q_OS_WIN
+        m_busName = lastfm::dir::runtimeData().absolutePath() + "/" + m_busName;
+#endif
         connect( &m_server, SIGNAL( newConnection()),
                             SLOT( onIncomingConnection()));
     }
@@ -173,7 +178,7 @@ private slots:
 #endif
 
 		if( e == QLocalSocket::ConnectionRefusedError ) {
-			QFile::remove( QDir::tempPath() + "/" + m_busName );
+			QFile::remove( m_busName );
 		}
 		QLocalSocket* s = qobject_cast<QLocalSocket*>(sender());
 		s->close();
