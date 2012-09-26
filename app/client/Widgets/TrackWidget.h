@@ -70,6 +70,7 @@ private:
 
     void resizeEvent(QResizeEvent *);
     void showEvent(QShowEvent *);
+    void hideEvent(QHideEvent *);
     void contextMenuEvent( QContextMenuEvent* event );
 
     void fetchAlbumArt();

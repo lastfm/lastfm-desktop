@@ -152,7 +152,15 @@ TrackWidget::clearSpinner()
 void
 TrackWidget::showEvent(QShowEvent *)
 {
+    if ( m_nowPlaying )
+        m_movie->start();
     fetchAlbumArt();
+}
+
+void
+TrackWidget::hideEvent( QHideEvent * event )
+{
+    m_movie->stop();
 }
 
 void
@@ -197,6 +205,7 @@ TrackWidget::setTrack( lastfm::Track& track )
     connect( m_track.signalProxy(), SIGNAL(scrobbleStatusChanged(short)), SLOT(onScrobbleStatusChanged()));
     connect( m_track.signalProxy(), SIGNAL(corrected(QString)), SLOT(onCorrected(QString)));
 
+    m_movie->stop();
     ui->equaliser->hide();
     ui->asterisk->hide();
 
@@ -373,7 +382,8 @@ TrackWidget::updateTimestamp()
 
     if ( m_nowPlaying )
     {
-        m_movie->start();
+        if ( isVisible() )
+            m_movie->start();
         ui->equaliser->show();
 
         ui->timestamp->setText( tr( "Now listening" ) );
