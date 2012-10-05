@@ -244,5 +244,9 @@ FORMS += \
 unix:!mac:HEADERS += MediaDevices/IpodDevice_linux.h
 unix:!mac:SOURCES += MediaDevices/IpodDevice_linux.cpp
 
+unix:!mac:HEADERS -= Dialogs/CloseAppsDialog.h
+unix:!mac:SOURCES -= Dialogs/CloseAppsDialog.cpp
+unix:!mac:FORMS   -= Dialogs/CloseAppsDialog.ui
+
 RESOURCES += \
     qrc/audioscrobbler.qrc
