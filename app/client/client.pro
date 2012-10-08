@@ -101,8 +101,7 @@ SOURCES += \
     Dialogs/LicensesDialog.cpp \
     Widgets/ScrobblesWidget.cpp \
     Widgets/ScrobblesListWidget.cpp \
-    Fingerprinter/Fingerprinter.cpp\
-    Fingerprinter/LAV_Source.cpp
+    Fingerprinter/Fingerprinter.cpp
 
 HEADERS += \
     ScrobSocket.h \
@@ -178,8 +177,12 @@ HEADERS += \
     Dialogs/LicensesDialog.h \
     Widgets/ScrobblesListWidget.h \
     Widgets/ScrobblesWidget.h \
-    Fingerprinter/Fingerprinter.h \
-    Fingerprinter/LAV_Source.h
+    Fingerprinter/Fingerprinter.h
+
+contains(DEFINES, FFMPEG_FINGERPRINTING) {
+    SOURCES += Fingerprinter/LAV_Source.cpp
+    HEADERS += Fingerprinter/LAV_Source.h
+}
 
 win32:HEADERS += Plugins/FooBar08PluginInfo.h \
                     Plugins/FooBar09PluginInfo.h \

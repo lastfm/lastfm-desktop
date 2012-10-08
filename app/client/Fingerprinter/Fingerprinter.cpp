@@ -44,17 +44,14 @@ Fingerprinter::Fingerprinter( const lastfm::Track& track, QObject* parent )
 void
 Fingerprinter::run()
 {
+#ifdef FFMPEG_FINGERPRINTING
     QEventLoop loop;
 
     lastfm::Fingerprint fingerprint( m_track );
 
     if ( fingerprint.id().isNull() )
     {
-#ifdef FFMPEG_FINGERPRINTING
         lastfm::FingerprintableSource* fingerprintableSource = new LAV_Source();
-#else
-        lastfm::FingerprintableSource* fingerprintableSource = 0;
-#endif
 
         if ( fingerprintableSource )
         {
@@ -90,4 +87,5 @@ Fingerprinter::run()
             delete fingerprintableSource;
         }
     }
+#endif // FFMPEG_FINGERPRINTING
 }
