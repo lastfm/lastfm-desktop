@@ -556,7 +556,7 @@ bool
 RadioService::initRadio()
 {
     qDebug() << "initRadio";
-    Phonon::AudioOutput* audioOutput = new Phonon::AudioOutput( Phonon::MusicCategory, this );
+    Phonon::AudioOutput* audioOutput = new Phonon::AudioOutput( Phonon::MusicCategory );
 
     qDebug() << audioOutput->name();
     qDebug() << audioOutput->outputDevice().description();
