@@ -158,5 +158,10 @@ FORMS += \
     dialogs/AboutDialog.ui \
     dialogs/ScrobbleConfirmationDialog.ui
 
+unix:!mac {
+    SOURCES -= Updater/Updater.cpp
+    HEADERS -= Updater/Updater.h
+}
+
 RESOURCES += \
 	qrc/unicorn.qrc

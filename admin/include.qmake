@@ -29,7 +29,7 @@ include( qmake/QtOverride.pro.inc )
 include( qmake/3rdparty.pro.inc )
 include( qmake/1stparty.pro.inc )
 
-linux*{
+unix:!mac {
 	CONFIG += link_pkgconfig
 	# use KDE phonon if installed in preference
 	contains( QT, phonon ):LIBS += -L$$system( kde4-config --prefix 2> /dev/null )/lib

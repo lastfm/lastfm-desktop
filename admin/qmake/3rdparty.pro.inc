@@ -9,8 +9,7 @@ CONFIG( taglib ) {
     win32:debug:LIBS += tagd.lib    # tagd.lib will precede PKGCONFIG added libs
 }
 
-CONFIG( ffmpeg )
-{
+CONFIG( ffmpeg ) {
     DEFINES += FFMPEG_FINGERPRINTING
 
     mac {

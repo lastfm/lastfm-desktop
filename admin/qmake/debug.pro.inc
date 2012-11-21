@@ -4,7 +4,7 @@ CONFIG( debug, debug|release ) {
         CONFIG -= ppc
     }
 
-    linux* {
+    unix:!mac {
         QMAKE_CXXFLAGS_DEBUG = -ggdb
     }
 

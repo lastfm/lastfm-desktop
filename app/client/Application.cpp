@@ -425,7 +425,11 @@ Application::onTrackStarted( const lastfm::Track& track, const Track& oldTrack )
         }
     }
 
-    if ( unicorn::UserSettings().value( "fingerprint", true ).toBool() && track.url().isLocalFile() )
+    if ( unicorn::UserSettings().value( "fingerprint", true ).toBool()
+#if QT_VERSION >= 0x040800
+         && track.url().isLocalFile()
+#endif
+       )
     {
         Fingerprinter* fingerprinter = new Fingerprinter( track, this );
         connect( fingerprinter, SIGNAL(finished()), fingerprinter, SLOT(deleteLater()) );
