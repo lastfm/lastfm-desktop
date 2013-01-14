@@ -20,10 +20,10 @@
 #ifndef LOGIN_DIALOG_H
 #define LOGIN_DIALOG_H
 
-#include "ui_LoginDialog.h"
 #include "lib/DllExportMacro.h"
 #include "lib/unicorn/UnicornSession.h"
 #include <QDialog>
+#include <QDialogButtonBox>
 
 
 class UNICORN_DLLEXPORT LoginDialog : public QDialog
