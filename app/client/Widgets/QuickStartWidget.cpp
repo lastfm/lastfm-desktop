@@ -59,7 +59,10 @@ QuickStartWidget::QuickStartWidget( QWidget* parent )
     layout->addLayout( h );
 
     h->addWidget( ui.edit = new QLineEdit( this ) );
+#if QT_VERSION >= 0x040700
+    // The placeholder property was introduced in Qt 4.7
     ui.edit->setPlaceholderText( tr("Type an artist or tag and press play") );
+#endif
     ui.edit->setAttribute( Qt::WA_MacShowFocusRect, false );
 
     connect( ui.edit, SIGNAL(returnPressed()), SLOT(play()));

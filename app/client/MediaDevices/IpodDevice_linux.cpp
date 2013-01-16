@@ -34,7 +34,7 @@
 extern "C"
 {
     #include <gpod/itdb.h>
-    #include <glib/glist.h>
+    #include <glib.h>
 }
 
 IpodTracksFetcher::IpodTracksFetcher( Itdb_iTunesDB *itdb, QSqlDatabase scrobblesdb,

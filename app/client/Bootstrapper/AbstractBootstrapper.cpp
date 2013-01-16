@@ -72,7 +72,7 @@ void
 AbstractBootstrapper::sendZip( const QString& inFile )
 {
     QString username = lastfm::ws::Username;
-    QString timestamp = QString::number( QDateTime::currentDateTimeUtc().toTime_t() );
+    QString timestamp = QString::number( QDateTime::currentDateTime().toUTC().toTime_t() );
 
     QMap<QString, QString> params;
     params["user"] = username;

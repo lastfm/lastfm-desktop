@@ -33,7 +33,10 @@ FriendsPicker::FriendsPicker( const User& user )
     
     QVBoxLayout* v = new QVBoxLayout( this );
     QLineEdit* lineEdit = new QLineEdit;
+#if QT_VERSION >= 0x040700
+    // The placeholder property was introduced in Qt 4.7
     lineEdit->setPlaceholderText( tr("Search your friends") );
+#endif
     v->addWidget( lineEdit );
     v->addWidget( ui.list = new QListWidget );
     v->addWidget( ui.buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel ) );

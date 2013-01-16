@@ -63,7 +63,10 @@ FriendListWidget::FriendListWidget(QWidget *parent) :
 
     connect( ui->findFriends, SIGNAL(clicked()), SLOT(onFindFriends()) );
 
+#if QT_VERSION >= 0x040700
+    // The placeholder property was introduced in Qt 4.7
     ui->filter->setPlaceholderText( tr( "Search for a friend by username or real name" ) );
+#endif
     ui->filter->setAttribute( Qt::WA_MacShowFocusRect, false );
 
     ui->friends->setObjectName( "friends" );
