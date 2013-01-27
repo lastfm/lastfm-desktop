@@ -89,18 +89,18 @@ static QString scrobblerStatusText( int const i )
     #define tr QObject::tr
     switch (i)
     {
-        case Audioscrobbler::ErrorBadSession: return tr( "Your session expired, it is being renewed." );
-        case Audioscrobbler::ErrorBannedClientVersion: return tr( "Your client too old, you must upgrade." );
-        case Audioscrobbler::ErrorInvalidSessionKey: return tr( "Your username or password is incorrect" );
-        case Audioscrobbler::ErrorBadTime: return tr( "Your timezone or date are incorrect" );
-        case Audioscrobbler::ErrorThreeHardFailures: return tr( "The submissions server is down" );
+        case Audioscrobbler::ErrorBadSession: return tr( "Su sesión terminó, está siendo renovada." );
+        case Audioscrobbler::ErrorBannedClientVersion: return tr( "Su versión es demasiado antigua, debe actualizarla." );
+        case Audioscrobbler::ErrorInvalidSessionKey: return tr( "Su nombre de usuario o contraseña es incorrecta" );
+        case Audioscrobbler::ErrorBadTime: return tr( "Su zona horaria o fecha es incorrecta" );
+        case Audioscrobbler::ErrorThreeHardFailures: return tr( "El servidor de sumisión está caído" );
 
-        case Audioscrobbler::Connecting: return tr( "Connecting to Last.fm..." );
+        case Audioscrobbler::Connecting: return tr( "Conectándose a Last.fm..." );
         case Audioscrobbler::Scrobbling: return tr( "Scrobbling..." );
 
         case Audioscrobbler::TracksScrobbled:
         case Audioscrobbler::Handshaken:
-            return tr( "Ready" );
+            return tr( "Listo" );
     }
     #undef tr
 
@@ -154,7 +154,7 @@ DiagnosticsDialog::onScrobblePointReached()
     ui->cached->insertTopLevelItems( 0, items );
 
     if (items.count())
-        ui->subs_cache_count->setText( tr("%n locally cached track(s)", "", items.count() ) );
+        ui->subs_cache_count->setText( tr("%n tema(s) almacenadas localmente", "", items.count() ) );
     else
         ui->subs_cache_count->clear();
 }
@@ -181,17 +181,17 @@ DiagnosticsDialog::onScrobbleIPodClicked()
 #ifndef Q_WS_X11
     if (m_twiddly)
     {
-        qWarning() << "m_twiddly already running. Early out.";
+        qWarning() << "m_twiddly actualmente en uso. Quitarlo.";
         return;
     }
 
     //"--device diagnostic --vid 0000 --pid 0000 --serial UNKNOWN
     
     QStringList args = (QStringList()
-                    << "--device" << "diagnostic"
+                    << "--device" << "diagnóstico"
                     << "--vid" << "0000"
                     << "--pid" << "0000"
-                    << "--serial" << "UNKNOWN");
+                    << "--serial" << "DESCONOCIDO");
 
     bool const isManual = ( ui->ipod_type->currentIndex() == 1 );
     if (isManual)
