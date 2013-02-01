@@ -292,12 +292,31 @@ RadioService::clear()
 void
 RadioService::volumeUp()
 {
-
+    volumeChange( +0.05 );
 }
 
 void
 RadioService::volumeDown()
 {
+    volumeChange( -0.05 );
+}
+
+// *relative* volume change.
+// don't do anything if current volume can't be determined
+void
+RadioService::volumeChange(double step)
+{
+    if ( unicorn::AppSettings().contains("Volume") )
+    {
+        bool ok;
+        double volume = unicorn::AppSettings().value( "Volume", 1 ).toReal(&ok);
+
+        volume += step;
+        volume = ( volume < 0 ? 0 : ( volume > 1 ? 1 : volume ) );
+
+        if (ok)
+            m_audioOutput->setVolume(volume);
+    }
 }
 
 void

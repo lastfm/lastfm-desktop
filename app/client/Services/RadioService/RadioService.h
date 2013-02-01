@@ -112,7 +112,8 @@ private slots:
 
 	/** we get a "proper" station name from the tune webservice */
     void setStationName( const QString& );
-	
+
+    void volumeChange( double step );
 private:
     /** resets internals to what Stopped means, used by changeState() */
     void clear();
