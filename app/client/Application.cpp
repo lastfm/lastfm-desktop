@@ -374,7 +374,7 @@ Application::tray()
 {
     if ( !m_tray )
     {
-        m_tray = new QSystemTrayIcon(this);
+        m_tray = new TrayIcon(this);
         QIcon trayIcon( AS_TRAY_ICON );
 #ifdef Q_WS_MAC
         trayIcon.addFile( ":systray_icon_pressed_mac.png", QSize(), QIcon::Selected );

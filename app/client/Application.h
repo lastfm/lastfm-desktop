@@ -23,7 +23,7 @@
 
 #include <QPointer>
 #include <QQueue>
-#include <QSystemTrayIcon>
+#include <Widgets/TrayIcon.h>
 
 #include <lastfm/global.h>
 #include <lastfm/Track.h>
@@ -88,7 +88,7 @@ namespace audioscrobbler
         QMap<QString, QQueue<QDateTime> > m_skips;
 
         // we delete these so QPointers
-        QPointer<QSystemTrayIcon> m_tray;
+        QPointer<TrayIcon> m_tray;
         QPointer<MainWindow> m_mw;
         QPointer<QMenuBar> m_menuBar;
         QPointer<Notify> m_notify;
