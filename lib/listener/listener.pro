@@ -2,6 +2,10 @@ TARGET = listener
 TEMPLATE = lib
 QT = core xml network
 CONFIG += unicorn logger
+unix:!mac {
+    CONFIG += staticlib
+    QMAKE_DISTCLEAN += -f ../../_bin/liblistener.a
+}
 
 # basically not easy to support on other platforms, but feel free to fork
 unix:!mac {

@@ -1,5 +1,8 @@
 TEMPLATE = app
 TARGET = "Last.fm Scrobbler"
+unix:!mac {
+    TARGET = lastfm-scrobbler
+}
 VERSION = 2.1.33
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 QT = core gui xml network sql webkit
@@ -257,3 +260,28 @@ unix:!mac:FORMS   -= Dialogs/CloseAppsDialog.ui
 
 RESOURCES += \
     qrc/audioscrobbler.qrc
+
+unix:!mac {
+        target.path = $$BINDIR
+
+        css.files = 'Last.fm Scrobbler.css'
+        css.path  = $$DATADIR/lastfm-scrobbler
+
+        desktop.files += lastfm-scrobbler.desktop
+        desktop.path = $$DATADIR/applications
+
+        icon16.files += icons/16x16/lastfm-scrobbler.png
+        icon16.path = $$DATADIR/icons/hicolor/16x16/apps
+        icon22.files += icons/22x22/lastfm-scrobbler.png
+        icon22.path = $$DATADIR/icons/hicolor/22x22/apps
+        icon32.files += icons/32x32/lastfm-scrobbler.png
+        icon32.path = $$DATADIR/icons/hicolor/32x32/apps
+        icon48.files += icons/48x48/lastfm-scrobbler.png
+        icon48.path = $$DATADIR/icons/hicolor/48x48/apps
+        icon64.files += icons/64x64/lastfm-scrobbler.png
+        icon64.path = $$DATADIR/icons/hicolor/64x64/apps
+        icon128.files += icons/128x128/lastfm-scrobbler.png
+        icon128.path = $$DATADIR/icons/hicolor/128x128/apps
+
+        INSTALLS += target css share icon16 icon22 icon32 icon48 icon64 icon128 desktop
+}

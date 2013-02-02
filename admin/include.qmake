@@ -33,6 +33,12 @@ unix:!mac {
 	CONFIG += link_pkgconfig
 	# use KDE phonon if installed in preference
 	contains( QT, phonon ):LIBS += -L$$system( kde4-config --prefix 2> /dev/null )/lib
+
+    isEmpty(PREFIX) {
+        PREFIX = /usr/local
+    }
+    BINDIR = $$PREFIX/bin
+    DATADIR = $$PREFIX/share
 }
 
 #default install target

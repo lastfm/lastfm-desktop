@@ -2,6 +2,11 @@ TARGET = logger
 TEMPLATE = lib
 QT -= gui
 CONFIG += dll
+unix:!mac {
+    CONFIG -= dll
+    CONFIG += staticlib
+    QMAKE_DISTCLEAN += -f ../../_bin/liblogger.a
+}
 
 include( ../../admin/include.qmake )
 
