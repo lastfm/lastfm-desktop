@@ -36,6 +36,11 @@ HEADERS += \
 	PlayerCommand.h \
         legacy/LegacyPlayerListener.h
 
+unix:!mac {
+    SOURCES -= legacy/LegacyPlayerListener.cpp
+    HEADERS -= legacy/LegacyPlayerListener.h
+}
+
 mac {
     SOURCES += mac/ITunesListener.cpp
 
