@@ -37,6 +37,7 @@ unix:!mac {
     isEmpty(PREFIX) {
         PREFIX = /usr/local
     }
+    DEFINES += PREFIX=\\\"$$PREFIX\\\"
     BINDIR = $$PREFIX/bin
     DATADIR = $$PREFIX/share
 }

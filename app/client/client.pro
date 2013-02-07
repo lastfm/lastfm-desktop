@@ -283,5 +283,5 @@ unix:!mac {
         icon128.files += icons/128x128/lastfm-scrobbler.png
         icon128.path = $$DATADIR/icons/hicolor/128x128/apps
 
-        INSTALLS += target css share icon16 icon22 icon32 icon48 icon64 icon128 desktop
+        INSTALLS += target css icon16 icon22 icon32 icon48 icon64 icon128 desktop
 }

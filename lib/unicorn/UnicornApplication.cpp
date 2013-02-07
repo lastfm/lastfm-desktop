@@ -223,8 +223,10 @@ unicorn::Application::translate()
 
 #ifdef Q_WS_MAC
     QDir const d = lastfm::dir::bundle().filePath( "Contents/Resources/qm" );
-#else
+#elif defined(Q_OS_WIN)
     QDir const d = qApp->applicationDirPath() + "/i18n";
+#elif defined(Q_OS_UNIX)
+    QDir const d = QString( PREFIX ) + "/share/lastfm-scrobbler/i18n";
 #endif
 
     //TODO need a unicorn/core/etc. translation, plus policy of no translations elsewhere or something!
@@ -367,8 +369,13 @@ unicorn::Application::refreshStyleSheet()
         }
 
         if( styleSheet().isEmpty()) {
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
             m_cssFileName = applicationDirPath() + CSS_PATH + applicationName() + ".css";
             m_cssDir = applicationDirPath() + CSS_PATH;
+#else
+            m_cssFileName = QString( PREFIX ) + "/share/lastfm-scrobbler/" + applicationName() + ".css";
+            m_cssDir = QString( PREFIX ) + "/share/lastfm-scrobbler/";
+#endif
         }
     }
 
