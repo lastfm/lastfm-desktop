@@ -63,8 +63,8 @@
 
 
 
-unicorn::Application::Application( int& argc, char** argv ) throw( StubbornUserException )
-                    : QtSingleApplication( argc, argv ),
+unicorn::Application::Application(const QString &id, int &argc, char **argv) throw( StubbornUserException )
+                    : QtSingleApplication( id, argc, argv ),
                       m_logoutAtQuit( false ),
                       m_currentSession( new unicorn::Session ),
                       m_wizardRunning( true ),
@@ -223,8 +223,10 @@ unicorn::Application::translate()
 
 #ifdef Q_WS_MAC
     QDir const d = lastfm::dir::bundle().filePath( "Contents/Resources/qm" );
-#else
+#elif defined(Q_OS_WIN)
     QDir const d = qApp->applicationDirPath() + "/i18n";
+#elif defined(Q_OS_UNIX)
+    QDir const d = QString( PREFIX ) + "/share/lastfm-scrobbler/i18n";
 #endif
 
     //TODO need a unicorn/core/etc. translation, plus policy of no translations elsewhere or something!
@@ -236,6 +238,12 @@ unicorn::Application::translate()
 
     installTranslator( t1 );
     installTranslator( t2 );
+
+#ifdef Q_OS_WIN
+    QTranslator* t3 = new QTranslator;
+    t3->load( d.filePath( "qtsparkle/" + qmExt ) );
+    installTranslator( t3 );
+#endif
 
 #ifdef Q_OS_MAC
     macTranslate( qmExt );
@@ -361,8 +369,13 @@ unicorn::Application::refreshStyleSheet()
         }
 
         if( styleSheet().isEmpty()) {
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
             m_cssFileName = applicationDirPath() + CSS_PATH + applicationName() + ".css";
             m_cssDir = applicationDirPath() + CSS_PATH;
+#else
+            m_cssFileName = QString( PREFIX ) + "/share/lastfm-scrobbler/" + applicationName() + ".css";
+            m_cssDir = QString( PREFIX ) + "/share/lastfm-scrobbler/";
+#endif
         }
     }
 
@@ -588,8 +601,12 @@ unicorn::Application::winEventFilter ( void* message )
 void
 unicorn::Application::restart()
 {
+
 #ifdef Q_OS_WIN
-    QProcess::startDetached( applicationFilePath() );
+    QStringList args;
+    args << "--new"; // force a new instance of the app, even if one is running
+    qDebug() << applicationFilePath();
+    QProcess::startDetached( applicationFilePath(), args );
 #endif
 
 #ifdef Q_OS_MAC
@@ -599,6 +616,8 @@ unicorn::Application::restart()
     args << "-b";
     args << "fm.last.Scrobbler";
     args << "-n"; // open a new instance even if one is running
+    args << "--args";
+    args << "--new"; // force a new instance of the app, even if one is running
     qDebug() << QProcess::startDetached( "open", args );
 #endif
 

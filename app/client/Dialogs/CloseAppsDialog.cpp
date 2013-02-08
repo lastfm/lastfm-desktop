@@ -152,9 +152,9 @@ CloseAppsDialog::runningApps( const QList<IPluginInfo*>& plugins )
 CloseAppsDialog::~CloseAppsDialog()
 {
     delete ui;
-
+#ifdef Q_OS_WIN
     if ( m_ownsPlugins )
         foreach ( IPluginInfo* plugin, m_plugins )
             delete plugin;
-
+#endif
 }

@@ -116,5 +116,5 @@ PluginsPage::checkPluginsSelected()
                          wizard()->pluginList()->installList().count() > 0 ?
                              tr( "Install Plugins" ):
                              tr( "Continue" ) );
-#endif Q_OS_WIN32
+#endif
 }

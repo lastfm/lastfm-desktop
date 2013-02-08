@@ -30,7 +30,6 @@
 #include <QDockWidget>
 #include <QScrollArea>
 #include <QNetworkReply>
-#include <QWebView>
 
 #include "MainWindow.h"
 
@@ -406,7 +405,7 @@ void
 MainWindow::onPrefsTriggered()
 {
     if ( !m_preferences )
-        m_preferences = new PreferencesDialog( 0 );
+        m_preferences = new PreferencesDialog( 0, this );
 
     m_preferences->show();
     m_preferences->activateWindow();
@@ -450,18 +449,6 @@ void
 MainWindow::onBringAllToFrontTriggered()
 {
 	return;
-
-    foreach ( QWidget* widget, aApp->topLevelWidgets() )
-    {
-        if ( widget->isWindow()
-             && !qobject_cast<QMenu*>( widget )
-             && !qobject_cast<QWebView*>( widget )
-             && !qobject_cast<QMenu*>( widget ) )
-        {
-            widget->raise();
-            widget->show();
-        }
-    }
 }
 
 void

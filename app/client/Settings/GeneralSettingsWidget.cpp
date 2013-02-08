@@ -165,7 +165,7 @@ GeneralSettingsWidget::saveSettings()
         if ( restartNeeded )
         {
 
-            int button = QMessageBoxBuilder( 0 )
+            int button = QMessageBoxBuilder( this )
                             .setIcon( QMessageBox::Question )
                             .setTitle( tr( "Restart now?" ) )
                             .setText( tr( "An application restart is required for the change to take effect. Would you like to restart now?" ) )

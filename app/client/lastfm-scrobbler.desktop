@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Name=Last.fm Scrobbler
+Comment=Listen to Last.fm radio
+Exec=lastfm-scrobbler %u
+Icon=lastfm-scrobbler
+Terminal=false
+Type=Application
+MimeType=x-scheme-handler/lastfm;
+Categories=Qt;AudioVideo;Audio;Player;
+X-KDE-Protocols=lastfm
+StartupNotify=true
+Keywords=Player;Audio;

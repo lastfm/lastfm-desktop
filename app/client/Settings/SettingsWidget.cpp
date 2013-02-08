@@ -21,7 +21,7 @@
 #include "SettingsWidget.h"
 
 SettingsWidget::SettingsWidget( QWidget* parent )
-    : QWidget( parent, Qt::Dialog )
+    : QWidget( parent )
     , m_settingsChanged( false )
 {
 }

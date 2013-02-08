@@ -3,6 +3,7 @@ CONFIG += ordered
 SUBDIRS = lib/logger \
           lib/unicorn \
           lib/listener \
+          i18n \
           app/client \
           app/twiddly 
           #app/boffin
@@ -16,17 +17,3 @@ CONFIG( tests ) {
         lib/lastfm/scrobble/tests/test_libscrobble.pro \
         lib/listener/tests/test_liblistener.pro
 }
-
-TRANSLATIONS = i18n/lastfm_de.ts \
-                i18n/lastfm_en.ts \
-                i18n/lastfm_es.ts \
-                i18n/lastfm_fr.ts \
-                i18n/lastfm_it.ts \
-                i18n/lastfm_ja.ts \
-                i18n/lastfm_pl.ts \
-                i18n/lastfm_pt.ts \
-                i18n/lastfm_ru.ts \
-                i18n/lastfm_sv.ts \
-                i18n/lastfm_tr.ts \
-                i18n/lastfm_zh_CN.ts
-

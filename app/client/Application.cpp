@@ -89,7 +89,7 @@ using audioscrobbler::Application;
 #endif
 
 Application::Application(int& argc, char** argv) 
-    :unicorn::Application(argc, argv)
+    :unicorn::Application( "fm.last.Scrobbler", argc, argv )
     , m_raiseHotKeyId( (void*)-1 )
     , m_reauthenticating( false )
 {
@@ -117,6 +117,9 @@ Application::Application(int& argc, char** argv)
 
     if ( nam )
         nam->setUserProxy( proxy );
+
+    AudioscrobblerSettings settings;
+    lastfm::ws::setScheme( settings.value( "enableSsl", false ).toBool() ? lastfm::ws::Https : lastfm::ws::Http );
 }
 
 void

@@ -64,6 +64,13 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="QCheckBox" name="ssl">
+     <property name="text">
+      <string>Enable SSL</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

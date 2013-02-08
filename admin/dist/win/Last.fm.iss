@@ -137,7 +137,6 @@ Source: "..\..\..\_bin\plugins\WinampPluginSetup_2.1.0.11.exe"; DestDir: "{app}\
 Source: "..\..\..\_bin\plugins\WmpPluginSetup_2.1.0.8.exe"; DestDir: "{app}\plugins"; Flags: ignoreversion
 
 ;3rd party
-Source: "..\..\..\_bin\WinSparkle.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\..\_bin\libfftw3f-3.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\..\_bin\libsamplerate-0.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\..\_bin\avcodec-54.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -208,6 +207,8 @@ Type: Files; Name: "{app}\libFLAC_dynamic.dll"
 Type: Files; Name: "{app}\libogg.dll"
 Type: Files; Name: "{app}\libvorbis.dll"
 Type: Files; Name: "{app}\libvorbisfile.dll"
+
+Type: Files; Name: "{app}\WinSparkle.dll"
 
 Type: Files; Name: "{app}\avutil-51.dll";
 Type: Files; Name: "{app}\Last.fm.exe"

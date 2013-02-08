@@ -18,12 +18,10 @@ You will also need depending on your chosen platform:-
 
 We recommend that you use Homebrew to install most of the dependancies:
 
-```
-brew tap lastfm/lastfmdesktop
-brew install qt kde-phonon
-brew install --HEAD vlc
-brew install phonon-vlc
-```
+    brew tap lastfm/lastfmdesktop
+    brew install qt kde-phonon
+    brew install --HEAD vlc
+    brew install phonon-vlc
 
 We install kde-phonon becuase the Phonon distributed with Qt is quite old.
 
@@ -41,6 +39,7 @@ Get the latest Sparkle from here http://sparkle.andymatuschak.org/
 Unzip both and put their frameworks in /Library/Frameworks/ so the build will find them.
 
 ## Windows
+
 We used to build using Cygwin, but now we prefer not to.
 
 You should get Windows version of the tool chain. Here are some recommendations.
@@ -54,11 +53,13 @@ You should get Windows version of the tool chain. Here are some recommendations.
 - KDE Support: http://windows.kde.org/ Install the automoc and dbus packages.
 
 ### Qt
+
 Install Qt binaries from either the Qt SDK or standalone binary package. You should be able to find everything here http://qt.nokia.com/downloads
 
 You will also need the latest Windows SDK. We build using Visual Studio 2008.
 
 ### Phonon
+
 We build the latest version of Phonon. This step is optional, if you're happy with the outdated one that ships with Qt.
 
 You can clone Phonon from here git://anongit.kde.org/phonon
@@ -67,15 +68,14 @@ Follow their instructions to build it using cmake, etc. I found that CMake neede
 
 Create a pkg-config file for Phonon like this:
 
-```
-Name: Phonon
-Description: Multimedia Library
-Version: 4.6.0
-Libs: -LC:/dev/Install/Phonon/lib C:/dev/Install/Phonon/lib/phonon.lib
-Cflags: -IC:/dev/Install/Phonon/include
-```
+    Name: Phonon
+    Description: Multimedia Library
+    Version: 4.6.0
+    Libs: -LC:/dev/Install/Phonon/lib C:/dev/Install/Phonon/lib/phonon.lib
+    Cflags: -IC:/dev/Install/Phonon/include
 
 ### VLC
+
 We use the VLC backend for phonon. This step is optional, if you are happy with the directx plugin that ships with Qt.
 
 Download Latest VLC from http://www.videolan.org/vlc/download-windows.html
@@ -89,30 +89,28 @@ To do this you should follow the instructions here http://wiki.videolan.org/Gene
 I found I also had to copy libvlc.dll and libvlccore.dll into lastfm-desktop/_bin
 
 ### Phonon-VLC
+
 This is the Qt plugin that gets Phonon to use libvlc. Again, this is an optional.
 
 You can clone phonon-vlc from here git://anongit.kde.org/phonon-vlc
 
 Follow there instructions for building it. I found that CMake needed a little help wiht cmake-gui.
 
-You should copy the resulting phonon_vlc.dll into lastfm-desktop/_bin/plugins/phonon_backend
+You should copy the resulting `phonon_vlc.dll` into `lastfm-desktop/_bin/plugins/phonon_backend`
 
 ### Winsparkle
+
 This is the library we use to check for app updates. You should download the latest dll and headers form here http://winsparkle.org
 
 This step should be optional really as most people will not want to add the update checking.
 
 I found that I also needed to copy the dll into the lastfm-desktop/_bin folder. Create a pkg-config file for WinSparkle like this:
 
-```
-Name: sparkle
-Description: Multimedia Library
-Version: 0.3
-Libs: -LC:/dev/Install/WinSparkle/Release -lWinSparkle
-Cflags: -IC:/dev/Install/WinSparkle/include
-```
-
-###
+    Name: sparkle
+    Description: Multimedia Library
+    Version: 0.3
+    Libs: -LC:/dev/Install/WinSparkle/Release -lWinSparkle
+    Cflags: -IC:/dev/Install/WinSparkle/include
 
 ## Linux
 
@@ -121,31 +119,24 @@ Cflags: -IC:/dev/Install/WinSparkle/include
 * libsamplerate
 * fftw3
 * libmad
+* libavformat
+* libgpod
+* sqlite3
 
 Possibly you'll have to play around to get a phonon that works with KDE4 and 
 Qt. I can't help you there I'm afraid. An example Ubuntu installation would 
 probably go:
 
-```
-sudo apt-get install qt4-dev pkg-config libtag libsamplerate libfftw3 libmad
-qmake -r && make -j2 && make install
-```
-
-I wrote that from memory as I'm working on a Mac today. If it's wrong please
-write and correct me. KTHXBAI.
-
-Ubuntu install deps line:
-
-```
-sudo apt-get install libsqlite3-dev libqt4-sql-sqlite
-```
+    sudo apt-get install libqt4-dev pkg-config libtag1-dev libsamplerate0-dev \
+                         libfftw3-dev libmad0-dev libsqlite3-dev libqt4-sql-sqlite \
+                         libavformat-dev libgpod-dev libphonon-dev phonon
 
 # Build Instructions
 
-```
-qmake -r
-make
-```
+    qmake -r
+    make -j4
+    
+`make install` currently does nothing, so running the app is a bit tricky (see below).
 
 Note: use nmake on Windows
 
@@ -158,9 +149,11 @@ of the app. By default the executable path is checked for the css file on
 Windows and on OSX the bundle Resource directory is checked otherwise you'll
 need to tell the app where the stylesheet is, like this: 
 
-```
-./Last.fm.exe -stylesheet path/to/Last.fm.css
-```
+    ./Last.fm.exe -stylesheet path/to/Last.fm.css
+    
+Or on Linux,from the root of the source directory:
+
+    LD_LIBRARY_PATH=_bin:/usr/local/lib/x86_64-linux-gnu _bin/Last.fm\ Scrobbler -stylesheet app/client/Last.fm\ Scrobbler.css
 
 # Build Support
 

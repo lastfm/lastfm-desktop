@@ -89,7 +89,7 @@ namespace unicorn
 
         /** will put up the log in dialog if necessary, throwing if the user
           * cancels, ie. they refuse to log in */
-        Application( int&, char** ) throw( StubbornUserException );
+        Application(const QString &id, int &argc, char **argv) throw( StubbornUserException );
         ~Application();
 
         virtual void init();

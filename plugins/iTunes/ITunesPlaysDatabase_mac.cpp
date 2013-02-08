@@ -70,7 +70,7 @@ ITunesPlaysDatabase::sync( void* that )
 
     // On trackChange iTunes takes about 4 seconds to update the playCount for 
     // the previous track :(
-    // Thus we try to obtain a new playCount for up to 60 seconds (4+8+16+32)
+    // Thus we try to obtain a new playCount for up to 124 seconds (0+4+8+16+32+64)
     // We stop then because if the user skips a track, playCount will never
     // change. However we try for up to 60 as we have no idea how long it may
     // take for iTunes to update its db.

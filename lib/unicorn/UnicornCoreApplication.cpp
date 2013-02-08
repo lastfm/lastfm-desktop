@@ -34,8 +34,8 @@ using namespace lastfm;
 extern void qWinMsgHandler( QtMsgType t, const char* msg );
 #endif
 
-unicorn::CoreApplication::CoreApplication( int& argc, char** argv )
-                      : QtSingleCoreApplication( argc, argv )
+unicorn::CoreApplication::CoreApplication( const QString& id, int& argc, char** argv )
+                      : QtSingleCoreApplication( id, argc, argv )
 {
     init();
 }

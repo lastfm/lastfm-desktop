@@ -38,7 +38,7 @@
 
 UpdaterDelegate* g_Delegate;
 
-unicorn::Updater::Updater(QObject *parent) :
+unicorn::Updater::Updater(QWidget *parent) :
     QObject(parent)
 {
     SUUpdater* updater = [SUUpdater sharedUpdater];

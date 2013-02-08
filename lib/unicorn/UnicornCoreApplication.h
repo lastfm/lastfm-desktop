@@ -37,7 +37,7 @@ namespace unicorn
     	static void qMsgHandler( QtMsgType, const char* );
 	
     public:
-    	CoreApplication( int& argc, char** argv );
+        CoreApplication( const QString& id, int& argc, char** argv );
 	
     	static QFileInfo log()
     	{

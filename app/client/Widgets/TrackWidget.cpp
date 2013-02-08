@@ -235,9 +235,9 @@ TrackWidget::setTrackDetails()
 
     if ( m_timestampTimer ) m_timestampTimer->stop();
 
-    if ( m_track.scrobbleStatus() == lastfm::Track::Cached )
+    if ( m_track.scrobbleStatus() == lastfm::Track::Cached && !m_nowPlaying )
         ui->timestamp->setText( tr( "Cached" ) );
-    else if ( m_track.scrobbleStatus() == lastfm::Track::Error )
+    else if ( m_track.scrobbleStatus() == lastfm::Track::Error && !m_nowPlaying )
         ui->timestamp->setText( tr( "Error: %1" ).arg( m_track.scrobbleErrorText() ) );
     else
         updateTimestamp();

@@ -22,7 +22,7 @@
 #include "TwiddlyApplication.h"
 
 TwiddlyApplication::TwiddlyApplication( int& argc, char** argv )
-    :unicorn::CoreApplication( argc, argv )
+    :unicorn::CoreApplication( "fm.last.Twiddly", argc, argv )
 {
 }
 

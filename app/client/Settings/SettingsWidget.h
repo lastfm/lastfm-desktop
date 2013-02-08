@@ -21,7 +21,7 @@
 #ifndef SETTINGS_WIDGET_H
 #define SETTINGS_WIDGET_H
 
-#include <QWidget>
+#include <QDialog>
 
 class SettingsWidget : public QWidget
 {

@@ -1,13 +1,1 @@
- <!DOCTYPE RCC><RCC version="1.0">
- <qresource prefix="lastfm">
-     <file>spinner.mng</file>
-     <file>as.svg</file>
-     <file>default_user.png</file>
-     <file>default_user_small.png</file>
-     <file>profile_hover.png</file>
-     <file>profile_on.png</file>
-     <file>profile_off.png</file>
-     <file>down_arrow.png</file>
-     <file>right_arrow.png</file>
- </qresource>
- </RCC> 
+<RCC/>

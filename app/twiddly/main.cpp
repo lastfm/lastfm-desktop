@@ -144,6 +144,7 @@ main( int argc, char** argv )
                 writeXml( xml, path );
 
                 QStringList args;
+                args << "--tray";
                 args << "--twiddly";
                 args << "complete";
                 args << "--ipod-path";

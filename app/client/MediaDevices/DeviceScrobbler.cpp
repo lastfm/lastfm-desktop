@@ -1,7 +1,4 @@
 
-#include <QDebug>
-#include <QDirIterator>
-#include <QTimer>
 
 #include "lib/unicorn/dialogs/ScrobbleConfirmationDialog.h"
 #include "lib/unicorn/UnicornApplication.h"
@@ -11,11 +8,14 @@
 #include "../Dialogs/CloseAppsDialog.h"
 #include "IpodDevice.h"
 #include "DeviceScrobbler.h"
+#include "../Services/ScrobbleService/ScrobbleService.h"
 
 #ifdef Q_WS_X11
 #include <QFileDialog>
 #endif
-
+#include <QDebug>
+#include <QDirIterator>
+#include <QTimer>
 
 #ifdef Q_OS_MAC
 // Check for iTunes playcount difference once every 3 minutes
@@ -256,10 +256,12 @@ DeviceScrobbler::scrobblesFromFiles( const QStringList& files  )
                 // don't add tracks to the list if they don't have an artist
                 // don't add podcasts to the list if podcast scrobbling is off
                 // don't add videos to the list (well, videos that aren't "music video")
+                // don't add tracks if they are in excluded folders
 
                 if ( !track.artist().isNull()
                      && ( unicorn::UserSettings().value( "podcasts", true ).toBool() || !track.isPodcast() )
-                     && !track.isVideo() )
+                     && !track.isVideo()
+                     && !ScrobbleService::isDirExcluded( track ) )
                     scrobbles << track;
             }
         }

@@ -77,13 +77,17 @@ int main( int argc, char** argv )
         QStringList args = app.arguments().mid( 1 );
 #endif
 
-        if ( app.sendMessage( args ) || args.contains("--exit") )
-            return 0;
+        if ( !args.contains( "--new" ) )
+        {
+            if ( app.sendMessage( args ) || args.contains("--exit") )
+                return 0;
 
-        // It's possible that we were unable to send the
-        // message, but the app is actually running
-        if ( app.isRunning() )
-            return 0;
+            // It's possible that we were unable to send the
+            // message, but the app is actually running
+            if ( app.isRunning() )
+                return 0;
+
+        }
 
         qAddPostRoutine(cleanup);
 

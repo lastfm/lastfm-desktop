@@ -29,6 +29,7 @@
 #include <QKeyEvent>
 #include <QStringListModel>
 #include <QNetworkProxy>
+#include <QSslSocket>
 
 #include <lastfm/User.h>
 #include <lastfm/ws.h>
@@ -53,10 +54,12 @@ AdvancedSettingsWidget::AdvancedSettingsWidget( QWidget* parent )
 {
     ui->setupUi( this );
 
+    AudioscrobblerSettings settings;
+
 #ifdef Q_WS_X11
     ui->shortcuts->hide();
 #else
-    AudioscrobblerSettings settings;
+
     ui->sce->setTextValue( settings.raiseShortcutDescription() );
     ui->sce->setModifiers( settings.raiseShortcutModifiers() );
     ui->sce->setKey( settings.raiseShortcutKey() );
@@ -64,6 +67,11 @@ AdvancedSettingsWidget::AdvancedSettingsWidget( QWidget* parent )
     connect( ui->sce, SIGNAL(editTextChanged(QString)), this, SLOT(onSettingsChanged()));
 #endif
 
+    ui->cache->hide();
+
+    ui->ssl->setVisible( QSslSocket::supportsSsl() );
+    ui->ssl->setChecked( settings.value( "enableSsl", false ).toBool() );
+    connect( ui->ssl, SIGNAL(clicked()), SLOT(onSettingsChanged()));
     connect( ui->proxySettings, SIGNAL(changed()), SLOT(onSettingsChanged()));
 }
 
@@ -82,5 +90,9 @@ AdvancedSettingsWidget::saveSettings()
         aApp->setRaiseHotKey( ui->sce->modifiers(), ui->sce->key() );
 
         ui->proxySettings->save();
+
+        settings.setValue( "enableSsl", ui->ssl->isChecked() );
+
+        lastfm::ws::setScheme( ui->ssl->isChecked() ? lastfm::ws::Https : lastfm::ws::Http );
     }
 }
