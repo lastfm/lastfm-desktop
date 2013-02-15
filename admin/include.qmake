@@ -1,5 +1,5 @@
 
-ROOT_DIR = ../..
+ROOT_DIR = $$PWD/..
 
 macx-xcode {
     BUILD_DIR = _build
