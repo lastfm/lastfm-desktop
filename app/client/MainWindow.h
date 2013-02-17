@@ -136,7 +136,10 @@ private:
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     QPointer<Updater> m_updater;
 #endif
+
+#ifdef Q_OS_WIN
     QPointer<unicorn::PluginList> m_pluginList;
+#endif
 
 #ifdef Q_WS_MAC
     QPointer<unicorn::ITunesPluginInstaller> m_installer;

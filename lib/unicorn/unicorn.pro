@@ -194,6 +194,13 @@ FORMS += \
     dialogs/CloseAppsDialog.ui
 
 unix:!mac {
-    SOURCES -= Updater/Updater.cpp
-    HEADERS -= Updater/Updater.h
+    FORMS   -= dialogs/CloseAppsDialog.ui
+
+    SOURCES -= dialogs/CloseAppsDialog.cpp \
+               plugins/Version.cpp \
+               Updater/Updater.cpp
+
+    HEADERS -= dialogs/CloseAppsDialog.cpp \
+               plugins/Version.h \
+               Updater/Updater.h
 }

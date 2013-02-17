@@ -43,7 +43,7 @@
   <customwidget>
    <class>unicorn::Label</class>
    <extends>QLabel</extends>
-   <header location="global">lib/unicorn/Widgets/Label.h</header>
+   <header location="global">lib/unicorn/widgets/Label.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

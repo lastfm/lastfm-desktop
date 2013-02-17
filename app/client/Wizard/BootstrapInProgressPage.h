@@ -2,8 +2,11 @@
 #define BOOTSTRAP_IN_PROGRESS_PAGE_H
 
 #include <QWizardPage>
-#include "lib/unicorn/Updater/PluginList.h"
 #include <types/Track.h>
+
+#ifdef Q_OS_WIN
+#include "lib/unicorn/Updater/PluginList.h"
+#endif
 
 class BootstrapInProgressPage : public QWizardPage {
     Q_OBJECT
@@ -26,8 +29,10 @@ protected:
     class QLabel* m_label;
 
     bool m_isComplete;
-    PluginList m_pluginList;
     class AbstractBootstrapper* m_bootstrapper;
+#ifdef Q_OS_WIN
+    PluginList m_pluginList;
+#endif
 };
 
 #endif //BOOTSTRAP_IN_PROGRESS_PAGE_H
