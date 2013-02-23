@@ -177,6 +177,7 @@ namespace audioscrobbler
         void scrobbleToggled( bool on );
 
     public slots:
+        void showWindow();
         void quit();
         void actuallyQuit();
 
@@ -218,7 +219,6 @@ namespace audioscrobbler
         void onTourTriggered();
         void onLicensesTriggered();
 
-        void showWindow();
         void toggleWindow();
 
         void onTrackStarted( const Track&, const Track& );

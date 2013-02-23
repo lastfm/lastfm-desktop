@@ -69,6 +69,10 @@
 #include "MainWindow.h"
 #include "AudioscrobblerSettings.h"
 
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
+#include "Mpris2/Mpris2.h"
+#endif
+
 #ifdef Q_OS_WIN32
 #include "windows.h"
 #endif
@@ -366,6 +370,10 @@ Application::init()
     new CommandReciever( this );
 
     m_mediaKey = new MediaKey( this );
+#endif
+
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
+    new Mpris2( this );
 #endif
 }
 

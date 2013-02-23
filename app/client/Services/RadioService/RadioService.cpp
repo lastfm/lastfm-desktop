@@ -507,6 +507,7 @@ void
 RadioService::onBuffering( int percent_filled )
 {
     Q_UNUSED(percent_filled);
+    emit buffering( percent_filled );
 }
 
 void

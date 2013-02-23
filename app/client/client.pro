@@ -225,8 +225,21 @@ FORMS += \
     Widgets/ProfileWidget.ui \
     Widgets/RadioWidget.ui
 
-unix:!mac:HEADERS += MediaDevices/IpodDevice_linux.h
-unix:!mac:SOURCES += MediaDevices/IpodDevice_linux.cpp
+unix:!mac {
+    CONFIG += qdbus
+
+    SOURCES += MediaDevices/IpodDevice_linux.cpp \
+               Mpris2/Mpris2.cpp \
+               Mpris2/DBusAbstractAdaptor.cpp \
+               Mpris2/MediaPlayer2.cpp \
+               Mpris2/MediaPlayer2Player.cpp
+
+    HEADERS += MediaDevices/IpodDevice_linux.h \
+               Mpris2/Mpris2.h \
+               Mpris2/DBusAbstractAdaptor.h \
+               Mpris2/MediaPlayer2.h \
+               Mpris2/MediaPlayer2Player.h
+}
 
 RESOURCES += \
     qrc/audioscrobbler.qrc
