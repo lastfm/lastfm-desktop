@@ -60,6 +60,7 @@ AdvancedSettingsWidget::AdvancedSettingsWidget( QWidget* parent )
     ui->shortcuts->hide();
 #else
 
+    ui->open->setChecked( settings.raiseShortcutEnabled() );
     ui->sce->setTextValue( settings.raiseShortcutDescription() );
     ui->sce->setModifiers( settings.raiseShortcutModifiers() );
     ui->sce->setKey( settings.raiseShortcutKey() );
@@ -83,11 +84,19 @@ AdvancedSettingsWidget::saveSettings()
     if ( hasUnsavedChanges() )
     {
         AudioscrobblerSettings settings;
+        settings.setRaiseShortcutEnabled( ui->open->isChecked() );
         settings.setRaiseShortcutKey( ui->sce->key() );
         settings.setRaiseShortcutModifiers( ui->sce->modifiers() );
         settings.setRaiseShortcutDescription( ui->sce->textValue() );
 
-        aApp->setRaiseHotKey( ui->sce->modifiers(), ui->sce->key() );
+        if ( ui->open->isChecked() )
+        {
+            aApp->setRaiseHotKey( ui->sce->modifiers(), ui->sce->key() );
+        }
+        else
+        {
+            aApp->unsetRaiseHotKey();
+        }
 
         ui->proxySettings->save();
 

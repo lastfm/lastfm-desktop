@@ -28,10 +28,12 @@ class AudioscrobblerSettings : public unicorn::AppSettings
 public:
     AudioscrobblerSettings();
 
+    bool raiseShortcutEnabled() const;
     Qt::KeyboardModifiers raiseShortcutModifiers() const;
     int raiseShortcutKey() const;
     QString raiseShortcutDescription() const;
 
+    void setRaiseShortcutEnabled( bool f );
     void setRaiseShortcutKey( int key );
     void setRaiseShortcutModifiers( Qt::KeyboardModifiers m );
     void setRaiseShortcutDescription( QString d );

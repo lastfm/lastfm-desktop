@@ -23,13 +23,10 @@
       <item>
        <widget class="QCheckBox" name="open">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="text">
          <string>Raise/Hide Last.fm</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
         </property>
        </widget>
       </item>

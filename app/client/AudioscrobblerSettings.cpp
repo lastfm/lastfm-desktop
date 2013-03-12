@@ -24,6 +24,13 @@ AudioscrobblerSettings::AudioscrobblerSettings()
 {
 }
 
+bool
+AudioscrobblerSettings::raiseShortcutEnabled() const
+{
+    const bool fEnabled = true;
+    return value( "raiseShortcutEnabled", fEnabled ).toBool();
+}
+
 Qt::KeyboardModifiers
 AudioscrobblerSettings::raiseShortcutModifiers() const
 {
@@ -47,6 +54,12 @@ QString
 AudioscrobblerSettings::raiseShortcutDescription() const
 {
     return value( "raiseShortcutDescription", QString::fromUtf8( "⌃⌘ S" ) ).toString();
+}
+
+void
+AudioscrobblerSettings::setRaiseShortcutEnabled( bool f )
+{
+    setValue( "raiseShortcutEnabled", f );
 }
 
 void
