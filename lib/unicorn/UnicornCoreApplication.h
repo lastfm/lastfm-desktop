@@ -49,6 +49,10 @@ namespace unicorn
     	static QFileInfo log( const QString& productName );
     	
         static const char* platformString();
+
+        // We need to catch exceptions from event handlers.
+        // liblastfm-fingerprint is a bit exception happy...
+        virtual bool notify ( QObject * receiver, QEvent * event );
     };
 }
 

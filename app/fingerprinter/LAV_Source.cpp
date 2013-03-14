@@ -237,10 +237,9 @@ uint8_t * LAV_SourcePrivate::decodeOneFrame(int &dataSize, int &channels, int& n
                 }
             }
 
-            void *pOutBuffer = outBuffer;
+            uint8_t *pOutBuffer = outBuffer;
             if (resampleContext)
             {
-                void **in = (void**)decodedFrame->extended_data;
                 int outLinesize;
                 av_samples_get_buffer_size(&outLinesize,
                                             channels,
@@ -250,7 +249,7 @@ uint8_t * LAV_SourcePrivate::decodeOneFrame(int &dataSize, int &channels, int& n
                 int nSamplesOut = avresample_convert(resampleContext, &pOutBuffer,
                                             outLinesize,
                                             maxOutSamples,
-                                            in,
+                                            decodedFrame->extended_data,
                                             decodedFrame->linesize[0],
                                             decodedFrame->nb_samples);
                 if (nSamplesOut < 0)

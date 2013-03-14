@@ -23,6 +23,10 @@ CONFIG( ffmpeg ) {
             PKGCONFIG += libswresample
             DEFINES += HAVE_SWRESAMPLE
         }
+        packagesExist(libavresample) {
+            PKGCONFIG += libavresample
+            DEFINES += HAVE_AVRESAMPLE
+        }
     }
 }
 
