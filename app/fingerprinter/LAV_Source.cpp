@@ -65,11 +65,22 @@ public:
 #endif
         , streamIndex(-1)
         , duration(0)
+        , timestamp(0)
         , bitrate(0)
         , eof(false)
         , overflowSize(0)
     {
+        outBuffer = (uint8_t*)av_malloc(sizeof(uint8_t)*AVCODEC_MAX_AUDIO_FRAME_SIZE*4);
+        outBufferSize = sizeof(uint8_t)*AVCODEC_MAX_AUDIO_FRAME_SIZE*4;
+        overflow = (uint8_t*)av_malloc(sizeof(uint8_t)*AVCODEC_MAX_AUDIO_FRAME_SIZE*4);
     }
+
+    ~LAV_SourcePrivate()
+    {
+        av_free(outBuffer);
+        av_free(overflow);
+    }
+
     uint8_t * decodeOneFrame(int &dataSize, int &channels, int& nSamples);
 
     AVFormatContext *inFormatContext;
@@ -81,10 +92,12 @@ public:
 #endif
     int streamIndex;
     int duration;
+    double timestamp;
     int bitrate;
     bool eof;
-    uint8_t outBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE*4];
-    uint8_t overflow[AVCODEC_MAX_AUDIO_FRAME_SIZE*4];
+    uint8_t *outBuffer;
+    size_t outBufferSize;
+    uint8_t *overflow;
     size_t overflowSize;
 };
 
@@ -178,12 +191,14 @@ uint8_t * LAV_SourcePrivate::decodeOneFrame(int &dataSize, int &channels, int& n
                 }
             }
 
-            uint8_t *pOutBuffer = outBuffer;
             if (resampleContext)
             {
-                const uint8_t **in = const_cast<const uint8_t **>(decodedFrame->extended_data);
-                int maxOutSamples = sizeof(outBuffer) / channels / outSampleSize;
-                int nSamplesOut = swr_convert(resampleContext, &pOutBuffer, maxOutSamples, in, decodedFrame->nb_samples);
+                int maxOutSamples = outBufferSize / channels / outSampleSize;
+                int nSamplesOut = swr_convert(resampleContext,
+                                              &outBuffer,
+                                              maxOutSamples,
+                                              const_cast<const uint8_t **>(decodedFrame->extended_data),
+                                              decodedFrame->nb_samples);
                 if (nSamplesOut < 0)
                 {
                     cerr << "swr_convert failed" << endl;
@@ -237,16 +252,16 @@ uint8_t * LAV_SourcePrivate::decodeOneFrame(int &dataSize, int &channels, int& n
                 }
             }
 
-            uint8_t *pOutBuffer = outBuffer;
             if (resampleContext)
             {
                 int outLinesize;
+                int maxOutSamples = outBufferSize / channels / outSampleSize;
                 av_samples_get_buffer_size(&outLinesize,
                                             channels,
                                             decodedFrame->nb_samples,
                                             outSampleFmt, 0);
-                int maxOutSamples = sizeof(outBuffer) / channels / outSampleSize;
-                int nSamplesOut = avresample_convert(resampleContext, &pOutBuffer,
+                int nSamplesOut = avresample_convert(resampleContext,
+                                            &outBuffer,
                                             outLinesize,
                                             maxOutSamples,
                                             decodedFrame->extended_data,
@@ -268,9 +283,12 @@ uint8_t * LAV_SourcePrivate::decodeOneFrame(int &dataSize, int &channels, int& n
                 memcpy(outBuffer, decodedFrame->data[0], dataSize);
             }
         }
+        if ( packet.pts != AV_NOPTS_VALUE )
+            timestamp = av_q2d(inFormatContext->streams[streamIndex]->time_base)*packet.pts;
         av_free_packet(&packet);
     }
-    av_free(decodedFrame);
+    timestamp += (double)nSamples / decodedFrame->sample_rate;
+    avcodec_free_frame(&decodedFrame);
     return outBuffer;
 }
 
@@ -342,6 +360,10 @@ void LAV_Source::init(const QString& fileName)
     }
 
     d->inCodecContext = d->inFormatContext->streams[d->streamIndex]->codec;
+
+    // MP3 decodes to S16P, but we always want S16, so request it
+    d->inCodecContext->request_sample_fmt = outSampleFmt;
+
     if ( !avcodec_open2(d->inCodecContext, codec, NULL) < 0 )
     {
         release();
@@ -445,25 +467,14 @@ void LAV_Source::skipSilence(double silenceThreshold /* = 0.0001 */)
 
 void LAV_Source::skip(const int mSecs)
 {
-    char buf[256];
-    if ( mSecs <= 0 || d->streamIndex < 0 || !d->inFormatContext )
-        return;
-
-    // Skip ahead from current frame position
-    AVRational time_base = d->inFormatContext->streams[d->streamIndex]->time_base;
-    int64_t frameNum = av_rescale(mSecs, time_base.den, time_base.num) + d->inCodecContext->frame_number;
-    frameNum /= 1000;
-    int ret = avformat_seek_file( d->inFormatContext, d->streamIndex, 0, frameNum, frameNum, 0);
-    if (ret < 0)
+    double targetTimestamp = d->timestamp + mSecs/1000.0;
+    int dataSize, channels, nSamples;
+    for (;;)
     {
-        // FIXME?
-        // We might still get pretty close to where we want to be even if the
-        // seek returns an error.
-        av_strerror(ret, buf, sizeof(buf));
-        cerr << "Problem seeking in file: " << buf << endl;
+        d->decodeOneFrame(dataSize, channels, nSamples);
+        if ( d->timestamp > targetTimestamp || d->eof )
+           return;
     }
-
-    avcodec_flush_buffers(d->inCodecContext);
 }
 
 
