@@ -21,12 +21,11 @@
 #include "ScrobbleService.h"
 #include <lastfm/ws.h>
 
-#ifdef QT_DBUS_LIB
-#include "lib/listener/DBusListener.h"
-#endif
 #include "../../Application.h"
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
 #include "lib/listener/legacy/LegacyPlayerListener.h"
+#else
+#include "lib/listener/mpris2/Mpris2Listener.h"
 #endif
 #include "lib/listener/PlayerConnection.h"
 #include "lib/listener/PlayerListener.h"
@@ -45,6 +44,8 @@
 
 ScrobbleService::ScrobbleService()
 {
+    qRegisterMetaType<Track>("Track");
+
 /// mediator
     m_mediator = new PlayerMediator(this);
     connect( m_mediator, SIGNAL(activeConnectionChanged( PlayerConnection* )), SLOT(setConnection( PlayerConnection* )) );
@@ -68,11 +69,10 @@ ScrobbleService::ScrobbleService()
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
         o = new LegacyPlayerListener(m_mediator);
         connect(o, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
-#endif
-
-#ifdef QT_DBUS_LIB
-        DBusListener* dbus = new DBusListener(mediator);
-        connect(dbus, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
+#else
+        Mpris2Listener* mpris2 = new Mpris2Listener(m_mediator);
+        connect(mpris2, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
+        mpris2->createConnection();
 #endif
     }
     catch(std::runtime_error& e){
@@ -140,7 +140,7 @@ ScrobbleService::scrobblableTrack( const lastfm::Track& track ) const
     unicorn::UserSettings userSettings;
 
     return userSettings.scrobblingOn()
-            && track.extra( "playerId" ) != "spt"
+            && ( track.extra( "playerId" ) != "spt" && track.extra( "playerId" ) != "mpris2" )
             && !track.artist().isNull()
             && ( userSettings.podcasts() || !track.isPodcast() )
             && !track.isVideo()

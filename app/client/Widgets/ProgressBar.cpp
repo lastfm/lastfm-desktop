@@ -86,7 +86,7 @@ ProgressBar::paintEvent( QPaintEvent* e )
 
         p.setPen( QColor( 0x333333 ) );
 
-        if ( m_track.extra( "playerId" ) != "spt" )
+        if ( m_track.extra( "playerId" ) != "spt" && m_track.extra( "playerId" ) != "mpris2" )
         {
             if ( m_track.duration() >= 30 )
             {
@@ -206,7 +206,9 @@ ProgressBar::paintEvent( QPaintEvent* e )
         {
             QTextOption textOption;
             textOption.setAlignment( Qt::AlignVCenter | Qt::AlignRight );
-            p.drawText( rect().adjusted( 0, 0, -6, 0 ), tr("Enable scrobbling in Spotify's preferences!"), textOption );
+            p.drawText( rect().adjusted( 0, 0, -6, 0 ),
+                    tr("Enable scrobbling in %1's preferences!").arg( m_track.extra( "playerName" ) ),
+                    textOption );
         }
     }
 }

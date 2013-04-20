@@ -339,7 +339,7 @@ PlaybackControlsWidget::onTrackStarted( const Track& track, const Track& oldTrac
         {
             // Not a radio track
 
-            if ( track.extra( "playerId" ) == "spt" )
+            if ( track.extra( "playerId" ) == "spt" || track.extra( "playerId" ) == "mpris2" )
                 ui->status->setText( tr("Listening to") );
             else
                 ui->status->setText( tr("Scrobbling from") );
@@ -362,6 +362,17 @@ PlaybackControlsWidget::onTrackStarted( const Track& track, const Track& oldTrac
             ui->icon->setPixmap( QPixmap( ":/control_bar_scrobble_wmp.png" ) );
         else if (id == "spt")
             ui->icon->setPixmap( QPixmap( ":/control_bar_scrobble_spotify.png" ) );
+        else if ( id == "mpris2" )
+        {
+            if ( QIcon::hasThemeIcon( track.extra( "desktopEntry" ) ) )
+                ui->icon->setPixmap( QIcon::fromTheme( track.extra( "desktopEntry" ) ).pixmap( 44, 44 ) );
+            else if ( QIcon::hasThemeIcon( track.extra( "serviceName" ) ) )
+                ui->icon->setPixmap( QIcon::fromTheme( track.extra( "serviceName" ) ).pixmap( 44, 44 ) );
+            else if ( QIcon::hasThemeIcon( track.extra( "playerName" ) ) )
+                ui->icon->setPixmap( QIcon::fromTheme( track.extra( "playerName" ) ).pixmap( 44, 44 ) );
+            else
+                ui->icon->setPixmap( QPixmap( ":/control_bar_radio_as.png" ) );
+        }
         else
             ui->icon->setPixmap( QPixmap( ":/control_bar_radio_as.png" ) );
     }
