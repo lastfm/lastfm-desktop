@@ -132,8 +132,8 @@ ITunesLibrary::Track::lastfmTrack() const
     else
     {
         // If we don't have a valid timestamp, set to current time. Should work. We hope.
-        qWarning() << "Invalid timestamp, set to current:" << QString::fromStdWString( i.toString() );
-        t.setTimeStamp( QDateTime::currentDateTime() );
+        qWarning() << "Invalid timestamp, set to 60 seconds ago:" << QString::fromStdWString( i.toString() );
+        t.setTimeStamp( QDateTime::currentDateTime().addSecs( -60 ) );
     }
 
     const QString path = QString::fromStdWString( i.path() );

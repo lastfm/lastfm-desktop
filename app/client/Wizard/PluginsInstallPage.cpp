@@ -1,3 +1,22 @@
+/*
+   Copyright 2011 Last.fm Ltd.
+      - Primarily authored by Michael Coffey
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -5,7 +24,7 @@
 
 #include "lib/unicorn/QMessageBoxBuilder.h"
 
-#include "../Dialogs/CloseAppsDialog.h"
+#include "lib/unicorn/dialogs/CloseAppsDialog.h"
 
 #include "FirstRunWizard.h"
 #include "PluginsInstallPage.h"
@@ -62,7 +81,7 @@ PluginsInstallPage::install()
     // Tell the user to close any aplications we are about to install
     // plugins for
 
-    CloseAppsDialog* closeApps = new CloseAppsDialog( wizard()->pluginList()->installList(), this );
+    unicorn::CloseAppsDialog* closeApps = new unicorn::CloseAppsDialog( wizard()->pluginList()->installList(), this );
 
     if ( closeApps->result() != QDialog::Accepted )
         closeApps->exec();
@@ -71,8 +90,14 @@ PluginsInstallPage::install()
 
     if ( closeApps->result() == QDialog::Accepted )
     {
-        foreach( IPluginInfo* plugin, wizard()->pluginList()->installList() )
-            plugin->doInstall();
+        foreach( unicorn::IPluginInfo* plugin, wizard()->pluginList()->installList() )
+        {
+            if ( !plugin->doInstall() )
+            {
+                // The plugin failed to install
+                // should probably do something
+            }
+        }
     }
     else
     {

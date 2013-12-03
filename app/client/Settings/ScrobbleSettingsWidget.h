@@ -41,7 +41,7 @@ private slots:
 
 private:
     Ui::ScrobbleSettingsWidget* ui;
-    int m_initialScrobblePercentage;
+    double m_initialScrobblePercentage;
 };
 
 #endif

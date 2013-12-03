@@ -29,8 +29,6 @@
 
 FriendsPicker::FriendsPicker( const User& user )
 {    
-    qDebug() << user;
-    
     QVBoxLayout* v = new QVBoxLayout( this );
     QLineEdit* lineEdit = new QLineEdit;
 #if QT_VERSION >= 0x040700

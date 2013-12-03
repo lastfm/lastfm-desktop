@@ -32,7 +32,7 @@ PlayerMediator::follow( PlayerConnection* connection )
     
     m_connections += connection;
 
-    connect( connection, SIGNAL(trackStarted( Track, Track )), SLOT(onActivity()) );
+    connect( connection, SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), SLOT(onActivity()) );
     connect( connection, SIGNAL(resumed()), SLOT(onActivity()) );
     connect( connection, SIGNAL(stopped()), SLOT(onActivity()) );
     connect( connection, SIGNAL(bootstrapReady(QString)), SLOT(onActivity()) );

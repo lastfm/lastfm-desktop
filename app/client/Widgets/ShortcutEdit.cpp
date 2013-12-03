@@ -1,3 +1,22 @@
+/*
+   Copyright 2011 Last.fm Ltd.
+      - Primarily authored by Michael Coffey
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <QStringListModel>
 #include <QLineEdit>
@@ -10,7 +29,11 @@ ShortcutEdit::ShortcutEdit( QWidget* parent )
 {
     setEditable( true );
     QStringList keys;
+#ifdef Q_OS_MAC
     keys << QString::fromUtf8("⌃⌘ S")
+#else
+    keys << QString::fromUtf8("Ctrl+Shift+S")
+#endif
          << "F1"
          << "F3"
          << "F2"
@@ -64,25 +87,41 @@ ShortcutEdit::keyPressEvent( QKeyEvent* e )
     Qt::KeyboardModifiers modifiers;
 
     //Modifier to symbol
+    if( e->modifiers() & Qt::ControlModifier )
+    {
+#ifdef Q_OS_MAC
+        text += QString::fromUtf8( "⌘" );
+#else
+        text += "Ctrl+";
+#endif
+        modifiers |= Qt::ControlModifier;
+    }
+    if( e->modifiers() & Qt::AltModifier )
+    {
+#ifdef Q_OS_MAC
+        text += QString::fromUtf8( "⌥" );
+#else
+        text += "Alt+";
+#endif
+        modifiers |= Qt::AltModifier;
+    }
     if( e->modifiers() & Qt::ShiftModifier )
     {
+#ifdef Q_OS_MAC
         text += QString::fromUtf8( "⇧" );
+#else
+        text += "Shift+";
+#endif
         modifiers |= Qt::ShiftModifier;
     }
     if( e->modifiers() & Qt::MetaModifier )
     {
+#ifdef Q_OS_MAC
         text += QString::fromUtf8( "⌃" );
+#else
+        text += "Win+";
+#endif
         modifiers |= Qt::MetaModifier;
-    }
-    if( e->modifiers() & Qt::AltModifier )
-    {
-        text += QString::fromUtf8( "⌥" );
-        modifiers |= Qt::AltModifier;
-    }
-    if( e->modifiers() & Qt::ControlModifier )
-    {
-        text += QString::fromUtf8( "⌘" );
-        modifiers |= Qt::ControlModifier;
     }
 
     //Backspace key to clear shortcut

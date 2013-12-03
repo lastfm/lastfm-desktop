@@ -17,6 +17,34 @@
   You should have received a copy of the GNU General Public License
   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+
+#include "MetadataWidget.h"
+#include "ui_MetadataWidget.h"
+
+#include "../Application.h"
+#include "../Services/ScrobbleService.h"
+#include "../Services/RadioService.h"
+#include "../Services/AnalyticsService.h"
+#include "ScrobbleControls.h"
+#include "BioWidget.h"
+#include "TagWidget.h"
+
+#include "lib/unicorn/widgets/HttpImageWidget.h"
+#include "lib/unicorn/widgets/DataBox.h"
+#include "lib/unicorn/widgets/DataListWidget.h"
+#include "lib/unicorn/widgets/BannerWidget.h"
+#include "lib/unicorn/widgets/LfmListViewWidget.h"
+#include "lib/unicorn/widgets/Label.h"
+#include "lib/unicorn/layouts/FlowLayout.h"
+#include "lib/unicorn/DesktopServices.h"
+
+#include <lastfm/XmlQuery.h>
+#include <lastfm/ws.h>
+#include <lastfm/User.h>
+#include <lastfm/Track.h>
+#include <lastfm/Artist.h>
+
 #include <QDebug>
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -33,34 +61,7 @@
 #include <QTextFrame>
 #include <QScrollBar>
 #include <QMenu>
-#include <QDebug>
 #include <QMovie>
-
-#include <lastfm/XmlQuery.h>
-#include <lastfm/ws.h>
-#include <lastfm/User.h>
-#include <lastfm/Track.h>
-#include <lastfm/Artist.h>
-
-#include "lib/unicorn/widgets/HttpImageWidget.h"
-#include "lib/unicorn/widgets/DataBox.h"
-#include "lib/unicorn/widgets/DataListWidget.h"
-#include "lib/unicorn/widgets/BannerWidget.h"
-#include "lib/unicorn/widgets/LfmListViewWidget.h"
-#include "lib/unicorn/widgets/Label.h"
-#include "lib/unicorn/layouts/FlowLayout.h"
-#include "lib/unicorn/DesktopServices.h"
-
-#include "../Application.h"
-#include "../Services/ScrobbleService.h"
-#include "../Services/RadioService.h"
-#include "../Services/AnalyticsService.h"
-#include "ScrobbleControls.h"
-#include "BioWidget.h"
-#include "TagWidget.h"
-
-#include "MetadataWidget.h"
-#include "ui_MetadataWidget.h"
 
 using unicorn::Label;
 
@@ -112,8 +113,6 @@ MetadataWidget::MetadataWidget( const Track& track, QWidget* p )
     ui->artistBio->setPixmap( QPixmap( ":/meta_artist_no_photo.png" ) );
 
     connect( &ScrobbleService::instance(), SIGNAL(scrobblesCached(QList<lastfm::Track>)), SLOT(onScrobblesCached(QList<lastfm::Track>)));
-    connect( track.signalProxy(), SIGNAL(corrected(QString)), SLOT(onTrackCorrected(QString)));
-
     connect( ui->back, SIGNAL(clicked()), SIGNAL(backClicked()));
 }
 
@@ -123,9 +122,9 @@ MetadataWidget::~MetadataWidget()
 }
 
 void
-MetadataWidget::fetchTrackInfo()
+MetadataWidget::fetchTrackInfo( bool force )
 {
-    if ( isVisible() && !m_fetchedTrackInfo )
+    if ( ( force || isVisible() ) && !m_fetchedTrackInfo )
     {
         m_fetchedTrackInfo = true;
 
@@ -157,7 +156,7 @@ MetadataWidget::showEvent( QShowEvent* /*e*/ )
 {
     if ( !m_fetchedTrackInfo )
         m_movie->start();
-    fetchTrackInfo();
+    fetchTrackInfo( false );
 }
 
 void
@@ -180,45 +179,30 @@ MetadataWidget::scrobbleControls() const
     return ui->scrobbleControls;
 }
 
-
-void
-MetadataWidget::onTrackCorrected( QString )
-{
-   setTrackDetails( m_track );
-}
-
-
 void
 MetadataWidget::setTrackDetails( const Track& track )
 {
-   if ( ui->scrollArea->verticalScrollBar()->isVisible() )
-       ui->scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
+    if ( ui->scrollArea->verticalScrollBar()->isVisible() )
+        ui->scrollArea->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
 
-   ui->trackTitle->setText( Label::anchor( track.www().toString(), track.title( Track::Corrected ) ) );
-   ui->trackArtist->setText( tr("by %1").arg( Label::anchor( track.artist( Track::Corrected ).www().toString(), track.artist( Track::Corrected ))));
-   ui->artistArtist->setText( Label::anchor( track.artist( Track::Corrected ).www().toString(),track.artist( Track::Corrected )));
+    ui->trackTitle->setText( Label::anchor( track.www().toString(), track.title() ) );
+    ui->trackArtist->setText( tr("by %1").arg( Label::anchor( track.artist().www().toString(), track.artist())));
+    ui->artistArtist->setText( Label::anchor( track.artist().www().toString(),track.artist()));
+    ui->similarArtists->setText( Label::anchor( "http://www.last.fm/music/" + track.artist() + "/+similar", tr( "Similar Artists" ) ) );
 
-   if ( !m_albumGuess.isNull() )
-       ui->trackAlbum->setText( tr("from %1").arg( Label::anchor( m_albumGuess.www().toString(), m_albumGuess)));
-   else
-   {
-       if ( m_track.album().isNull() )
-           ui->trackAlbum->hide();
-       else
-           ui->trackAlbum->setText( tr("from %1").arg( Label::anchor( track.album( Track::Corrected ).www().toString(), track.album( Track::Corrected ))));
-   }
+    if ( !m_albumGuess.isNull() )
+        ui->trackAlbum->setText( tr("from %1").arg( Label::anchor( m_albumGuess.www().toString(), m_albumGuess)));
+    else
+    {
+        if ( m_track.album().isNull() )
+            ui->trackAlbum->hide();
+        else
+            ui->trackAlbum->setText( tr("from %1").arg( Label::anchor( track.album().www().toString(), track.album())));
+    }
 
-   ui->radio->setStation( RadioStation::similar( Artist( track.artist().name() ) ), tr( "Play %1 Radio" ).arg( track.artist().name() ) );
+    ui->radio->setStation( RadioStation::similar( Artist( track.artist().name() ) ), tr( "Play %1 Radio" ).arg( track.artist().name() ) );
 
-   connect( track.signalProxy(), SIGNAL(loveToggled(bool)), ui->scrobbleControls, SLOT(setLoveChecked(bool)));
-
-   // Add the green astrix to the title, if it has been corrected
-   if ( track.corrected() )
-   {
-       // TODO: The hover text doesn't work at the moment.
-       QString toolTip = tr("Auto-corrected from: %1").arg( track.toString( Track::Original ) );
-       ui->trackTitle->setText( ui->trackTitle->text() + "<img src=\":/asterisk_small.png\" alt=\"" + toolTip + "\" title=\"" + toolTip + "\" />" );
-   }
+    connect( track.signalProxy(), SIGNAL(loveToggled(bool)), ui->scrobbleControls, SLOT(setLoveChecked(bool)));
 }
 
 void
@@ -626,7 +610,7 @@ QString userLibraryLink( const QString& user, const lastfm::Artist& artist )
 
 QString userLibraryLink( const QString& user, const lastfm::Track& track )
 {
-    return QString("http://www.last.fm/user/%1/library/music/%2/_/%3").arg( user, track.artist( Track::Corrected ).name(), track.title( Track::Corrected ) );
+    return QString("http://www.last.fm/user/%1/library/music/%2/_/%3").arg( user, track.artist().name(), track.title() );
 }
 
 QString userLibrary( const QString& user, const lastfm::Artist& artist )
@@ -704,15 +688,13 @@ MetadataWidget::contextString( const Track& track )
 QString
 MetadataWidget::scrobbleString( const Track& track )
 {
-    QString artistString = Label::anchor( userLibraryLink( User().name(), track.artist( Track::Corrected ).toString()  ), track.artist( Track::Corrected )  );
-    QString trackString = Label::anchor( userLibraryLink( User().name(), track  ), track.title( Track::Corrected )  );
+    QString artistString = Label::anchor( userLibraryLink( User().name(), track.artist().toString()  ), track.artist()  );
+    QString trackString = Label::anchor( userLibraryLink( User().name(), track  ), track.title()  );
 
     QString userArtistScrobblesString = tr( "%L1 time(s)", "", m_userArtistScrobbles ).arg( m_userArtistScrobbles );
     QString userTrackScrobblesString = tr( "%L1 time(s)", "",  m_userTrackScrobbles ).arg( m_userTrackScrobbles );
 
     QString scrobbleString;
-
-    qDebug() << m_userTrackScrobbles << m_userArtistScrobbles;
 
     if ( m_userTrackScrobbles != 0 )
         scrobbleString = tr( "You've listened to %1 %2 and %3 %4." ).arg( artistString, userArtistScrobblesString, trackString, userTrackScrobblesString );

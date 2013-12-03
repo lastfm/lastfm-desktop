@@ -73,7 +73,7 @@ public:
     void forcePaused();
     
 signals:
-    void trackStarted( const Track&, const Track& );
+    void trackStarted( const lastfm::Track&, const lastfm::Track& );
     void paused();
     void resumed();
     void stopped();

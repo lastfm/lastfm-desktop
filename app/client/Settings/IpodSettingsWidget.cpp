@@ -26,11 +26,11 @@
 #endif
 
 #ifdef Q_OS_WIN
-#include "../Plugins/ITunesPluginInfo.h"
+#include "lib/unicorn/plugins/ITunesPluginInfo.h"
 #endif
 
 #include "lib/unicorn/UnicornApplication.h"
-#include "../Dialogs/CloseAppsDialog.h"
+#include "lib/unicorn/dialogs/CloseAppsDialog.h"
 #include "lib/unicorn/QMessageBoxBuilder.h"
 
 #include "../MediaDevices/IpodDevice.h"
@@ -59,19 +59,20 @@ IpodSettingsWidget::IpodSettingsWidget( QWidget* parent )
 {
     ui->setupUi( this );
 
-    ui->alwaysAsk->setChecked( unicorn::AppSettings().value( SETTING_ALWAYS_ASK, true ).toBool() );
+    ui->alwaysAsk->setChecked( unicorn::AppSettings().alwaysAsk() );
     connect( ui->alwaysAsk, SIGNAL(clicked(bool)), SLOT(onSettingsChanged()));
 
 #ifdef Q_WS_X11
     ui->deviceScrobblingEnabled->hide();
 #else
-    ui->deviceScrobblingEnabled->setChecked( unicorn::AppSettings( OLDE_PLUGIN_SETTINGS ).value( SETTING_OLDE_ITUNES_DEVICE_SCROBBLING_ENABLED, true ).toBool() );
+    ui->deviceScrobblingEnabled->setChecked( unicorn::OldeAppSettings().deviceScrobblingEnabled() );
     connect( ui->deviceScrobblingEnabled, SIGNAL(clicked(bool)), SLOT(onSettingsChanged()));
 #endif
 
-    ui->note->setText( unicorn::Label::boldLinkStyle( tr( "<p>Please note:</p>"
-                           "<p>Using an iOS scrobbling app, like %1, may result in double scrobbles. Please only enable scrobbling in one of them.</p>"
-                           "<p>iTunes Match synchronises play counts, but not last played times, across multiple devices. This will lead to duplicate scrobbles, at incorrect times. For now, we recommend iTunes Match users disable device scrobbling on desktop devices and scrobble iPhones/iPods using an iOS scrobbling app, like %1.</p>" ).arg( unicorn::Label::anchor( "itmss://itunes.apple.com/gb/app/scrobbler-for-ios/id585235199", "Scrobbler for iOS" ) ), Qt::black ) );
+    ui->note->setText( unicorn::Label::boldLinkStyle( tr( "<p>Using an iOS scrobbling app, like %1, may result in double scrobbles. Please only enable scrobbling in one of them.</p>"
+                                                          "<p>iTunes Match synchronises play counts, but not last played times, across multiple devices. This will lead to duplicate scrobbles, at incorrect times. For now, we recommend iTunes Match users disable device scrobbling on desktop devices and scrobble iPhones/iPods using an iOS scrobbling app, like %1.</p>" ).arg( unicorn::Label::anchor( "itmss://itunes.apple.com/gb/app/scrobbler-for-ios/id585235199", "Scrobbler for iOS" ) ), Qt::black ) );
+    ui->note->adjustSize();
+    ui->noteBox->adjustSize();
 }
 
 void
@@ -82,22 +83,22 @@ IpodSettingsWidget::saveSettings()
         // save settings
         qDebug() << "Saving settings...";
 
-        unicorn::AppSettings().setValue( SETTING_ALWAYS_ASK, ui->alwaysAsk->isChecked() );
+        unicorn::AppSettings().setAlwaysAsk( ui->alwaysAsk->isChecked() );
 
         // we need to restart iTunes for this setting to take affect
-        bool currentlyEnabled = unicorn::AppSettings( OLDE_PLUGIN_SETTINGS ).value( SETTING_OLDE_ITUNES_DEVICE_SCROBBLING_ENABLED, true ).toBool();
+        bool currentlyEnabled = unicorn::OldeAppSettings().deviceScrobblingEnabled();
 
 #ifndef Q_WS_X11
         if ( currentlyEnabled != ui->deviceScrobblingEnabled->isChecked() )
         {
 #ifdef Q_OS_WIN
-            QList<IPluginInfo*> plugins;
-            ITunesPluginInfo* iTunesPluginInfo = new ITunesPluginInfo;
+            QList<unicorn::IPluginInfo*> plugins;
+            unicorn::ITunesPluginInfo* iTunesPluginInfo = new unicorn::ITunesPluginInfo;
             plugins << iTunesPluginInfo;
-            CloseAppsDialog* closeApps = new CloseAppsDialog( plugins, this );
+            unicorn::CloseAppsDialog* closeApps = new unicorn::CloseAppsDialog( plugins, this );
             closeApps->setOwnsPlugins( true );
 #else
-            CloseAppsDialog* closeApps = new CloseAppsDialog( this );
+            unicorn::CloseAppsDialog* closeApps = new unicorn::CloseAppsDialog( this );
 #endif
             if ( closeApps->result() != QDialog::Accepted )
                 closeApps->exec();
@@ -106,7 +107,7 @@ IpodSettingsWidget::saveSettings()
 
             if ( closeApps->result() == QDialog::Accepted )
             {
-                unicorn::AppSettings( OLDE_PLUGIN_SETTINGS ).setValue( SETTING_OLDE_ITUNES_DEVICE_SCROBBLING_ENABLED, ui->deviceScrobblingEnabled->isChecked() );
+                unicorn::OldeAppSettings().setDeviceScrobblingEnabled( ui->deviceScrobblingEnabled->isChecked() );
             }
             else
             {

@@ -84,7 +84,6 @@ UserToolButton::onImageDownloaded()
         QPainter p( &on );
         p.setRenderHint( QPainter::SmoothPixmapTransform );
         p.setCompositionMode( QPainter::CompositionMode_DestinationOver );
-        qDebug() << "On rect: " << on.rect();
         p.drawPixmap( on.rect().adjusted( 5, 5, -5, -5 ), pm, pm.rect());
     }
     icon.addPixmap( on, QIcon::Normal, QIcon::On );

@@ -10,13 +10,12 @@ CONFIG( taglib ) {
 }
 
 CONFIG( ffmpeg ) {
-    DEFINES += FFMPEG_FINGERPRINTING
-
     mac {
         LIBS += /usr/local/lib/libavcodec.dylib
         LIBS += /usr/local/lib/libavformat.dylib
         LIBS += /usr/local/lib/libavutil.dylib
         LIBS += /usr/local/lib/libswresample.dylib
+        DEFINES += HAVE_SWRESAMPLE
     } else {
         CONFIG += link_pkgconfig
         PKGCONFIG += libavformat libavcodec libavutil
@@ -24,16 +23,16 @@ CONFIG( ffmpeg ) {
             PKGCONFIG += libswresample
             DEFINES += HAVE_SWRESAMPLE
         }
+        packagesExist(libavresample) {
+            PKGCONFIG += libavresample
+            DEFINES += HAVE_AVRESAMPLE
+        }
     }
+}
 
-    win32:CONFIG(debug, debug|release) {
-        # disable fingerprinting on windows debug
-        # the pre-built ffmpeg we use is incompatible with debug builds
-        # because the crt it links against is incompatible
-        PKGCONFIG -= libavformat
-        PKGCONFIG -= libswresample
-        DEFINES -= FFMPEG_FINGERPRINTING
-    }
+CONFIG( analytics ) {
+    QT += webkit
+    DEFINES += LASTFM_ANALYTICS
 }
 
 CONFIG( boost ) {
@@ -69,11 +68,17 @@ CONFIG( phonon ) {
     }
     else:win32 {
         CONFIG += link_pkgconfig
-        PKGCONFIG += phonon
+
+        CONFIG(debug, debug|release) {
+            PKGCONFIG += phonon-debug
+        }
+        else {
+            PKGCONFIG += phonon-release
+        }
     }
-	else {
-		QT += phonon
-	}
+    else {
+        QT += phonon
+    }
 }
 
 CONFIG( sparkle ) {

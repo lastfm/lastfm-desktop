@@ -18,8 +18,10 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QString>
+#ifdef LASTFM_ANALYTICS
 #include <QWebView>
+#endif
+#include <QString>
 #include <QNetworkCookieJar>
 #include <QCoreApplication>
 
@@ -35,6 +37,7 @@
 AnalyticsService::AnalyticsService()
     :m_customVarsSet( false ), m_pageLoaded( false )
 {
+#ifdef LASTFM_ANALYTICS
     m_webView = new QWebView();
     m_cookieJar = new PersistentCookieJar( this );
     m_webView->page()->networkAccessManager()->setCookieJar( m_cookieJar );
@@ -44,25 +47,31 @@ AnalyticsService::AnalyticsService()
     connect( aApp, SIGNAL(gotUserInfo(lastfm::User)), SLOT(onGotUserInfo(lastfm::User)) );
 
     m_webView->load( QString( "http://cdn.last.fm/client/ga.html" ) );
+#endif
 }
 
 void
 AnalyticsService::sendEvent( const QString& category, const QString& action, const QString& label, const QString& value )
 {
+#ifdef LASTFM_ANALYTICS
     m_queue.enqueue( QString( "http://cdn.last.fm/client/ga.html#event?category=%1&action=%2&label=%3&value=%4" ).arg( category, action, label, value ) );
     loadPages();
+#endif
 }
 
 void
 AnalyticsService::sendPageView( const QString& url )
 {
+#ifdef LASTFM_ANALYTICS
     m_queue.enqueue( QString( "http://cdn.last.fm/client/ga.html#pageview?url=%1" ).arg( url ) );
     loadPages();
+#endif
 }
 
 void
 AnalyticsService::loadPages()
 {
+#ifdef LASTFM_ANALYTICS
     if ( m_pageLoaded && m_customVarsSet )
     {
         while ( !m_customVars.isEmpty() )
@@ -71,13 +80,16 @@ AnalyticsService::loadPages()
         while ( !m_queue.isEmpty() )
             m_webView->load( m_queue.dequeue() );
     }
+#endif
 }
 
 void
 AnalyticsService::onLoadFinished()
 {
+#ifdef LASTFM_ANALYTICS
     m_pageLoaded = true;
     loadPages();
+#endif
 }
 
 QString userTypeToString( lastfm::User::Type type )

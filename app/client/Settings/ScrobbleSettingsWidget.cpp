@@ -36,46 +36,46 @@
 #include "ui_ScrobbleSettingsWidget.h"
 #include "ScrobbleSettingsWidget.h"
 
-#define SETTING_SCROBBLE_POINT "scrobblePoint"
-#define SETTING_ALLOW_FINGERPRINTING "fingerprint"
-#define SETTING_PODCASTS "podcasts"
-
-
 ScrobbleSettingsWidget::ScrobbleSettingsWidget( QWidget* parent )
     : SettingsWidget( parent ),
       ui( new Ui::ScrobbleSettingsWidget )
 {
     ui->setupUi( this );
 
-    int scrobblePointValue = unicorn::UserSettings().value( SETTING_SCROBBLE_POINT, ui->scrobblePoint->value() ).toInt();
+    unicorn::UserSettings userSettings;
+
+    double scrobblePointValue = userSettings.scrobblePoint();
     ui->scrobblePoint->setValue( scrobblePointValue );
     ui->percentText->setText( QString::number(scrobblePointValue) );
     ui->percentText->setFixedWidth( ui->percentText->fontMetrics().width( "100" ) );
     m_initialScrobblePercentage = scrobblePointValue;
 
-    ui->allowFingerprint->setChecked( unicorn::UserSettings().value( SETTING_ALLOW_FINGERPRINTING, ui->allowFingerprint->isChecked() ).toBool() );
+    ui->allowFingerprint->setChecked( userSettings.fingerprinting() );
 
-    ui->scrobblingOn->setChecked( unicorn::UserSettings().value( "scrobblingOn", ui->scrobblingOn->isChecked() ).toBool() );
-    ui->podcasts->setChecked( unicorn::UserSettings().value( SETTING_PODCASTS, ui->podcasts->isChecked() ).toBool() );
+    ui->enfocreScrobbleTimeMax->setChecked( userSettings.enforceScrobbleTimeMax() );
+    ui->scrobblingOn->setChecked( userSettings.scrobblingOn() );
+    ui->podcasts->setChecked( userSettings.podcasts() );
 
-    QStringList exclusionDirs = unicorn::UserSettings().value( "ExclusionDirs", QStringList() ).toStringList();
+    QStringList exclusionDirs = userSettings.exclusionDirs();
     exclusionDirs.removeAll( "" );
     ui->exclusionDirs->setExclusions( exclusionDirs );
 
     connect( ui->scrobblePoint, SIGNAL(sliderMoved(int)), SLOT(onSliderMoved(int)) );
+    connect( ui->scrobblePoint, SIGNAL(valueChanged(int)), SLOT(onSliderMoved(int)) );
     connect( ui->scrobblePoint, SIGNAL(valueChanged(int)), SLOT(onSettingsChanged()) );
     connect( ui->allowFingerprint, SIGNAL(stateChanged(int)), SLOT(onSettingsChanged()) );
 
     connect( aApp, SIGNAL(scrobbleToggled(bool)), ui->scrobblingOn, SLOT(setChecked(bool)));
     connect( ui->scrobblingOn, SIGNAL(clicked(bool)), SLOT(onSettingsChanged()) );
     connect( ui->podcasts, SIGNAL(stateChanged(int)), SLOT(onSettingsChanged()) );
+    connect( ui->enfocreScrobbleTimeMax, SIGNAL(stateChanged(int)), SLOT(onSettingsChanged()) );
 
     connect( ui->exclusionDirs, SIGNAL(dataChanged()), SLOT(onSettingsChanged()) );
 }
 
 ScrobbleSettingsWidget::~ScrobbleSettingsWidget()
 {
-    if ( unicorn::UserSettings().value( SETTING_SCROBBLE_POINT, 50 ).toInt() != m_initialScrobblePercentage )
+    if ( unicorn::UserSettings().scrobblePoint() != m_initialScrobblePercentage )
         AnalyticsService::instance().sendEvent(SETTINGS_CATEGORY, SCROBBLING_SETTINGS, "ScrobblePercentageChanged", QString::number( ui->scrobblePoint->value() ) );
 }
 
@@ -94,14 +94,18 @@ ScrobbleSettingsWidget::saveSettings()
 
         aApp->onScrobbleToggled( ui->scrobblingOn->isChecked() );
 
-        unicorn::UserSettings().setValue( SETTING_SCROBBLE_POINT, ui->scrobblePoint->value() );
-        unicorn::UserSettings().setValue( SETTING_ALLOW_FINGERPRINTING, ui->allowFingerprint->isChecked() );
-        unicorn::UserSettings().setValue( SETTING_PODCASTS, ui->podcasts->isChecked() );
+        unicorn::UserSettings userSettings;
+        userSettings.setScrobblePoint( ui->scrobblePoint->value() );
+        userSettings.setFingerprinting( ui->allowFingerprint->isChecked() );
+        userSettings.setPodcasts( ui->podcasts->isChecked() );
+        userSettings.setEnforceScrobbleTimeMax( ui->enfocreScrobbleTimeMax->isChecked() );
 
         QStringList exclusionDirs = ui->exclusionDirs->getExclusions();
         exclusionDirs.removeAll( "" );
         qDebug() << exclusionDirs;
-        unicorn::UserSettings().setValue( "ExclusionDirs", exclusionDirs );
+        userSettings.setExclusionDirs( exclusionDirs );
+
+        userSettings.sync();
 
         ScrobbleService::instance().scrobbleSettingsChanged();
 

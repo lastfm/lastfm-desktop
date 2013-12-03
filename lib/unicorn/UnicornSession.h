@@ -1,3 +1,23 @@
+/*
+   Copyright 2009-2012 Last.fm Ltd.
+      - Primarily authored by Jono Cole and Michael Coffey
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef UNICORN_SESSION_H_
 #define UNICORN_SESSION_H_
 
@@ -16,6 +36,22 @@ namespace unicorn {
 class UNICORN_DLLEXPORT Session : public QObject
 {
     Q_OBJECT
+public:
+    struct Info
+    {
+        bool valid;
+
+        QString subscriptionPrice;
+
+        bool youRadio;
+        bool registeredRadio;
+        bool subscriberRadio;
+
+        bool youWebRadio;
+        bool registeredWebRadio;
+        bool subscriberWebRadio;
+    };
+
 public:
     /** Return session object from stored session */
     Session();
@@ -67,17 +103,7 @@ private:
     QString m_sessionKey;
     lastfm::User m_user;
 
-    QString m_subscriptionPrice;
-
-    bool m_valid;
-
-    bool m_youRadio;
-    bool m_registeredRadio;
-    bool m_subscriberRadio;
-
-    bool m_youWebRadio;
-    bool m_registeredWebRadio;
-    bool m_subscriberWebRadio;
+    Info m_info;
 };
 
 }

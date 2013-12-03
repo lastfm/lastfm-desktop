@@ -172,11 +172,12 @@ namespace audioscrobbler
         void showMessage( const QString& message, const QString& id );
 
         void bootstrapStarted( const QString& pluginId );
-        void bootstrapDone( int status );
+        void bootstrapDone( AbstractBootstrapper::BootstrapStatus status );
 
         void scrobbleToggled( bool on );
 
     public slots:
+        void showWindow();
         void quit();
         void actuallyQuit();
 
@@ -218,10 +219,9 @@ namespace audioscrobbler
         void onTourTriggered();
         void onLicensesTriggered();
 
-        void showWindow();
         void toggleWindow();
 
-        void onTrackStarted( const Track&, const Track& );
+        void onTrackStarted( const lastfm::Track&, const lastfm::Track& );
         void onTrackPaused( bool );
 
         void onTrackSpooled( const Track& );
@@ -229,6 +229,8 @@ namespace audioscrobbler
         void onSessionChanged( unicorn::Session& );
 
         void onMessageReceived(const QStringList& message);
+
+        void setTrayIcon();
 		
         /** all webservices connect to this and emit in the case of bad errors that
 	     * need to be handled at a higher level */

@@ -26,14 +26,12 @@
 #include "lib/unicorn/mac/AppleScript.h"
 
 /** @author Max Howell <max@last.fm> */
-class ITunesListener : public QThread
+class ITunesListener : public QObject
 {
     Q_OBJECT
-
-    virtual void run();    
-    
 public:
     ITunesListener( QObject* parent );
+    ~ITunesListener();
 
     enum State { Unknown = -1, Playing, Paused, Stopped };
 
@@ -51,8 +49,11 @@ private:
                           CFDictionaryRef );
 
     void callback( CFDictionaryRef );
+
+private slots:
     void setupCurrentTrack();
 
+private:
     State m_state;
     QString m_previousPid;
     struct ITunesConnection* m_connection;

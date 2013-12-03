@@ -20,11 +20,17 @@
 #ifndef MESSAGE_BAR_H
 #define MESSAGE_BAR_H
 
-#include <QFrame>
+#include "lib/DllExportMacro.h"
 
 #include <lastfm/Track.h>
 
-#include "lib/DllExportMacro.h"
+#ifdef Q_OS_MAC
+#include "lib/unicorn/plugins/ITunesPluginInstaller.h"
+#elif defined( Q_OS_WIN )
+#include "lib/unicorn/plugins/ITunesPluginInfo.h"
+#endif
+
+#include <QFrame>
 
 class UNICORN_DLLEXPORT MessageBar : public QFrame
 {
@@ -53,6 +59,11 @@ private slots:
 private:
     QList<lastfm::Track> m_tracks;
     QPointer<QTimer> m_timeout;
+#ifdef Q_OS_MAC
+    QPointer<unicorn::ITunesPluginInstaller> m_installer;
+#elif defined( Q_OS_WIN )
+    QPointer<unicorn::ITunesPluginInfo> m_itw;
+#endif
 };
 
 #endif

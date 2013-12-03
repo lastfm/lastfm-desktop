@@ -46,8 +46,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>433</width>
-        <height>566</height>
+        <width>445</width>
+        <height>567</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -85,7 +85,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <property name="spacing">
-             <number>0</number>
+             <number>10</number>
             </property>
             <item>
              <widget class="unicorn::Label" name="trackTitle">
@@ -120,7 +120,27 @@
              </widget>
             </item>
             <item>
+             <widget class="QFrame" name="hsplitter2">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="ScrobbleControls" name="scrobbleControls">
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="hsplitter1">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
@@ -416,9 +436,12 @@
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="similarArtists">
+               <widget class="unicorn::Label" name="similarArtists">
                 <property name="text">
                  <string>Similar Artists</string>
+                </property>
+                <property name="textFormat">
+                 <enum>Qt::RichText</enum>
                 </property>
                </widget>
               </item>
@@ -574,14 +597,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>HttpImageWidget</class>
-   <extends>QLabel</extends>
-   <header>lib/unicorn/widgets/HttpImageWidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>unicorn::Label</class>
    <extends>QLabel</extends>
    <header>lib/unicorn/widgets/Label.h</header>
+  </customwidget>
+  <customwidget>
+   <class>HttpImageWidget</class>
+   <extends>QLabel</extends>
+   <header>lib/unicorn/widgets/HttpImageWidget.h</header>
   </customwidget>
   <customwidget>
    <class>ScrobbleControls</class>

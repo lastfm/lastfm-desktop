@@ -1,3 +1,22 @@
+/*
+   Copyright 2012 Last.fm Ltd.
+      - Primarily authored by Michael Coffey
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <QMovie>
 #include <QTimer>
@@ -37,7 +56,6 @@ TrackWidget::TrackWidget( Track& track, QWidget *parent )
     ui->buttonLayout->setAlignment( ui->tag, Qt::AlignTop );
     ui->buttonLayout->setAlignment( ui->share, Qt::AlignTop );
     ui->buttonLayout->setAlignment( ui->buy, Qt::AlignTop );
-    ui->trackTitleLayout->setAlignment( ui->asterisk, Qt::AlignTop );
 
     ui->albumArt->setAttribute( Qt::WA_LayoutUsesWidgetRect );
     ui->love->setAttribute( Qt::WA_LayoutUsesWidgetRect );
@@ -189,11 +207,16 @@ void
 TrackWidget::setTrackTitleWidth()
 {
     int width = qMin( ui->trackTitleFrame->width(), ui->trackTitle->fontMetrics().width( ui->trackTitle->text() ) + 1 );
-
-    if ( ui->asterisk->isVisible() )
-        width = qMin( width, ui->trackTitleFrame->width() - (ui->asterisk->width() + 3) );
-
     ui->trackTitle->setFixedWidth( width );
+}
+
+void
+TrackWidget::update( const lastfm::Track& track )
+{
+    // we're getting an update from a track fetched from user.getRecentTracks
+    MutableTrack mt( m_track );
+    mt.setScrobbleStatus( Track::Submitted ); // it's definitely been scrobbled
+    mt.setLoved( track.isLoved() ); // make sure the love state is consistent with Last.fm
 }
 
 void
@@ -209,7 +232,6 @@ TrackWidget::setTrack( lastfm::Track& track )
 
     m_movie->stop();
     ui->equaliser->hide();
-    ui->asterisk->hide();
 
     setTrackDetails();
 
@@ -223,15 +245,8 @@ TrackWidget::setTrack( lastfm::Track& track )
 void
 TrackWidget::setTrackDetails()
 {
-    ui->trackTitle->setText( m_track.title( lastfm::Track::Corrected ) );
-    ui->artist->setText( m_track.artist( lastfm::Track::Corrected ).name() );
-
-    if ( m_track.title( lastfm::Track::Corrected ) != m_track.title( lastfm::Track::Original )
-         || m_track.title( lastfm::Track::Corrected ) != m_track.title( lastfm::Track::Original ) )
-    {
-         ui->asterisk->show();
-         ui->asterisk->setToolTip( tr( "Auto-corrected from: %1" ).arg( m_track.toString( lastfm::Track::Original ) ) );
-    }
+    ui->trackTitle->setText( m_track.title() );
+    ui->artist->setText( m_track.artist().name() );
 
     if ( m_timestampTimer ) m_timestampTimer->stop();
 
@@ -334,8 +349,6 @@ TrackWidget::onRemovedScrobble()
 
    if ( lfm.parse( static_cast<QNetworkReply*>( sender() ) ) )
    {
-       qDebug() << lfm;
-
        emit removed();
    }
    else

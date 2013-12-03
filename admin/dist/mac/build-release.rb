@@ -1,24 +1,41 @@
-### Usage build-release.rb <version> --deltas <version> <version>
+### Usage build-release.rb --deltas <version> <version> [--no-build] [--no-package]
 # the deltas should be in a zip in the filder under bin with the expected filename format
 # example /_bin/<version>/Last.fm-<version>
+# TODO: download the previous versions from cdn and use that for the delta
+#       there's no chance they'll be wrong then
 
-# find the current version from the plist.info?
-#version = ARGV[0]
+require 'rexml/document'
 
-# TODO: find out the app version from the app's plist.info
-$version = '2.1.33'
+# find the app version from the app's Info.plist
+xml_data = File::read( "admin/dist/mac/Standard.plist" )
 
-# TODO: get the version numbers from the argument list
-$deltas = []
+# extract event information
+doc = REXML::Document.new(xml_data)
 
-if ( ARGV.include?( "--release" ) )
-	$upload_folder = '/web/site/static.last.fm/client/Mac'
-	$download_folder = 'http://cdn.last.fm/client/Mac'
-else
-	$upload_folder = '/userhome/michael/www/client/Mac'
-	$download_folder = 'http://users.last.fm/~michael/client/Mac'
+doc.elements.each('plist/dict/key') do |ele|
+	if ele.text == "CFBundleVersion"
+		$version = ele.next_element().text
+	end
 end
 
+print "Building version #{$version}\n"
+
+# get the delta versions from the command line
+$deltas = []
+deltasIndex = ARGV.index("--deltas")
+
+if deltasIndex != nil
+	while deltasIndex + 1 < ARGV.length and not ARGV.at( deltasIndex + 1 ).start_with?("--")
+		deltasIndex = deltasIndex + 1
+		print "Creating binary delta for version #{ARGV.at(deltasIndex)}\n"
+		$deltas << ARGV.at(deltasIndex)
+	end
+end
+
+
+
+$upload_folder = '/userhome/michael/www/client/Mac'
+$download_folder = 'http://users.last.fm/~michael/client/Mac'
 
 ## Check that we are running from the root of the lastfm-desktop project
 # ?
@@ -42,11 +59,14 @@ def build
 
 	system 'qmake -r CONFIG+=release'
 	system 'make'
+
+	system 'rm -rf _bin/Last.fm.app'
+	system 'mv "_bin/Last.fm Scrobbler.app" _bin/Last.fm.app'
 end
 
 def copy_plugin
 	## copy the iTunes plugin into the bundle
-	system "cp -R _bin/Audioscrobbler.bundle '_bin/Last.fm Scrobbler.app/Contents/MacOS/'"
+	system "cp -R _bin/Audioscrobbler.bundle '_bin/Last.fm.app/Contents/MacOS/'"
 end
 
 def create_zip
@@ -54,8 +74,11 @@ def create_zip
 	Dir.chdir("_bin") do
 		system "rm -rf #{$version}"
 		system "mkdir #{$version}"
-		system "tar cjf #{$version}/Last.fm-#{$version}.tar.bz2 'Last.fm Scrobbler.app'"
-		system "zip -ry #{$version}/Last.fm-#{$version}.zip 'Last.fm Scrobbler.app'"
+		system "tar cjf #{$version}/Last.fm-#{$version}.tar.bz2 'Last.fm.app'"
+		Dir.chdir("Last.fm.app/Contents") do
+			system "tar cjf ../../#{$version}/Last.fm_Mac_Update_#{$version}.tar.bz2 *"
+		end
+		system "zip -ry #{$version}/Last.fm-#{$version}.zip 'Last.fm.app'"
 	end
 end
 
@@ -64,7 +87,7 @@ def create_deltas
 	Dir.chdir("_bin") do
 		# unzip the new app
 		puts "unzipping #{$version}"
-		system "tar xjf #{$version}/Last.fm-#{$version}.tar.bz2 -C #{$version}"
+		system "unzip -q #{$version}/Last.fm-#{$version}.zip -d #{$version}"
 
 		$deltas.each do |delta|
 			# unzip the old version (try both compression formats)
@@ -88,7 +111,9 @@ def upload_files
 	# scp the main zip file
 	# scp all the deltas
 	# put them in my userhome if we are doing a test update
+
 	system "scp _bin/#{$version}/Last.fm-#{$version}.tar.bz2 badger:#{$upload_folder}"
+	system "scp _bin/#{$version}/Last.fm_Mac_Update_#{$version}.tar.bz2 badger:#{$upload_folder}"
 	system "scp _bin/#{$version}/Last.fm-#{$version}.zip badger:#{$upload_folder}"
 
 	$deltas.each do |delta|
@@ -125,13 +150,17 @@ def generate_appcast_xml
 	end
 end
 
-
-# run all the things
-clean
-build
-copy_plugin
-create_zip
-create_deltas
-upload_files
-generate_appcast_xml
+if not ARGV.include?( "--no-build" )
+	# build the app
+	clean
+	build
+	copy_plugin
+end
+if not ARGV.include?( "--no-package" )
+	# package and upload the app
+	create_zip
+	create_deltas
+	upload_files
+	generate_appcast_xml
+end
 

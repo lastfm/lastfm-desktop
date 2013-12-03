@@ -25,6 +25,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="invalidScrobbleWarning">
+     <property name="text">
+      <string>Tracks appearing in red are invalid and will not be scrobbled. Hover your mouse over each track to find out why.</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTableView" name="scrobblesView">
      <property name="selectionMode">
       <enum>QAbstractItemView::NoSelection</enum>

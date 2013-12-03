@@ -495,6 +495,12 @@ ITunesComThread::syncComTrackInThread( const ExtendedITunesTrack& changedTrack )
                 LOGWL( 2, "ITunesComThread failed to update the local database for: "
                          << changedTrack.toString() );
             }
+
+			if ( !m_db->syncOld( changedTrack ) )
+            {
+                LOGWL( 2, "ITunesComThread failed to update the old local database for: "
+                         << changedTrack.toString() );
+            }
         }
     }
     catch ( ITunesException& )
@@ -595,6 +601,11 @@ ITunesComThread::syncVisTrackInThread()
                              << m_lastTrack.toString() );
                 }
 
+				if ( !m_db->syncOld( m_lastTrack ) )
+                {
+                    LOGWL( 3, "ITunesComThread failed to update the old local database for: "
+                             << m_lastTrack.toString() );
+                }
             }
         }
         catch ( ITunesException& e )
@@ -712,6 +723,12 @@ ITunesComThread::syncQueue()
             if ( !m_db->sync( diffTrack ) )
             {
                 LOGWL( 2, "ITunesComThread failed to update the local database for: "
+                         << diffTrack.toString() );
+            }
+
+			if ( !m_db->syncOld( diffTrack ) )
+            {
+                LOGWL( 2, "ITunesComThread failed to update the old local database for: "
                          << diffTrack.toString() );
             }
         }

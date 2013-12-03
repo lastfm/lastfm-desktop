@@ -15,7 +15,7 @@ DEFINES += API_KEY=\\\"$(LASTFM_API_KEY)\\\"
 DEFINES += API_SECRET=\\\"$(LASTFM_API_SECRET)\\\"
 
 # UniqueApplication
-win32:LIBS += user32.lib shell32.lib ole32.lib
+win32:LIBS += user32.lib shell32.lib ole32.lib kernel32.lib psapi.lib
 
 macx:LIBS += -weak_framework Cocoa
 
@@ -59,9 +59,6 @@ SOURCES += \
     qtsingleapplication/qtlocalpeer.cpp \
     QMessageBoxBuilder.cpp \
     LoginProcess.cpp \
-    layouts/SlideOverLayout.cpp \
-    layouts/SideBySideLayout.cpp \
-    layouts/AnimatedListLayout.cpp \
     PlayBus/PlayBus.cpp \
     PlayBus/Bus.cpp \
     dialogs/UserManagerDialog.cpp \
@@ -70,12 +67,14 @@ SOURCES += \
     dialogs/LoginContinueDialog.cpp \
     dialogs/AboutDialog.cpp \
     dialogs/ScrobbleConfirmationDialog.cpp \
+    dialogs/CloseAppsDialog.cpp \
     AnimatedStatusBar.cpp \
     DesktopServices.cpp \
     Updater/Updater.cpp \
     widgets/StackedWidget.cpp \
     widgets/ProxyWidget.cpp \
-    dialogs/ProxyDialog.cpp
+    dialogs/ProxyDialog.cpp \
+    plugins/Version.cpp
 
 HEADERS += \
     widgets/UserToolButton.h \
@@ -120,9 +119,6 @@ HEADERS += \
     PlayBus/Bus.h \
     PlayBus/PlayBus.h \
     LoginProcess.h \
-    layouts/SlideOverLayout.h \
-    layouts/SideBySideLayout.h \
-    layouts/AnimatedListLayout.h \
     dialogs/UserManagerDialog.h \
     dialogs/UnicornDialog.h \
     dialogs/TagDialog.h \
@@ -130,6 +126,7 @@ HEADERS += \
     dialogs/LoginContinueDialog.h \
     dialogs/AboutDialog.h \
     dialogs/ScrobbleConfirmationDialog.h \
+    dialogs/CloseAppsDialog.h \
     AnimatedStatusBar.h \
     AnimatedPushButton.h \
     dialogs/ShareDialog.h \
@@ -140,20 +137,40 @@ HEADERS += \
     DesktopServices.h \
     widgets/StackedWidget.h \
     widgets/ProxyWidget.h \
-    dialogs/ProxyDialog.h
+    dialogs/ProxyDialog.h \
+    plugins/Version.h
 	
-win32:SOURCES += qtsingleapplication/qtlockedfile_win.cpp
-	
-macx:SOURCES += mac/AppleScript.cpp
+win32:HEADERS += plugins/FooBar08PluginInfo.h \
+                    plugins/FooBar09PluginInfo.h \
+                    plugins/ITunesPluginInfo.h \
+                    plugins/WinampPluginInfo.h \
+                    plugins/WmpPluginInfo.h \
+                    plugins/PluginList.h \
+                    plugins/KillProcess.h \
+                    plugins/IPluginInfo.h
+
+win32:SOURCES += qtsingleapplication/qtlockedfile_win.cpp\
+                    plugins/PluginList.cpp \
+                    plugins/IPluginInfo.cpp \
+                    plugins/FooBar08PluginInfo.cpp \
+                    plugins/FooBar09PluginInfo.cpp \
+                    plugins/ITunesPluginInfo.cpp \
+                    plugins/WinampPluginInfo.cpp \
+                    plugins/WmpPluginInfo.cpp
+
+macx:SOURCES += mac/AppleScript.cpp \
+                plugins/ITunesPluginInstaller.cpp
 
 macx:OBJECTIVE_SOURCES += UnicornApplication_mac.mm \
                           notify/Notify.mm \
                           Updater/Updater_mac.mm \
-                          UnicornApplicationDelegate.mm
+                          UnicornApplicationDelegate.mm \
+                          dialogs/CloseAppsDialog_mac.mm
 
 macx:HEADERS += mac/AppleScript.h \
                 notify/Notify.h \
-                UnicornApplicationDelegate.h
+                UnicornApplicationDelegate.h \
+                plugins/ITunesPluginInstaller.h \
 
 CONFIG( break ) {
     HEADERS += CrashReporter/CrashReporter.h
@@ -167,12 +184,17 @@ FORMS += \
     dialogs/AboutDialog.ui \
     dialogs/ScrobbleConfirmationDialog.ui \
     widgets/ProxyWidget.ui \
-    dialogs/ProxyDialog.ui
+    dialogs/ProxyDialog.ui \
+    dialogs/CloseAppsDialog.ui
 
 unix:!mac {
-    SOURCES -= Updater/Updater.cpp
-    HEADERS -= Updater/Updater.h
-}
+    FORMS   -= dialogs/CloseAppsDialog.ui
 
-RESOURCES += \
-	qrc/unicorn.qrc
+    SOURCES -= dialogs/CloseAppsDialog.cpp \
+               plugins/Version.cpp \
+               Updater/Updater.cpp
+
+    HEADERS -= dialogs/CloseAppsDialog.cpp \
+               plugins/Version.h \
+               Updater/Updater.h
+}

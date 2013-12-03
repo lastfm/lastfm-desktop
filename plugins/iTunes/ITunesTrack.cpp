@@ -227,15 +227,14 @@ ITunesTrack::albumArtist() const
 
     if ( res != S_OK || fileTrack == 0 )
     {
-        ITunesComWrapper::logComError( res, L"Casting IITrack to IITFileOrCDTrack failed" );
+        ITunesComWrapper::logComError( res, L"albumArtist Casting IITrack to IITFileOrCDTrack failed" );
     }
     else
     {
         res = fileTrack->get_AlbumArtist( &bstrAlbumArtist );
+        ITunesComWrapper::logComError( res, L"Failed to read album artist of track" );
         fileTrack->Release();
     }
-
-    ITunesComWrapper::handleComResult( res, L"Failed to read album artist of track" );
 
     return ITunesComWrapper::bstrToWString( bstrAlbumArtist );
 }
@@ -330,7 +329,7 @@ bool
 ITunesTrack::isNull() const
 { 
   #ifdef WIN32
-    return m_comTrack == 0 || m_path.empty();
+    return m_comTrack == 0;
   #else
     return m_id == "" || m_kind == "Audio CD Track";
   #endif
@@ -431,7 +430,7 @@ ITunesTrack::podcast()
     HRESULT res = m_comTrack->QueryInterface( IID_IITFileOrCDTrack, (void**)&fileTrack );
     if ( res != S_OK || fileTrack == 0 )
     {
-        ITunesComWrapper::logComError( res, L"Casting IITrack to IITFileOrCDTrack failed" );
+        ITunesComWrapper::logComError( res, L"podcast Casting IITrack to IITFileOrCDTrack failed" );
     }
     else
     {
@@ -465,7 +464,7 @@ ITunesTrack::video()
     HRESULT res = m_comTrack->QueryInterface( IID_IITFileOrCDTrack, (void**)&fileTrack );
     if ( res != S_OK || fileTrack == 0 )
     {
-        ITunesComWrapper::logComError( res, L"Casting IITrack to IITFileOrCDTrack failed" );
+        ITunesComWrapper::logComError( res, L"video Casting IITrack to IITFileOrCDTrack failed" );
     }
     else
     {

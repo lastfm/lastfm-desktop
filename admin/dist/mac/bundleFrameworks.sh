@@ -155,7 +155,7 @@ echo
 echo ======= Copying Qt plugins ===========
 mkdir -p "$bundlePath/Contents/plugins"
 
-plugins="imageformats phonon_backend sqldrivers"
+plugins="imageformats phonon_backend sqldrivers bearer"
 
 for plugin in $plugins; do
     if [ -d /Developer/Applications/Qt/plugins/ ]; then

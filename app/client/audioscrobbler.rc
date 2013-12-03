@@ -7,8 +7,8 @@ FeedURL     APPCAST     {"http://cdn.last.fm/client/Win/updates.xml"}
 
 // Version information; this, too, is used by WinSparkle
 1 VERSIONINFO
- FILEVERSION     2,1,33,0
- PRODUCTVERSION  2,1,33,0
+ FILEVERSION     2,1,36,0
+ PRODUCTVERSION  2,1,36,0
  FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
  FILEFLAGS       0
  FILEOS          VOS_NT_WINDOWS32
@@ -22,12 +22,12 @@ BEGIN
             VALUE "Comments", "Last.fm\0"
             VALUE "CompanyName", "Last.fm\0"
             VALUE "FileDescription", "Last.fm\0"
-            VALUE "FileVersion", "2.1.33\0"
+            VALUE "FileVersion", "2.1.36\0"
             VALUE "InternalName", "Last.fm\0"
             VALUE "OriginalFilename", "Last.fm.exe\0"
             VALUE "LegalCopyright", "Public Domain\0"
             VALUE "ProductName", "Last.fm\0"
-            VALUE "ProductVersion", "2.1.33\0"
+            VALUE "ProductVersion", "2.1.36\0"
         END
     END
 

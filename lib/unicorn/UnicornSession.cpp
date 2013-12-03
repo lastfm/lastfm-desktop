@@ -1,3 +1,22 @@
+/*
+   Copyright 2009-2012 Last.fm Ltd.
+      - Primarily authored by Jono Cole and Michael Coffey
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <QApplication>
 #include <QDebug>
@@ -37,8 +56,8 @@ Session::lastSessionData()
 }
 
 Session::Session()
-    :m_valid( false )
 {
+    m_info.valid = false;
 }
 
 Session::Session( const QString& username, QString sessionKey )
@@ -73,50 +92,50 @@ Session::getSession( QString token )
 QString
 Session::subscriptionPriceString() const
 {
-    return m_subscriptionPrice;
+    return m_info.subscriptionPrice;
 }
 
 bool
 Session::isValid() const
 {
-    return m_valid;
+    return m_info.valid;
 }
 
 
 bool
 Session::youRadio() const
 {
-    return m_youRadio;
+    return m_info.youRadio;
 }
 
 bool
 Session::registeredRadio() const
 {
-    return m_registeredRadio;
+    return m_info.registeredRadio;
 }
 
 bool
 Session::subscriberRadio() const
 {
-    return m_subscriberRadio;
+    return m_info.subscriberRadio;
 }
 
 bool
 Session::youWebRadio() const
 {
-    return m_youWebRadio;
+    return m_info.youWebRadio;
 }
 
 bool
 Session::registeredWebRadio() const
 {
-    return m_registeredWebRadio;
+    return m_info.registeredWebRadio;
 }
 
 bool
 Session::subscriberWebRadio() const
 {
-    return m_subscriberWebRadio;
+    return m_info.subscriberWebRadio;
 }
 
 QString 
@@ -142,11 +161,11 @@ Session::init( const QString& username, const QString& sessionKey )
 
     UserSettings us( username );
     m_user.setName( username );
-    m_user.setScrobbleCount( us.value( "ScrobbleCount", 0 ).toInt() );
-    m_user.setDateRegistered( us.value( "DateRegistered", QDateTime() ).toDateTime() );
-    m_user.setRealName( us.value( "RealName", "" ).toString() );
-    m_user.setIsSubscriber( us.value( UserSettings::subscriptionKey(), false ).toBool() );
-    m_user.setType( static_cast<lastfm::User::Type>( us.value( "Type", lastfm::User::TypeUser ).toInt() ) );
+    m_user.setScrobbleCount( us.scrobbleCount() );
+    m_user.setDateRegistered( us.dateRegistered() );
+    m_user.setRealName( us.realName() );
+    m_user.setIsSubscriber( us.subscriber() );
+    m_user.setType( us.type() );
 
     QList<QUrl> imageUrls;
     int imageCount = us.beginReadArray( "ImageUrls" );
@@ -166,15 +185,7 @@ Session::init( const QString& username, const QString& sessionKey )
     else
         us.setValue( "SessionKey", sessionKey );
 
-    us.beginGroup( "Session" );
-    m_valid = us.value( "valid", false ).toBool();
-    m_youRadio = us.value( "youRadio", false ).toBool();
-    m_registeredRadio = us.value( "registeredRadio", false ).toBool();
-    m_subscriberRadio = us.value( "subscriberRadio", false ).toBool();
-    m_youWebRadio = us.value( "youWebRadio", false ).toBool();
-    m_registeredWebRadio = us.value( "registeredWebRadio", false ).toBool();
-    m_subscriberWebRadio = us.value( "subscriberWebRadio", false ).toBool();
-    us.endGroup();
+    m_info = us.sessionInfo();
 
     fetchInfo();
 }
@@ -220,21 +231,21 @@ Session::onAuthGotSessionInfo()
     {
         qDebug() << lfm;
 
-        m_valid = true;
+        m_info.valid = true;
 
-        m_subscriptionPrice = lfm["application"]["radioprice"]["formatted"].text();
+        m_info.subscriptionPrice = lfm["application"]["radioprice"]["formatted"].text();
 
         XmlQuery you = lfm["application"]["radioPermission"]["user type=you"];
-        m_youRadio = you["radio"].text() == "1";
-        m_youWebRadio = you["webradio"].text() == "1";
+        m_info.youRadio = you["radio"].text() == "1";
+        m_info.youWebRadio = you["webradio"].text() == "1";
 
         XmlQuery registered = lfm["application"]["radioPermission"]["user type=registered"];
-        m_registeredRadio = registered["radio"].text() == "1";
-        m_registeredWebRadio = registered["webradio"].text() == "1";
+        m_info.registeredRadio = registered["radio"].text() == "1";
+        m_info.registeredWebRadio = registered["webradio"].text() == "1";
 
         XmlQuery subscriber = lfm["application"]["radioPermission"]["user type=subscriber"];
-        m_subscriberRadio = subscriber["radio"].text() == "1";
-        m_subscriberWebRadio = subscriber["webradio"].text() == "1";
+        m_info.subscriberRadio = subscriber["radio"].text() == "1";
+        m_info.subscriberWebRadio = subscriber["webradio"].text() == "1";
 
         bool isSubscriber = lfm["application"]["session"]["subscriber"].text() == "1";
         m_user.setIsSubscriber( isSubscriber );
@@ -254,7 +265,7 @@ void
 Session::cacheUserInfo( const lastfm::User& user )
 {
     UserSettings us( user.name() );
-    us.setValue( UserSettings::subscriptionKey(), user.isSubscriber() );
+    us.setSubscriber( user.isSubscriber() );
     us.setValue( "ScrobbleCount", user.scrobbleCount() );
     us.setValue( "DateRegistered", user.dateRegistered() );
     us.setValue( "RealName", user.realName() );
@@ -275,16 +286,8 @@ Session::cacheUserInfo( const lastfm::User& user )
 void
 Session::cacheSessionInfo( const unicorn::Session& session )
 {
-    UserSettings us( session.user().name() );
-    us.beginGroup( "Session" );
-    us.setValue( "valid", m_valid );
-    us.setValue( "youRadio", session.m_youRadio );
-    us.setValue( "registeredRadio", session.m_registeredRadio );
-    us.setValue( "subscriberRadio", session.m_subscriberRadio );
-    us.setValue( "youWebRadio", session.m_youWebRadio );
-    us.setValue( "registeredWebRadio", session.m_registeredWebRadio );
-    us.setValue( "subscriberWebRadio", session.m_subscriberWebRadio );
-    us.endGroup();
+    UserSettings userSettings( session.user().name() );
+    userSettings.setSessionInfo( m_info );
 }
 
 QDataStream&

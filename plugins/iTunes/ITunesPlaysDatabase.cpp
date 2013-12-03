@@ -328,7 +328,7 @@ ITunesPlaysDatabase::query( /* utf-8 */ const char* statement, std::string* resu
 bool
 ITunesPlaysDatabase::isValid()
 {
-    if (!query( "SELECT COUNT( * ) FROM itunes_db LIMIT 0, 1;" ))
+    if (!query( "SELECT COUNT( * ) FROM " TABLE_NAME " LIMIT 0, 1;" ))
         return false;
 
     // uninstallation protection
@@ -378,6 +378,28 @@ ITunesPlaysDatabase::needsBootstrap()
 
 int
 ITunesPlaysDatabase::playCount( const ITunesTrack& track )
+{
+#ifdef WIN32
+	std::string id = Moose::wStringToUtf8( track.persistentId() );
+#else
+	std::string id = track.persistentId();
+#endif
+    char* format = "SELECT play_count FROM " TABLE_NAME " WHERE persistent_id='%q'";
+
+    char* token = sqlite3_mprintf( format, id.c_str() );
+    std::string result;
+    
+    if ( !query( token, &result ) )
+        return -1;
+    
+    long c = std::strtol( result.c_str(), 0, 10 /*base*/ );
+    if ( errno == EINVAL )
+        return -1;
+    return c;
+}
+
+int
+ITunesPlaysDatabase::playCountOld( const ITunesTrack& track )
 {
 #ifdef WIN32
     std::string id = Moose::wStringToUtf8( track.path() );

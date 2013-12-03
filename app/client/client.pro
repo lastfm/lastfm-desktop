@@ -3,10 +3,10 @@ TARGET = "Last.fm Scrobbler"
 unix:!mac {
     TARGET = lastfm-scrobbler
 }
-VERSION = 2.1.33
+VERSION = 2.1.36
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
-QT = core gui xml network sql webkit
-CONFIG += lastfm unicorn listener logger phonon fingerprint ffmpeg
+QT = core gui xml network sql
+CONFIG += lastfm unicorn listener logger phonon analytics
 win32:LIBS += user32.lib kernel32.lib psapi.lib
 DEFINES += LASTFM_COLLAPSE_NAMESPACE
 
@@ -55,7 +55,6 @@ SOURCES += \
     Services/RadioService/RadioService.cpp \
     Services/RadioService/RadioConnection.cpp \
     Dialogs/DiagnosticsDialog.cpp \
-    Dialogs/CloseAppsDialog.cpp \
     Bootstrapper/PluginBootstrapper.cpp \
     Bootstrapper/ITunesDevice/itunesdevice.cpp \
     Bootstrapper/iTunesBootstrapper.cpp \
@@ -76,7 +75,6 @@ SOURCES += \
     Widgets/ShortcutEdit.cpp \
     Widgets/ProfileArtistWidget.cpp \
     Widgets/ScrobbleControls.cpp \
-    Widgets/ProgressBar.cpp \
     Widgets/QuickStartWidget.cpp \
     Widgets/PointyArrow.cpp \
     Widgets/PlaybackControlsWidget.cpp \
@@ -105,11 +103,11 @@ SOURCES += \
     Dialogs/LicensesDialog.cpp \
     Widgets/ScrobblesWidget.cpp \
     Widgets/ScrobblesListWidget.cpp \
-    Fingerprinter/Fingerprinter.cpp \
     Services/AnalyticsService/AnalyticsService.cpp \
     Services/AnalyticsService/PersistentCookieJar.cpp \
     Settings/CheckFileSystemModel.cpp \
-    Settings/CheckFileSystemView.cpp
+    Settings/CheckFileSystemView.cpp \
+    Widgets/VolumeSlider.cpp
 
 HEADERS += \
     ScrobSocket.h \
@@ -127,7 +125,6 @@ HEADERS += \
     MediaDevices/IpodDevice.h \
     MediaDevices/DeviceScrobbler.h \
     Dialogs/DiagnosticsDialog.h \
-    Dialogs/CloseAppsDialog.h \
     Bootstrapper/PluginBootstrapper.h \
     Bootstrapper/ITunesDevice/MediaDeviceInterface.h \
     Bootstrapper/ITunesDevice/ITunesParser.h \
@@ -147,7 +144,6 @@ HEADERS += \
     Widgets/StatusBar.h \
     Widgets/SideBar.h \
     Widgets/ScrobbleControls.h \
-    Widgets/ProgressBar.h \
     Widgets/QuickStartWidget.h \
     Widgets/PointyArrow.h \
     Widgets/PlaybackControlsWidget.h \
@@ -186,56 +182,27 @@ HEADERS += \
     Dialogs/LicensesDialog.h \
     Widgets/ScrobblesListWidget.h \
     Widgets/ScrobblesWidget.h \
-    Fingerprinter/Fingerprinter.h \
     Services/AnalyticsService.h \
     Services/AnalyticsService/AnalyticsService.h \
     Services/AnalyticsService/PersistentCookieJar.h \
     Settings/CheckFileSystemModel.h \
-    Settings/CheckFileSystemView.h
-
-contains(DEFINES, FFMPEG_FINGERPRINTING) {
-    SOURCES += Fingerprinter/LAV_Source.cpp
-    HEADERS += Fingerprinter/LAV_Source.h
-}
-
-win32:HEADERS += Plugins/FooBar08PluginInfo.h \
-                    Plugins/FooBar09PluginInfo.h \
-                    Plugins/ITunesPluginInfo.h \
-                    Plugins/WinampPluginInfo.h \
-                    Plugins/WmpPluginInfo.h \
-                    Plugins/PluginList.h \
-                    Plugins/KillProcess.h \
-                    Plugins/IPluginInfo.h
-
-win32:SOURCES += Plugins/PluginList.cpp \
-                    Plugins/IPluginInfo.cpp \
-                    Plugins/FooBar08PluginInfo.cpp \
-                    Plugins/FooBar09PluginInfo.cpp \
-                    Plugins/ITunesPluginInfo.cpp \
-                    Plugins/WinampPluginInfo.cpp \
-                    Plugins/WmpPluginInfo.cpp
-
+    Settings/CheckFileSystemView.h \
+    Widgets/VolumeSlider.h
 
 mac:HEADERS += CommandReciever/CommandReciever.h \
-                Services/ITunesPluginInstaller.h \
-                Services/ITunesPluginInstaller/ITunesPluginInstaller.h \
                 MediaKeys/MediaKey.h \
                 ../../lib/3rdparty/SPMediaKeyTap/SPMediaKeyTap.h \
                 ../../lib/3rdparty/SPMediaKeyTap/SPInvocationGrabbing/NSObject+SPInvocationGrabbing.h
-
-mac:SOURCES += Services/ITunesPluginInstaller/ITunesPluginInstaller_mac.cpp
 
 mac:OBJECTIVE_SOURCES += CommandReciever/CommandReciever.mm \
                             Widgets/NothingPlayingWidget_mac.mm \
                             MediaKeys/MediaKey.mm \
                             ../../lib/3rdparty/SPMediaKeyTap/SPMediaKeyTap.m \
-                            ../../lib/3rdparty/SPMediaKeyTap/SPInvocationGrabbing/NSObject+SPInvocationGrabbing.m \
-                            Dialogs/CloseAppsDialog_mac.mm
+                            ../../lib/3rdparty/SPMediaKeyTap/SPInvocationGrabbing/NSObject+SPInvocationGrabbing.m
 
 FORMS += \
     Widgets/PlaybackControlsWidget.ui \
     Dialogs/DiagnosticsDialog.ui \
-    Dialogs/CloseAppsDialog.ui \
     Widgets/MetadataWidget.ui \
     Settings/PreferencesDialog.ui \
     Settings/GeneralSettingsWidget.ui \
@@ -253,12 +220,21 @@ FORMS += \
     Widgets/ProfileWidget.ui \
     Widgets/RadioWidget.ui
 
-unix:!mac:HEADERS += MediaDevices/IpodDevice_linux.h
-unix:!mac:SOURCES += MediaDevices/IpodDevice_linux.cpp
+unix:!mac {
+    CONFIG += qdbus
 
-unix:!mac:HEADERS -= Dialogs/CloseAppsDialog.h
-unix:!mac:SOURCES -= Dialogs/CloseAppsDialog.cpp
-unix:!mac:FORMS   -= Dialogs/CloseAppsDialog.ui
+    SOURCES += MediaDevices/IpodDevice_linux.cpp \
+               Mpris2/Mpris2.cpp \
+               Mpris2/DBusAbstractAdaptor.cpp \
+               Mpris2/MediaPlayer2.cpp \
+               Mpris2/MediaPlayer2Player.cpp
+
+    HEADERS += MediaDevices/IpodDevice_linux.h \
+               Mpris2/Mpris2.h \
+               Mpris2/DBusAbstractAdaptor.h \
+               Mpris2/MediaPlayer2.h \
+               Mpris2/MediaPlayer2Player.h
+}
 
 RESOURCES += \
     qrc/audioscrobbler.qrc

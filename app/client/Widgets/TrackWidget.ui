@@ -64,7 +64,7 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <layout class="QHBoxLayout" name="trackTitleLayout" stretch="0,0,0">
+          <layout class="QHBoxLayout" name="trackTitleLayout" stretch="0,0">
            <property name="spacing">
             <number>0</number>
            </property>
@@ -81,13 +81,6 @@
              </property>
              <property name="text">
               <string notr="true">Title</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="asterisk">
-             <property name="text">
-              <string notr="true">*</string>
              </property>
             </widget>
            </item>
@@ -210,14 +203,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>HttpImageWidget</class>
-   <extends>QLabel</extends>
-   <header>lib/unicorn/widgets/HttpImageWidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>unicorn::Label</class>
    <extends>QLabel</extends>
    <header>lib/unicorn/widgets/Label.h</header>
+  </customwidget>
+  <customwidget>
+   <class>HttpImageWidget</class>
+   <extends>QLabel</extends>
+   <header>lib/unicorn/widgets/HttpImageWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

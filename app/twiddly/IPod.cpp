@@ -140,15 +140,9 @@ IPod::twiddle()
     QList<ITunesLibrary::Track> tracksToUpdate;
     QList<ITunesLibrary::Track> tracksToInsert;
     QList<ITunesLibrary::Track> tracksToScrobble;
-#ifdef Q_OS_WIN32
-    QList<ITunesLibrary::Track> tracksToRemove;
-#endif
 
     int nullTrackCount = 0;
 
-#ifdef Q_OS_WIN32
-    QSet<QString> diffedTrackPaths;
-#endif
     // If creation of the library class failed due to a dialog showing in iTunes
     // or COM not responding for some other reason, hasTracks will just return false
     // and we will quit this run.
@@ -169,21 +163,6 @@ IPod::twiddle()
                 ++nullTrackCount;
                 continue;
             }
-
-#ifdef Q_OS_WIN32
-            if( diffedTrackPaths.contains( track.uniqueId() ) )
-            {
-                tracksToRemove << track;
-                //This is a duplicate entry in the iTunes library.
-                //For sanity this track AND the previous identical track
-                //will be ignored. - This is due to no pids on windows.
-
-                qDebug() << "Multiple tracks were found with the same unique id / path, this track won't be scrobbled from the iPod:" << track.uniqueId();
-                continue;
-            }
-
-            diffedTrackPaths.insert( track.uniqueId() );
-#endif
 
             QString id = track.uniqueId();
 
@@ -221,11 +200,7 @@ IPod::twiddle()
 
     qDebug() << "There were " << nullTrackCount << " null tracks";
 
-    if ( tracksToUpdate.count() + tracksToInsert.count() + tracksToScrobble.count()
-#ifdef Q_OS_WIN32
-         + tracksToRemove.count()
-#endif
-         > 0 )
+    if ( tracksToUpdate.count() + tracksToInsert.count() + tracksToScrobble.count() > 0 )
     {
         // We've got some updates and inserts to do so lock the database and do them
 
@@ -290,20 +265,6 @@ IPod::twiddle()
         foreach ( const ITunesLibrary::Track& track, tracksToInsert )
             db.insert( track );
 
-#ifdef Q_OS_WIN32
-        // remove all the duplicate with the same uid
-        // not really sure why we do this as on Windows the uid is the filepath
-        // and you can't have two different tracks with the same filepath
-        // but I'm not going to change this code. Although maybe is gets rid
-        // of all iTunes Match tracks that have been erronously added as they will
-        // all have no filepath
-        foreach ( const ITunesLibrary::Track& track, tracksToRemove )
-        {
-            m_scrobbles.removeAllWithUniqueId( track.uniqueId() );
-            db.remove( track );
-        }
-#endif
-
         db.endTransaction();
     }
 
@@ -341,22 +302,4 @@ IPod::twiddle()
 #else
     ManualIPod::ManualIPod()
     {}
-#endif
-
-
-#ifdef WIN32
-	void
-	IPod::ScrobbleList::removeAllWithUniqueId( const QString& uniqueId )
-	{
-		QList<Track>::Iterator i;
-		for( i = begin(); i != end(); ++i ) 
-		{
-			IPodScrobble s( *i );
-			if( s.uniqueId() == uniqueId )
-			{
-				m_realCount -= s.playCount();
-				erase( i );
-			}
-		}
-	}
 #endif

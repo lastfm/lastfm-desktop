@@ -23,6 +23,7 @@
 
 #include <lastfm/ws.h>
 #include <lastfm/misc.h>
+#include <lastfm/Fingerprint.h>
 
 #include "UnicornCoreApplication.h"
 
@@ -40,6 +41,12 @@ unicorn::CoreApplication::CoreApplication( const QString& id, int& argc, char** 
     init();
 }
 
+unicorn::CoreApplication::CoreApplication( int& argc, char** argv )
+                      : QtSingleCoreApplication( argc, argv )
+{
+    init();
+}
+
 void //static
 unicorn::CoreApplication::init()
 {
@@ -50,6 +57,16 @@ unicorn::CoreApplication::init()
     // environment variables LASTFM_API_KEY and LASTFM_API_SECRET
     lastfm::ws::ApiKey = QString( API_KEY ).isEmpty() ? "9e89b44de1ff37c5246ad0af18406454" : API_KEY;
     lastfm::ws::SharedSecret = QString( API_SECRET ).isEmpty() ? "147320ea9b8930fe196a4231da50ada4" : API_SECRET;
+
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+#ifdef Q_OS_MAC
+    QString pluginsDir = applicationDirPath() + "/../plugins";
+#else
+    QString pluginsDir = applicationDirPath() + "/plugins";
+#endif
+    addLibraryPath( pluginsDir );
+#endif
+
 
     dir::runtimeData().mkpath( "." );
 #ifndef WIN32
@@ -71,6 +88,9 @@ unicorn::CoreApplication::init()
     qInstallMsgHandler( qMsgHandler );
     qDebug() << "Introducing" << applicationName()+' '+applicationVersion();
     qDebug() << "Directed by" << lastfm::platform();
+#if defined(Q_OS_MAC) || defined(Q_OS_WIN)
+    qDebug() << "Plugin DIR" << pluginsDir;
+#endif
 }
 
 
@@ -99,4 +119,27 @@ unicorn::CoreApplication::log( const QString& productName )
 #else
     return dir::logs().filePath( productName + ".debug.log" );
 #endif
+}
+
+bool
+unicorn::CoreApplication::notify(QObject* receiver, QEvent* event )
+{
+    try
+    {
+        return QCoreApplication::notify( receiver, event );
+    }
+#ifdef LASTFM_FINGERPRINTER
+    catch( const lastfm::Fingerprint::Error& e )
+    {
+        qDebug() << "Fingerprint error" << e;
+        qApp->quit();
+    }
+#endif
+    catch(...)
+    {
+       qDebug() << "Exception caught.";
+       qApp->quit();
+    }
+
+    return false;
 }

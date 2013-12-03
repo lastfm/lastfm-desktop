@@ -53,15 +53,11 @@ private slots:
 	void onScrobbleIPodClicked();
 	void onSendLogsClicked();
 	void poll();
-    void onTwiddlyFinished( int, QProcess::ExitStatus );
-    void onTwiddlyError( QProcess::ProcessError );
 
 private:
     Ui::DiagnosticsDialog* ui;
     class DelayedLabelText* m_delay;
-    QPointer<QProcess> m_twiddly;
     QFile* m_ipod_log;
-
 };
 
 

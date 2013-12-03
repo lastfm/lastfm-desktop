@@ -52,8 +52,6 @@ PersistentCookieJar::save()
     QList<QNetworkCookie> list = allCookies();
     QByteArray data;
 
-    qDebug() << "Cookie count: " << list.count();
-
     foreach (QNetworkCookie cookie, list)
     {
         // don't save session cookies

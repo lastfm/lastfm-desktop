@@ -39,7 +39,7 @@
 #include "Services/ScrobbleService.h"
 #include "Services/AnalyticsService.h"
 #include "MediaDevices/DeviceScrobbler.h"
-#include "Dialogs/CloseAppsDialog.h"
+#include "lib/unicorn/dialogs/CloseAppsDialog.h"
 #include "../Widgets/ProfileWidget.h"
 #include "../Widgets/FriendListWidget.h"
 #include "../Widgets/ScrobbleControls.h"
@@ -58,7 +58,6 @@
 #include "lib/unicorn/widgets/MessageBar.h"
 #include "lib/unicorn/widgets/UserMenu.h"
 #include "lib/unicorn/qtwin.h"
-#include "lib/unicorn/layouts/SlideOverLayout.h"
 #include "lib/unicorn/widgets/SlidingStackedWidget.h"
 #include "lib/listener/PlayerConnection.h"
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
@@ -68,7 +67,7 @@
 #include "lib/unicorn/DesktopServices.h"
 
 #ifdef Q_OS_WIN32
-#include "../Plugins/PluginList.h"
+#include "lib/unicorn/plugins/PluginList.h"
 #endif
 
 #ifdef Q_OS_MAC
@@ -144,7 +143,7 @@ MainWindow::MainWindow( QMenuBar* menuBar )
     setWindowTitle( applicationName() );
     setUnifiedTitleAndToolBarOnMac( true );
 
-    connect( &ScrobbleService::instance(), SIGNAL( trackStarted(Track, Track) ), SLOT( onTrackStarted(Track, Track) ) );
+    connect( &ScrobbleService::instance(), SIGNAL( trackStarted(lastfm::Track, lastfm::Track) ), SLOT( onTrackStarted(lastfm::Track, lastfm::Track) ) );
     connect( &ScrobbleService::instance(), SIGNAL( paused() ), SLOT( onPaused() ) );
     connect( &ScrobbleService::instance(), SIGNAL( resumed() ), SLOT( onResumed() ) );
     connect( &ScrobbleService::instance(), SIGNAL( stopped() ), SLOT( onStopped() ) );
@@ -172,7 +171,7 @@ MainWindow::MainWindow( QMenuBar* menuBar )
     finishUi();
 
 #ifdef Q_OS_WIN32
-    m_pluginList = new PluginList( this );
+    m_pluginList = new unicorn::PluginList( this );
 
     QTimer::singleShot( 1000, this, SLOT(checkUpdatedPlugins()) );
 
@@ -223,7 +222,7 @@ MainWindow::checkUpdatedPlugins()
              .setButtons( QMessageBox::Yes | QMessageBox::No )
              .exec() == QMessageBox::Yes )
         {
-            CloseAppsDialog* closeApps = new CloseAppsDialog( m_pluginList->updatedList(), this );
+            unicorn::CloseAppsDialog* closeApps = new unicorn::CloseAppsDialog( m_pluginList->updatedList(), this );
 
             if ( closeApps->result() != QDialog::Accepted )
                 closeApps->exec();
@@ -232,20 +231,36 @@ MainWindow::checkUpdatedPlugins()
 
             if ( closeApps->result() == QDialog::Accepted )
             {
-                foreach ( IPluginInfo* info, m_pluginList->updatedList() )
+                bool error = false;
+
+                foreach ( unicorn::IPluginInfo* info, m_pluginList->updatedList() )
                 {
                     info->setVerbose( false );
-                    info->doInstall();
+                    if ( !info->doInstall() )
+                        error = true;
                     info->setVerbose( true );
                 }
 
-                // The user didn't close their media players
-                QMessageBoxBuilder( this ).setTitle( tr( "Plugin(s) installed!", "", m_pluginList->updatedList().count() ) )
-                        .setIcon( QMessageBox::Information )
-                        .setText( tr( "<p>Your plugin(s) ha(s|ve) been installed.</p>"
-                                      "<p>You're now ready to scrobble with your media player(s)</p>", "", m_pluginList->updatedList().count() ) )
-                        .setButtons( QMessageBox::Ok )
-                        .exec();
+                if ( error )
+                {
+                    // Tell the user that
+                    QMessageBoxBuilder( this ).setTitle( tr( "Plugin install error", "", m_pluginList->updatedList().count() ) )
+                            .setIcon( QMessageBox::Information )
+                            .setText( tr( "<p>There was an error updating your plugin(s).</p>"
+                                          "<p>Please try again later.</p>", "", m_pluginList->updatedList().count() ) )
+                            .setButtons( QMessageBox::Ok )
+                            .exec();
+                }
+                else
+                {
+                    // Tell the user that
+                    QMessageBoxBuilder( this ).setTitle( tr( "Plugin(s) installed!", "", m_pluginList->updatedList().count() ) )
+                            .setIcon( QMessageBox::Information )
+                            .setText( tr( "<p>Your plugin(s) ha(s|ve) been installed.</p>"
+                                          "<p>You're now ready to scrobble with your media player(s)</p>", "", m_pluginList->updatedList().count() ) )
+                            .setButtons( QMessageBox::Ok )
+                            .exec();
+                }
             }
             else
             {
@@ -275,7 +290,7 @@ MainWindow::setupMenuBar()
 #ifdef Q_OS_WIN32
     QMenu* pluginMenu = fileMenu->addMenu( tr( "Install plugins" ) );
 
-    foreach ( IPluginInfo* info, m_pluginList->supportedList() )
+    foreach ( unicorn::IPluginInfo* info, m_pluginList->supportedList() )
     {
         info->setVerbose( true );
         pluginMenu->addAction( info->name(), info, SLOT(doInstall()));
@@ -388,7 +403,7 @@ MainWindow::showEvent(QShowEvent *)
 #ifdef Q_OS_MAC
     if ( !m_installer )
     {
-        m_installer = new ITunesPluginInstaller( this );
+        m_installer = new unicorn::ITunesPluginInstaller( this );
         QTimer::singleShot( 1000, m_installer, SLOT(install()) );
     }
 #endif
@@ -467,7 +482,7 @@ MainWindow::onTuningIn()
 }
 
 void
-MainWindow::onTrackStarted( const Track& t, const Track& /*previous*/ )
+MainWindow::onTrackStarted( const lastfm::Track& t, const lastfm::Track& /*previous*/ )
 {
     m_currentTrack = t;
 

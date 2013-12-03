@@ -25,18 +25,45 @@ StopWatch::StopWatch( uint duration, ScrobblePoint timeout )
     : m_duration( duration ), m_point( timeout ), m_scrobbled(false)
 {    
     m_timeline = new QTimeLine( duration * 1000, this );
-    m_timeline->setFrameRange( 0, duration * 1000 );
+    m_timeline->setFrameRange( 0, duration * 2 );
     m_timeline->setEasingCurve( QEasingCurve::Linear );
-    m_timeline->setUpdateInterval( 500 );
+    m_timeline->setUpdateInterval( 50 );
+    m_timeline->setCurrentTime( 0 );
 
     connect( m_timeline, SIGNAL(finished()), SIGNAL(timeout()) );
-    connect( m_timeline, SIGNAL(frameChanged(int)), SIGNAL(frameChanged(int)));
     connect( m_timeline, SIGNAL(frameChanged(int)), SLOT(onFrameChanged(int)));
 }
 
-void StopWatch::onFrameChanged( int frame )
+ScrobblePoint
+StopWatch::scrobblePoint() const
 {
-    if ( !m_scrobbled && static_cast<uint>(frame) >= (m_point * 1000) )
+    return m_point;
+}
+
+void
+StopWatch::setScrobblePoint( const ScrobblePoint& timeout_in_seconds )
+{
+    m_point = timeout_in_seconds;
+}
+
+uint
+StopWatch::duration() const
+{
+    return m_duration;
+}
+
+bool
+StopWatch::scrobbled() const
+{
+    return m_scrobbled;
+}
+
+void
+StopWatch::onFrameChanged( int /*frame*/ )
+{
+    emit frameChanged( m_timeline->currentTime() );
+
+    if ( !m_scrobbled && elapsed() >= (m_point * 1000) )
     {
         emit scrobble();
         m_scrobbled = true;
@@ -75,5 +102,5 @@ StopWatch::resume()
 uint
 StopWatch::elapsed() const
 {
-    return m_timeline->currentFrame();
+    return m_timeline->currentTime();
 }

@@ -1,4 +1,0 @@
-?package(lastfm):needs="X11" section="Apps/Sound" \
-        icon16x16="/opt/last.fm/data/icons/as.png" \
-        icon32x32="/opt/last.fm/data/icons/as.png" \
-        title="Last.fm Fingerprinter" command="/usr/bin/last.fingerprinter"

@@ -2,13 +2,13 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [CustomMessages]
-Version=2.1.33
+Version=2.1.36
 
 
 [Setup]
-OutputBaseFilename=Last.fm-2.1.33
-VersionInfoVersion=2.1.33
-VersionInfoTextVersion=2.1.33
+OutputBaseFilename=Last.fm-2.1.36
+VersionInfoVersion=2.1.36
+VersionInfoTextVersion=2.1.36
 AppName="Last.fm Scrobbler"
 AppVerName="Last.fm Scrobbler {cm:Version}"
 VersionInfoDescription=Last.fm Installer
@@ -132,7 +132,7 @@ Source: "..\..\..\_bin\plugins\misc\liblogger_plugin.dll"; DestDir: "{app}\plugi
 
 ;media player plugin installers
 Source: "..\..\..\_bin\plugins\FooPlugin0.9.4Setup_2.3.1.3.exe"; DestDir: "{app}\plugins"; Flags: ignoreversion
-Source: "..\..\..\_bin\plugins\iTunesPluginWinSetup_5.0.5.4.exe"; DestDir: "{app}\plugins"; Flags: ignoreversion
+Source: "..\..\..\_bin\plugins\iTunesPluginWinSetup_6.0.5.4.exe"; DestDir: "{app}\plugins"; Flags: ignoreversion
 Source: "..\..\..\_bin\plugins\WinampPluginSetup_2.1.0.11.exe"; DestDir: "{app}\plugins"; Flags: ignoreversion
 Source: "..\..\..\_bin\plugins\WmpPluginSetup_2.1.0.8.exe"; DestDir: "{app}\plugins"; Flags: ignoreversion
 
@@ -143,6 +143,8 @@ Source: "..\..\..\_bin\avcodec-54.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\..\_bin\avformat-54.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\..\_bin\avutil-52.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\..\..\_bin\swresample-0.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\..\_bin\libeay32.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\..\..\_bin\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 ;The stylesheets
 Source: "..\..\..\app\client\Last.fm Scrobbler.css"; DestDir: "{app}"; Flags: ignoreversion
@@ -178,8 +180,10 @@ Root: HKCR; Subkey: "lastfm"; ValueType: string; ValueName: ""; ValueData: "URL:
 Root: HKCR; Subkey: "lastfm"; ValueType: string; ValueName: "URL Protocol"; ValueData: ""; Flags: uninsdeletekey
 Root: HKCR; Subkey: "lastfm\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\Last.fm Scrobbler.exe"" ""%1"""; Flags: uninsdeletekey
 
-; WinSparkle - This stop it asking the user if they want to check for updates on first run.
-Root: HKCU; Subkey: "Software\Last.fm\Last.fm Desktop App\WinSparkle"; ValueType: string; ValueName: "CheckForUpdates"; ValueData: "1"; Flags: uninsdeletekey
+; qtsparkle - This stop it asking the user if they want to check for updates on first run.
+Root: HKCU; Subkey: "Software\Last.fm\Last.fm Scrobbler\QtSparkle"; ValueType: string; ValueName: "asked_permission"; ValueData: "true"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Last.fm\Last.fm Scrobbler\QtSparkle"; ValueType: string; ValueName: "check_automatically"; ValueData: "true"; Flags: uninsdeletekey createvalueifdoesntexist
+Root: HKCU; Subkey: "Software\Last.fm\Last.fm Scrobbler\QtSparkle"; ValueType: string; ValueName: "first_boot"; ValueData: "false"; Flags: uninsdeletekey
 
 ; This is just for deleting keys at uninstall
 Root: HKCU; Subkey: "Software\Last.fm"; Flags: dontcreatekey uninsdeletekey

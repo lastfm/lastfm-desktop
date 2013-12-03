@@ -1,4 +1,22 @@
+/*
+   Copyright 2011 Last.fm Ltd.
+      - Primarily authored by Michael Coffey
 
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -46,7 +64,7 @@ RadioWidget::RadioWidget(QWidget *parent)
     // need to know when we are playing the radio so we can switch between now playing and last playing
     connect( &RadioService::instance(), SIGNAL(tuningIn(RadioStation)), SLOT(onTuningIn(RadioStation) ) );
     connect( &RadioService::instance(), SIGNAL(stopped()), SLOT(onRadioStopped()));
-    connect( &ScrobbleService::instance(), SIGNAL(trackStarted(Track,Track)), SLOT(onTrackStarted(Track,Track)) );
+    connect( &ScrobbleService::instance(), SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), SLOT(onTrackStarted(lastfm::Track,lastfm::Track)) );
 
     connect( aApp, SIGNAL(sessionChanged(unicorn::Session)), SLOT(onSessionChanged(unicorn::Session) ) );
 
@@ -208,7 +226,7 @@ RadioWidget::onRadioStopped()
 }
 
 void
-RadioWidget::onTrackStarted( const Track& track, const Track& /*oldTrack*/ )
+RadioWidget::onTrackStarted( const lastfm::Track& track, const lastfm::Track& /*oldTrack*/ )
 {
     // if a track starts and it's not a radio track, we are no longer listening to the radio
     if ( track.source() == Track::LastFmRadio )

@@ -52,9 +52,10 @@ public:
     /** in milliseconds */
     uint elapsed() const;
 
-    ScrobblePoint scrobblePoint() const { return m_point; }
-    uint duration() const { return m_duration; }
-    bool scrobbled() const { return m_scrobbled; }
+    ScrobblePoint scrobblePoint() const;
+    void setScrobblePoint( const ScrobblePoint& timeout_in_seconds );
+
+    uint duration() const;
     
 signals:
     void paused( bool );
@@ -64,6 +65,9 @@ signals:
 
 private slots:
     void onFrameChanged( int frame );
+
+private:
+    bool scrobbled() const;
 
 private: 
     class QTimeLine* m_timeline;

@@ -100,6 +100,8 @@ private:
     void initialiseCom();
     void uninitialiseCom();
 
+    void setPersistentIDForTrack( ITunesTrack& t, IITTrack* track );
+
     /// Connects iTunes events to our event sink
     void connectSink( ITunesEventInterface* handler );
 

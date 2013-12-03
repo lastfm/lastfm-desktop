@@ -1,3 +1,22 @@
+/*
+   Copyright 2011 Last.fm Ltd.
+      - Primarily authored by Michael Coffey
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <QComboBox>
 
@@ -16,64 +35,44 @@ GeneralSettingsWidget::GeneralSettingsWidget( QWidget* parent )
     ui->setupUi( this );
 
     populateLanguages();
-    connect( ui->languages, SIGNAL( currentIndexChanged( int ) ), SLOT( onSettingsChanged() ) );
 
-    ui->notifications->setChecked( unicorn::Settings().value( SETTING_NOTIFICATIONS, ui->notifications->isChecked() ).toBool() );
-    ui->lastRadio->setChecked( unicorn::Settings().value( SETTING_LAST_RADIO, ui->lastRadio->isChecked() ).toBool() );
-    ui->sendCrashReports->setChecked( unicorn::Settings().value( SETTING_SEND_CRASH_REPORTS, ui->sendCrashReports->isChecked() ).toBool() );
-    ui->beta->setChecked( unicorn::Settings().value( SETTING_BETA_UPGRADES, false ).toBool() );
-
-    connect( ui->notifications, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
-    connect( ui->lastRadio, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
-    connect( ui->sendCrashReports, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
-    connect( ui->beta, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    ui->notifications->setChecked( unicorn::Settings().notifications() );
+    ui->sendCrashReports->setChecked( unicorn::Settings().sendCrashReports() );
+    ui->beta->setChecked( unicorn::Settings().betaUpdates() );
 
 #if !defined( Q_OS_WIN ) && !defined( Q_OS_MAC )
     ui->beta->hide(); // only have a beta update setting in mac and windows
 #endif
 
 #ifdef Q_OS_MAC
-    ui->showAs->hide();
-
     ui->mediaKeys->setChecked( unicorn::Settings().value( "mediaKeys", true ).toBool() );
 
-    connect( ui->mediaKeys, SIGNAL(stateChanged(int)), SLOT(onSettingsChanged()) );
-
-    ui->showWhere->addItem( tr("Menu bar and dock icons") );
-    ui->showWhere->addItem( tr("Only dock icon (hide menu bar icon)") );
-    ui->showWhere->addItem( tr("Only menu bar icon (hide dock icon)") );
-
-    int showWhereIndex = unicorn::Settings().value( SETTING_SHOW_WHERE, -1 ).toInt();
-
-    if ( showWhereIndex == -1 )
-    {
-        bool showAs = unicorn::Settings().value( SETTING_SHOW_AS, true ).toBool();
-        ui->showWhere->setCurrentIndex( showAs ? 0 : 1 );
-        unicorn::Settings().setValue( SETTING_SHOW_WHERE, ui->showWhere->currentIndex() );
-    }
-    else
-        ui->showWhere->setCurrentIndex( showWhereIndex );
-
-    connect( ui->showWhere, SIGNAL(currentIndexChanged(int)), SLOT(onSettingsChanged()) );
+    ui->showAs->setChecked( unicorn::Settings().showAS() );
+    ui->showDock->setChecked( unicorn::Settings().showDock() );
 
 #else
-    ui->showWhere->hide();
-    ui->showWhereLabel->hide();
+    ui->showDock->hide();
     ui->mediaKeys->hide();
 
-    ui->showAs->setChecked( unicorn::Settings().value( SETTING_SHOW_AS, ui->showAs->isChecked() ).toBool() );
-    connect( ui->showAs, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    ui->showAs->setChecked( unicorn::Settings().showAS() );
 #endif
 
 #ifndef Q_WS_X11
-    ui->launch->setChecked( unicorn::AppSettings( OLDE_PLUGIN_SETTINGS ).value( SETTING_LAUNCH_ITUNES, ui->launch->isChecked() ).toBool() );
-    ui->updates->setChecked( unicorn::Settings().value( SETTING_CHECK_UPDATES, ui->updates->isChecked() ).toBool() );
-    connect( ui->launch, SIGNAL(stateChanged(int) ), SLOT( onSettingsChanged() ) );
-    connect( ui->updates, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    ui->launch->setChecked( unicorn::OldeAppSettings().launchWithMediaPlayers() );
+    ui->updates->setChecked( unicorn::Settings().checkForUpdates() );
 #else
     ui->launch->hide();
     ui->updates->hide();
 #endif
+
+    connect( ui->languages, SIGNAL( currentIndexChanged( int ) ), SLOT( onSettingsChanged() ) );
+    connect( ui->notifications, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    connect( ui->sendCrashReports, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    connect( ui->beta, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    connect( ui->showAs, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    connect( ui->showDock, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
+    connect( ui->mediaKeys, SIGNAL(stateChanged(int)), SLOT(onSettingsChanged()) );    connect( ui->launch, SIGNAL(stateChanged(int) ), SLOT( onSettingsChanged() ) );
+    connect( ui->updates, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
 }
 
 void
@@ -89,7 +88,7 @@ GeneralSettingsWidget::populateLanguages()
     ui->languages->addItem( "Polski", QLocale( QLocale::Polish ).name() );
     ui->languages->addItem( "Svenska", QLocale( QLocale::Swedish ).name());
     ui->languages->addItem( QString::fromUtf8( "Türkçe" ), QLocale( QLocale::Turkish ).name() );
-    ui->languages->addItem( QString::fromUtf8( "� уccкий" ), QLocale( QLocale::Russian ).name() );
+    ui->languages->addItem( QString::fromUtf8( "Pусский" ), QLocale( QLocale::Russian ).name() );
     ui->languages->addItem( QString::fromUtf8( "简体中文" ), QLocale( QLocale::Chinese, QLocale::China ).name() );
     ui->languages->addItem( QString::fromUtf8( "日本語" ), QLocale( QLocale::Japanese ).name());
 
@@ -129,42 +128,42 @@ GeneralSettingsWidget::saveSettings()
         }
 
         // setting is for the 'Client' aplication for compatibility with old media player plugins
-        unicorn::AppSettings( OLDE_PLUGIN_SETTINGS ).setValue( SETTING_LAUNCH_ITUNES, ui->launch->isChecked() );
+        unicorn::OldeAppSettings().setLaunchWithMediaPlayers( ui->launch->isChecked() );
 
-        unicorn::Settings().setValue( SETTING_NOTIFICATIONS, ui->notifications->isChecked() );
-        unicorn::Settings().setValue( SETTING_LAST_RADIO, ui->lastRadio->isChecked() );
-        unicorn::Settings().setValue( SETTING_SEND_CRASH_REPORTS, ui->sendCrashReports->isChecked() );
-        unicorn::Settings().setValue( SETTING_CHECK_UPDATES, ui->updates->isChecked() );
-        unicorn::Settings().setValue( SETTING_BETA_UPGRADES, ui->beta->isChecked() );
+        unicorn::Settings().setNotifications( ui->notifications->isChecked() );
+        unicorn::Settings().setSendCrashReports( ui->sendCrashReports->isChecked() );
+        unicorn::Settings().setCheckForUpdates( ui->updates->isChecked() );
+        unicorn::Settings().setBetaUpdates( ui->beta->isChecked() );
 
         aApp->setBetaUpdates( ui->beta->isChecked() );
 
 #ifdef Q_OS_MAC
+        /// media keys
         unicorn::Settings().setValue( "mediaKeys", ui->mediaKeys->isChecked() );
         aApp->setMediaKeysEnabled( ui->mediaKeys->isChecked() );
 
-        int showWhereIndex = unicorn::Settings().value( SETTING_SHOW_WHERE, -1 ).toInt();
-        bool showAs = ui->showWhere->currentIndex() != 1;
+        /// dock hiding
+        bool showDockOld = unicorn::Settings().showDock();
+        unicorn::Settings().setShowDock( ui->showDock->isChecked() );
 
-        unicorn::Settings().setValue( SETTING_SHOW_WHERE, ui->showWhere->currentIndex() );
-        unicorn::Settings().setValue( SETTING_SHOW_AS, showAs );
+        if ( showDockOld != ui->showDock->isChecked() )
+        {
+            // the setting has changed
+            aApp->showDockIcon( ui->showDock->isChecked() );
 
-        aApp->showAs( showAs );
-        aApp->hideDockIcon( ui->showWhere->currentIndex() == 2 );
-
-        if ( ( showWhereIndex != 2 && ui->showWhere->currentIndex() == 2 )
-             || (showWhereIndex == 2 && ui->showWhere->currentIndex() != 2) )
-            restartNeeded = true;
-#else
-        unicorn::Settings().setValue( SETTING_SHOW_AS, ui->showAs->isChecked() );
-        aApp->showAs( ui->showAs->isChecked() );
+            // Hiding the dock icon while the app is running is not supported on Snow Leopard
+            if ( QSysInfo::MacintoshVersion <= QSysInfo::MV_10_6 && !ui->showDock->isChecked() )
+                restartNeeded = true;
+        }
 #endif
+
+        unicorn::Settings().setShowAS( ui->showAs->isChecked() );
+        aApp->showAs( ui->showAs->isChecked() );
 
         onSettingsSaved();
 
         if ( restartNeeded )
         {
-
             int button = QMessageBoxBuilder( this )
                             .setIcon( QMessageBox::Question )
                             .setTitle( tr( "Restart now?" ) )
@@ -174,7 +173,6 @@ GeneralSettingsWidget::saveSettings()
 
             if ( button == QMessageBox::Yes )
                 aApp->restart();
-
         }
     }
 }

@@ -6,28 +6,47 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>439</width>
-    <height>272</height>
+    <width>491</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-   </property>
-   <item row="0" column="0">
-    <widget class="QLabel" name="languageLabel">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+   <item row="7" column="1">
+    <widget class="QCheckBox" name="updates">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="text">
-      <string>Language:</string>
+      <string>Check for updates automatically</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="languages">
+   <item row="3" column="1">
+    <widget class="QCheckBox" name="launch">
      <property name="enabled">
       <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Launch application with media players</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QCheckBox" name="sendCrashReports">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>Send crash reports to Last.fm</string>
      </property>
     </widget>
    </item>
@@ -41,30 +60,34 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="showWhereLabel">
+   <item row="11" column="1">
+    <widget class="QCheckBox" name="beta">
      <property name="text">
-      <string>Show:</string>
+      <string>Update to beta versions - Warning: only for the brave!</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="showWhere"/>
-   </item>
-   <item row="5" column="1">
-    <widget class="QCheckBox" name="launch">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+   <item row="2" column="1">
+    <widget class="QCheckBox" name="showDock">
      <property name="text">
-      <string>Launch application with media players</string>
+      <string>Show dock icon</string>
      </property>
      <property name="checked">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="5" column="1">
+    <widget class="QCheckBox" name="mediaKeys">
+     <property name="text">
+      <string>Enable media keys</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
     <widget class="QCheckBox" name="notifications">
      <property name="enabled">
       <bool>true</bool>
@@ -77,66 +100,17 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
-    <widget class="QCheckBox" name="lastRadio">
+   <item row="0" column="1">
+    <widget class="QComboBox" name="languages">
      <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Remember last radio station and tune in on start up</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1">
-    <widget class="QCheckBox" name="sendCrashReports">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Send crash reports to Last.fm</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="1">
-    <widget class="QCheckBox" name="updates">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>Check for updates automatically</string>
-     </property>
-     <property name="checked">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="13" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="6" column="1">
-    <widget class="QCheckBox" name="mediaKeys">
+   <item row="0" column="0">
+    <widget class="QLabel" name="languageLabel">
      <property name="text">
-      <string>Enable media keys</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="1">
-    <widget class="QCheckBox" name="beta">
-     <property name="text">
-      <string>Update to beta versions - Warning: only for the brave!</string>
+      <string>Language:</string>
      </property>
     </widget>
    </item>

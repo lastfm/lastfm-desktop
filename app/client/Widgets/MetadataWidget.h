@@ -46,7 +46,7 @@ public:
     MetadataWidget( const Track& track, QWidget* p = 0 );
     ~MetadataWidget();
 
-    void fetchTrackInfo();
+    void fetchTrackInfo( bool force );
 
     class ScrobbleControls* scrobbleControls() const;
 
@@ -66,7 +66,6 @@ private slots:
     void onTrackGotYourTags();
     void onArtistGotYourTags();
 
-    void onTrackCorrected( QString correction );
     void listItemClicked( const class QModelIndex& );
 
     void onScrobblesCached( const QList<lastfm::Track>& tracks );

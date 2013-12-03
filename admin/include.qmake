@@ -1,5 +1,5 @@
 
-ROOT_DIR = ../..
+ROOT_DIR = $$PWD/..
 
 macx-xcode {
     BUILD_DIR = _build
@@ -56,39 +56,52 @@ macx:CONFIG( app_bundle ): contains( TEMPLATE, app ) {
     exists( $$CSS_PATH ) {
         # if we are in debug mode just symlink it so that we can edit in place and refresh the stylesheet
         CONFIG( debug, debug|release ) {
-            QMAKE_POST_LINK += echo Symlinking css file..; rm \"$$BUNDLE_DIR/Contents/Resources/$$TARGET$$quote(.css)\"; ln -s \"$$CSS_PATH\" \"$$BUNDLE_DIR/Contents/Resources\";
+            QMAKE_POST_LINK += echo Symlinking css file..; \
+                                rm \"$$BUNDLE_DIR/Contents/Resources/$$TARGET$$quote(.css)\"; \
+                                ln -s \"$$CSS_PATH\" \"$$BUNDLE_DIR/Contents/Resources\";
         } else {
-            QMAKE_POST_LINK += echo Copying css file..; rm \"$$BUNDLE_DIR/Contents/Resources/$$TARGET$$quote(.css)\"; cp -f \"$$CSS_PATH\" \"$$BUNDLE_DIR/Contents/Resources\";
+            QMAKE_POST_LINK += echo Copying css file..; \
+                                rm \"$$BUNDLE_DIR/Contents/Resources/$$TARGET$$quote(.css)\"; \
+                                cp -f \"$$CSS_PATH\" \"$$BUNDLE_DIR/Contents/Resources\";
         }
     }
 
-    QMAKE_POST_LINK += echo Symlink olde exe to new; rm \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/Last.fm\"; ln -s \"$${TARGET}\" \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/Last.fm\";
+    QMAKE_POST_LINK += echo Symlink olde exe to new; \
+                        rm \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/Last.fm\"; \
+                        ln -s \"$${TARGET}\" \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/Last.fm\";
 
-    QMAKE_POST_LINK += echo Symlink olde .icns to new; rm \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\"; ln -s \"audioscrobbler.icns\" \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\";
+    QMAKE_POST_LINK += echo Symlink olde .icns to new; rm \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\"; \
+                        ln -s \"audioscrobbler.icns\" \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\";
 
-    QMAKE_POST_LINK += echo Breakpad dump sys \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/$${TARGET}\".; \"$$ROOT_DIR/admin/dist/mac/dump_syms\" -a x86_64 \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/$${TARGET}\" > \"$${TARGET} x86_64.breakpad\";
+    QMAKE_POST_LINK += echo Breakpad dump sys \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/$${TARGET}\".; \
+                        \"$$ROOT_DIR/admin/dist/mac/dump_syms\" -a x86_64 \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/$${TARGET}\" > \"$${TARGET} x86_64.breakpad\";
 
     ## copy the public key for updates
-    QMAKE_POST_LINK += echo Copying dsa_pub.pem file..; cp \"$$ROOT_DIR/admin/dist/mac/dsa_pub.pem\" \"$$BUNDLE_DIR/Contents/Resources\";
+    QMAKE_POST_LINK += echo Copying dsa_pub.pem file..; \
+                        cp \"$$ROOT_DIR/admin/dist/mac/dsa_pub.pem\" \"$$BUNDLE_DIR/Contents/Resources\";
     
     ## copy the growl registration file
-    QMAKE_POST_LINK += echo Copying growl registration file..; cp \"$$ROOT_DIR/admin/dist/mac/Growl Registration Ticket.growlRegDict\" \"$$BUNDLE_DIR/Contents/Resources\";
+    QMAKE_POST_LINK += echo Copying growl registration file..; \
+                        cp \"$$ROOT_DIR/admin/dist/mac/Growl Registration Ticket.growlRegDict\" \"$$BUNDLE_DIR/Contents/Resources\";
 
     ## copy the apple script suite definition
-    QMAKE_POST_LINK += echo Copying apple script suite definition file..; cp \"$$ROOT_DIR/admin/dist/mac/AppleScriptSuite.sdef\" \"$$BUNDLE_DIR/Contents/Resources\";
+    QMAKE_POST_LINK += echo Copying apple script suite definition file..; \
+                        cp \"$$ROOT_DIR/admin/dist/mac/AppleScriptSuite.sdef\" \"$$BUNDLE_DIR/Contents/Resources\";
 
-    QMAKE_POST_LINK += echo Copying airfoil remote file..; cp \"$$ROOT_DIR/admin/dist/mac/dacp.fm.last.Scrobbler.scpt\" \"$$BUNDLE_DIR/Contents/Resources\";
-    QMAKE_POST_LINK += echo Copying airfoil tracks file..; cp \"$$ROOT_DIR/admin/dist/mac/fm.last.Scrobbler.scpt\" \"$$BUNDLE_DIR/Contents/Resources\";
+    QMAKE_POST_LINK += echo Copying airfoil remote file..; \
+                        cp \"$$ROOT_DIR/admin/dist/mac/dacp.fm.last.Scrobbler.scpt\" \"$$BUNDLE_DIR/Contents/Resources\";
+    QMAKE_POST_LINK += echo Copying airfoil tracks file..; \
+                        cp \"$$ROOT_DIR/admin/dist/mac/fm.last.Scrobbler.scpt\" \"$$BUNDLE_DIR/Contents/Resources\";
 
     ## add the translations
-    QMAKE_POST_LINK += lrelease -removeidentical \"$${ROOT_DIR}/Last.fm.pro\";
-    QMAKE_POST_LINK += mkdir -p \"$${BUNDLE_DIR}/Contents/Resources/qm/\";
-    QMAKE_POST_LINK += mv -f \"$${ROOT_DIR}/i18n/\"*.qm \"$${BUNDLE_DIR}/Contents/Resources/qm/\";
+    QMAKE_POST_LINK += mkdir -p \"$${BUNDLE_DIR}/Contents/Resources/qm/\"; \
+                        mv -f \"$${ROOT_DIR}/i18n/\"*.qm \"$${BUNDLE_DIR}/Contents/Resources/qm/\";
 
     ## install_name_tool / copy frameworks, dylibs etc
     QMAKE_POST_LINK += $$DISTDIR/bundleFrameworks.sh \'$$BUNDLE_DIR\';
 
-    QMAKE_POST_LINK += find \'$$BUNDLE_DIR\' -iname \\*Headers -print0| xargs -0 rm -rf; find \'$$BUNDLE_DIR\' -iname \\*_debug -print0|xargs -0 rm
+    QMAKE_POST_LINK += find \'$$BUNDLE_DIR\' -iname \\*Headers -print0| xargs -0 rm -rf; \
+                        find \'$$BUNDLE_DIR\' -iname \\*_debug -print0|xargs -0 rm
     
     QMAKE_INFO_PLIST = $$DISTDIR/Standard.plist
 }

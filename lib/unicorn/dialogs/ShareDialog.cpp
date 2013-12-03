@@ -1,8 +1,8 @@
 /*
-   Copyright 2005-2009 Lasm_track.fm Ltd.
+   Copyright 2005-2009 Last.fm Ltd.
       - Primarily authored by Max Howell, Jono Cole and Doug Mansell
 
-   This file is part of the Lasm_track.fm Desktop Application Suite.
+   This file is part of the Last.fm Desktop Application Suite.
 
    lastfm-desktop is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ ShareDialog::accept()
     QString const message = ui->message->toPlainText();
     bool isPublic = ui->isPublic->isChecked();
 
-    // disable the dialog until we get a response from Lasm_track.fm
+    // disable the dialog until we get a response from Last.fm
     setEnabled( false );
     connect( m_track.share( recipients, message, isPublic ), SIGNAL(finished()), SLOT(onShared()) );
 }

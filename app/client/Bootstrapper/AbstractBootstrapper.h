@@ -58,7 +58,7 @@ public:
 
 signals:
     void percentageUploaded( int );
-    void done( int /* BootstrapStatus */ status );
+    void done( AbstractBootstrapper::BootstrapStatus status );
 
 protected slots:
     void onUploadDone();

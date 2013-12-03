@@ -7,19 +7,25 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>304</height>
+    <height>361</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>10</number>
+   </property>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="scrobblingOn">
      <property name="title">
-      <string>Preferences</string>
+      <string>Enable scrobbling</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -36,6 +42,9 @@
           </property>
           <property name="maximum">
            <number>100</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
           </property>
           <property name="tracking">
            <bool>false</bool>
@@ -81,35 +90,9 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="scrobblingOn">
+       <widget class="QCheckBox" name="enfocreScrobbleTimeMax">
         <property name="text">
-         <string>Enable scrobbling</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="podcasts">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Scrobble podcasts</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="allowFingerprint">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>Allow Last.fm to fingerprint my tracks</string>
+         <string>...or at 4 minutes (whichever comes first)</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -120,18 +103,43 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="podcasts">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Scrobble podcasts</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="allowFingerprint">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Allow Last.fm to fingerprint my tracks</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="directoriesBox">
      <property name="title">
-      <string>Scrobble directories</string>
+      <string>Selected directories will not be scrobbled</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="directoriesLabel">
-        <property name="text">
-         <string>Selected directories will not be scrobbled</string>
-        </property>
-       </widget>
-      </item>
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>12</number>
+      </property>
       <item>
        <widget class="CheckFileSystemView" name="exclusionDirs">
         <property name="headerHidden">

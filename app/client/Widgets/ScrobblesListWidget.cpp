@@ -1,3 +1,23 @@
+/*
+   Copyright 2010 Last.fm Ltd.
+      - Primarily authored by Michael Coffey
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include <QApplication>
 #include <QHeaderView>
 #include <QScrollBar>
@@ -112,7 +132,7 @@ ScrobblesListWidget::ScrobblesListWidget( QWidget* parent )
     connect( &ScrobbleService::instance(), SIGNAL(scrobblesCached(QList<lastfm::Track>)), SLOT(onScrobblesSubmitted(QList<lastfm::Track>) ) );
     connect( &ScrobbleService::instance(), SIGNAL(scrobblesSubmitted(QList<lastfm::Track>)), SLOT(onScrobblesSubmitted(QList<lastfm::Track>) ) );
 
-    connect( &ScrobbleService::instance(), SIGNAL(trackStarted(Track,Track)), SLOT(onTrackStarted(Track,Track)));
+    connect( &ScrobbleService::instance(), SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), SLOT(onTrackStarted(lastfm::Track,lastfm::Track)));
     connect( &ScrobbleService::instance(), SIGNAL(paused()), SLOT(onPaused()));
     connect( &ScrobbleService::instance(), SIGNAL(resumed()), SLOT(onResumed()));
     connect( &ScrobbleService::instance(), SIGNAL(stopped()), SLOT(onStopped()));
@@ -201,8 +221,6 @@ ScrobblesListWidget::onSessionChanged( const unicorn::Session& session )
 void
 ScrobblesListWidget::read()
 {
-    qDebug() << m_path;
-
     clear();
 
     // always have a now playing item in the list
@@ -271,8 +289,6 @@ ScrobblesListWidget::write()
 void
 ScrobblesListWidget::doWrite()
 {
-    qDebug() << "Writing recent_tracks";
-
     if ( count() == 0 )
         QFile::remove( m_path );
     else
@@ -547,6 +563,8 @@ ScrobblesListWidget::addTracks( const QList<lastfm::Track>& tracks )
             else
             {
                 // update the track in the list with the new infos!
+                TrackWidget* trackWidget = qobject_cast<TrackWidget*>( itemWidget( item( pos ) ) );
+                trackWidget->update( tracks[i] );
             }
         }
     }

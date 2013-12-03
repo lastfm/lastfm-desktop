@@ -46,7 +46,13 @@ AudioscrobblerSettings::raiseShortcutKey() const
 QString
 AudioscrobblerSettings::raiseShortcutDescription() const
 {
-    return value( "raiseShortcutDescription", QString::fromUtf8( "⌃⌘ S" ) ).toString();
+    return value( "raiseShortcutDescription", QString::fromUtf8(
+#ifdef Q_OS_MAC
+    "⌃⌘ S"
+#else
+    "Ctrl+Shift+S"
+#endif
+     ) ).toString();
 }
 
 void

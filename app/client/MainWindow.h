@@ -1,3 +1,23 @@
+/*
+   Copyright 2005-2009 Last.fm Ltd.
+      - Primarily authored by Max Howell, Jono Cole and Doug Mansell
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef METADATA_WINDOW_H_
 #define METADATA_WINDOW_H_
 
@@ -9,14 +29,18 @@
 #include "lib/unicorn/UnicornMainWindow.h"
 
 #ifdef  Q_OS_MAC
-#include "Services/ITunesPluginInstaller/ITunesPluginInstaller.h"
+#include "lib/unicorn/plugins/ITunesPluginInstaller.h"
 #endif
 
 #include "Settings/PreferencesDialog.h"
 #include "Dialogs/DiagnosticsDialog.h"
 
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
-namespace unicorn { class Updater; }
+namespace unicorn
+{
+    class Updater;
+    class PluginList;
+}
 using unicorn::Updater;
 #endif
 
@@ -30,7 +54,7 @@ class FirstRunWizard;
 class MessageBar;
 class SlideOverLayout;
 class UserToolButton;
-class PluginList;
+
 class IpodDevice;
 
 class MainWindow : public unicorn::MainWindow
@@ -87,7 +111,7 @@ public slots:
 private slots:
     void onVisitProfile();
 
-    void onTrackStarted(const Track&, const Track&);
+    void onTrackStarted(const lastfm::Track&, const lastfm::Track&);
     void onStopped();
     void onPaused();
     void onResumed();
@@ -119,8 +143,6 @@ private:
 
     static QString applicationName();
 
-    //void resizeEvent( QResizeEvent* event ) { qDebug() << event->size(); }
-
 private:
     Track m_currentTrack;
     class ActivityListItem* m_currentActivity;
@@ -132,10 +154,13 @@ private:
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
     QPointer<Updater> m_updater;
 #endif
-    QPointer<PluginList> m_pluginList;
+
+#ifdef Q_OS_WIN
+    QPointer<unicorn::PluginList> m_pluginList;
+#endif
 
 #ifdef Q_WS_MAC
-    QPointer<ITunesPluginInstaller> m_installer;
+    QPointer<unicorn::ITunesPluginInstaller> m_installer;
 #endif
 };
 

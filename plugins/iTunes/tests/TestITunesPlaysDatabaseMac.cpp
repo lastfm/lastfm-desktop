@@ -42,16 +42,15 @@ class TestITunesPlaysDatabaseMac : public QObject
         inline void createTable()
         {
             QSqlQuery query; 
-            query.exec( "CREATE TABLE itunes_db ( "
+            query.exec( "CREATE TABLE " TABLE_NAME " ( "
                         "persistent_id   VARCHAR( 32 ) PRIMARY KEY,"
-                        "path            TEXT,"
                         "play_count      INTEGER )" );
         }
                                                     
         inline void deleteTable()
         {
             QSqlQuery query;
-            query.exec( "DROP TABLE itunes_db" );
+            query.exec( "DROP TABLE " TABLE_NAME );
         }
 };
 

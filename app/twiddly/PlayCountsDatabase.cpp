@@ -34,6 +34,12 @@
 #include <iostream>
 #include <QDebug>
 
+#define TABLE_NAME_OLD "itunes_db"
+#define TABLE_NAME "playcounts"
+#define SCHEMA "persistent_id   VARCHAR( 32 ) PRIMARY KEY," \
+               "play_count      INTEGER"
+#define INDEX "persistent_id"
+
 
 /** @author Max Howell <max@last.fm>
   * @brief automatically log sql errors */
@@ -73,22 +79,6 @@ PlayCountsDatabase::PlayCountsDatabase( const QString& path )
 {
     qDebug() << path;
 
-    #define TABLE_NAME "itunes_db" //named badly, but too late now
-#ifdef Q_OS_MAC
-    #define SCHEMA "persistent_id   VARCHAR( 32 ) PRIMARY KEY," \
-                   "path            TEXT," \
-                   "play_count      INTEGER"
-
-    #define INDEX "persistent_id"
-#else
-    #define SCHEMA "id              INTEGER PRIMARY KEY AUTOINCREMENT," \
-                   "persistent_id   VARCHAR( 32 )," \
-                   "path            TEXT UNIQUE," \
-                   "play_count      INTEGER"
-
-    #define INDEX "path"
-#endif    
-
     m_db = QSqlDatabase::addDatabase( "QSQLITE", path /*connection-name*/ );
     m_db.setDatabaseName( path );
     m_db.open();
@@ -96,29 +86,27 @@ PlayCountsDatabase::PlayCountsDatabase( const QString& path )
     if ( !m_db.isValid() )
         throw "Could not open " + path;
 
-    QSqlQuery query( m_db );
+    // rename the old table name if it exists
+    if ( m_db.tables().contains(TABLE_NAME_OLD) )
+    {
 
+        QSqlQuery deleteQuery( m_db );
+        deleteQuery.exec( QString( "ALTER TABLE itunes_db RENAME TO itunes_db_%1" ).arg( QDateTime::currentDateTimeUtc().toString( "yyyyMMddhhmmsszzz" ) ) );
+    }
+
+    // create the playcounts table if it doesn't already exist
     if ( !m_db.tables().contains( TABLE_NAME ) )
     {
+        QSqlQuery query( m_db );
         query.exec( "CREATE TABLE " TABLE_NAME " ( " SCHEMA " );" );
         query.exec( "CREATE INDEX " INDEX "_idx ON " TABLE_NAME " ( " INDEX " );" );
     }
 
     m_query = new QSqlQuery( m_db );
-#ifdef WIN32
-    m_query->prepare( "SELECT play_count FROM itunes_db "
-                   "WHERE path = :path LIMIT 1" );
-#else
-    m_query->prepare( "SELECT play_count FROM itunes_db "
-                   "WHERE persistent_id = :pid LIMIT 1" );
-#endif
+    m_query->prepare( "SELECT play_count FROM " TABLE_NAME " WHERE persistent_id = :pid LIMIT 1" );
 
     QSqlQuery snapshotQuery( m_db );
-#ifdef WIN32
-    snapshotQuery.exec( "SELECT path, play_count FROM itunes_db WHERE path IS NOT '' ORDER BY path ASC" );
-#else
-    snapshotQuery.exec( "SELECT persistent_id, play_count FROM itunes_db ORDER BY persistent_id ASC" );
-#endif
+    snapshotQuery.exec( "SELECT persistent_id, play_count FROM " TABLE_NAME " ORDER BY persistent_id ASC" );
 
     if ( snapshotQuery.first() )
     {
@@ -157,12 +145,7 @@ PlayCountsDatabase::operator[]( const QString& uid )
 PlayCountsDatabase::Track
 PlayCountsDatabase::track( const QString& uid )
 {
-#ifdef WIN32
-    QString path = uid;
-    m_query->bindValue( ":path", path );
-#else
     m_query->bindValue( ":pid", uid );
-#endif
     m_query->exec();
 
     Q_ASSERT( m_query->size() < 2 );
@@ -214,54 +197,11 @@ PlayCountsDatabase::endTransaction()
     QSqlQuery( m_db ).exec( "END TRANSACTION;" );
 }
 
-
-#ifdef WIN32
-bool
-PlayCountsDatabase::insert( const ITunesLibrary::Track& track )
-{
-    QString const sql = "INSERT OR ROLLBACK INTO itunes_db ( persistent_id, path, play_count ) "
-                        "VALUES ( :pid, :path, :plays )";
-    return exec( sql, track );
-}
-
-bool
-PlayCountsDatabase::update( const ITunesLibrary::Track& track )
-{
-    QString const sql = "UPDATE OR ROLLBACK itunes_db "
-                        "SET play_count=:plays "
-                        "WHERE path=:path";
-    return exec( sql, track );
-}
-
-
-bool
-PlayCountsDatabase::exec( const QString& sql, const ITunesLibrary::Track& track )
-{
-    QSqlQuery query( m_db );
-    query.prepare( sql );
-    // is path for automatic scrobbling, and a nasty hash for manual scrobbling
-    query.bindValue( ":path", track.uniqueId() );
-    query.bindValue( ":plays", QVariant( (int)track.playCount() ) );
-    return query.exec();
-}
-
-
-bool 
-PlayCountsDatabase::remove( const ITunesLibraryTrack& track )
-{
-    QSqlQuery query( m_db );
-    query.prepare( "DELETE FROM itunes_db WHERE path=:path" );
-    query.bindValue( ":path", track.uniqueId() );
-    return query.exec();
-}
-
-
-#else //MAC
 bool
 PlayCountsDatabase::insert( const ITunesLibrary::Track& track )
 {
     QString playCount = QString::number( track.playCount() );  
-    QString sql = "INSERT OR ROLLBACK INTO itunes_db ( persistent_id, play_count ) "
+    QString sql = "INSERT OR ROLLBACK INTO " TABLE_NAME " ( persistent_id, play_count ) "
                   "VALUES ( '" + track.persistentId() + "', '" + playCount + "' )";
     return QSqlQuery( m_db ).exec( sql );
 }
@@ -270,14 +210,11 @@ bool
 PlayCountsDatabase::update( const ITunesLibrary::Track& track )
 {
     QString playCount = QString::number( track.playCount() );  
-    QString sql = "UPDATE OR ROLLBACK itunes_db "
+    QString sql = "UPDATE OR ROLLBACK " TABLE_NAME " "
                   "SET play_count='" + playCount + "' "
                   "WHERE persistent_id='" + track.persistentId() + "'";
     return QSqlQuery( m_db ).exec( sql );
 }
-#endif
-
-
 
 AutomaticIPod::PlayCountsDatabase::PlayCountsDatabase() 
 #ifdef Q_OS_MAC
@@ -329,57 +266,34 @@ AutomaticIPod::PlayCountsDatabase::bootstrap()
     // this will fail if the metadata table doesn't exist, which is fine
     query.exec( "DELETE FROM metadata WHERE key='bootstrap_complete'" );
     query.exec( "DELETE FROM metadata WHERE key='plugin_ctime'" );
-    query.exec( "DELETE FROM itunes_db" );
+    query.exec( "DELETE FROM " TABLE_NAME_OLD );
+    query.exec( "DELETE FROM " TABLE_NAME );
 
-#ifdef Q_OS_MAC
     ITunesLibrary lib;
     
     // for wizard progress screen
     std::cout << lib.trackCount() << std::endl;
     
     int i = 0;
+
     while (lib.hasTracks())
-    {
-        ITunesLibrary::Track const t = lib.nextTrack();
-        QString const plays = QString::number( t.playCount() );
-        
-        query.exec( "INSERT OR IGNORE INTO itunes_db ( persistent_id, play_count ) "
-                    "VALUES ( '" + t.uniqueId() + "', '" + plays + "' )" );
-
-        std::cout << ++i << std::endl;
-    }
-
-#else
-
-    ITunesLibrary lib;
-    int i = 0;
-    
-    // These cout statements are for the progress indicator in the client,
-    // do not remove!
-    std::cout << lib.trackCount() << std::endl;
-    
-    while ( lib.hasTracks() )
     {
         try
         {
-            ITunesLibrary::Track t = lib.nextTrack();
+            ITunesLibrary::Track const t = lib.nextTrack();
+            QString const plays = QString::number( t.playCount() );
 
-            if ( !t.isNull() )
-            {
-                QString sql = "INSERT OR IGNORE INTO itunes_db ( persistent_id, path, play_count ) "
-                              "VALUES ( :pid, :path, :plays )";
-                exec( sql, t );
-            }
+            query.exec( "INSERT OR IGNORE INTO " TABLE_NAME " ( persistent_id, play_count ) "
+                        "VALUES ( '" + t.uniqueId() + "', '" + plays + "' )" );
+
         }
-        catch ( ITunesException& )
+        catch ( ... )
         {
             // Move on...
         }
 
         std::cout << ++i << std::endl;
     }
-
-#endif
 
     // if either INSERTS fail we'll rebootstrap next time
     query.exec( "CREATE TABLE metadata (key VARCHAR( 32 ), value VARCHAR( 32 ))" );

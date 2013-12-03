@@ -1,6 +1,6 @@
 /*
    Copyright 2005-2009 Last.fm Ltd. 
-      - Primarily authored by MJono Cole and Michael Coffey
+      - Primarily authored by Jono Cole and Michael Coffey
 
    This file is part of the Last.fm Desktop Application Suite.
 
@@ -54,6 +54,8 @@ ScrobbleConfirmationDialog::ScrobbleConfirmationDialog( const QList<lastfm::Trac
     connect( ui->toggleButton, SIGNAL( clicked() ), SLOT( toggleSelection() ) );
 
     addTracks( tracks );
+
+    ui->invalidScrobbleWarning->setVisible( tracksToScrobble().count() != m_scrobblesModel->tracksToScrobble().count() );
 }
 
 ScrobbleConfirmationDialog::~ScrobbleConfirmationDialog()
@@ -77,6 +79,8 @@ ScrobbleConfirmationDialog::setReadOnly()
 
     ui->toggleButton->hide();
     ui->autoScrobble->hide();
+    ui->invalidScrobbleWarning->hide();
+
 
     m_scrobblesModel->setReadOnly();
 }

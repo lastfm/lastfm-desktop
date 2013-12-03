@@ -13,71 +13,93 @@
   <property name="windowTitle">
    <string notr="true">Form</string>
   </property>
-  <layout class="SideBySideLayout" name="layout">
-   <item row="0" column="0">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <widget class="QWidget" name="spinnerPage">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="spinner">
-         <property name="text">
-          <string notr="true">TextLabel</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="noScrobbles">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="spacing">
-        <number>12</number>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>12</number>
+   </property>
+   <item>
+    <widget class="unicorn::SlidingStackedWidget" name="slidingWidget">
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>60</y>
+         <width>405</width>
+         <height>242</height>
+        </rect>
        </property>
-       <property name="margin">
-        <number>20</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="title">
-         <property name="text">
-          <string>You haven't scrobbled any music to Last.fm yet.</string>
+       <widget class="QWidget" name="spinnerPage">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="spinner">
+           <property name="text">
+            <string notr="true">TextLabel</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="noScrobbles">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>12</number>
          </property>
-         <property name="wordWrap">
-          <bool>true</bool>
+         <property name="margin">
+          <number>20</number>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="description">
-         <property name="text">
-          <string>Start listening to some music in your media player or start a radio station:</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QuickStartWidget" name="widget" native="true"/>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="ScrobblesListWidget" name="scrobbles"/>
-    </widget>
+         <item>
+          <widget class="QLabel" name="title">
+           <property name="text">
+            <string>You haven't scrobbled any music to Last.fm yet.</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="description">
+           <property name="text">
+            <string>Start listening to some music in your media player or start a radio station:</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QuickStartWidget" name="widget" native="true"/>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="ScrobblesListWidget" name="scrobbles"/>
+      </widget>
+      </widget>
    </item>
   </layout>
  </widget>
@@ -95,9 +117,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>SideBySideLayout</class>
-   <extends>QLayout</extends>
-   <header>lib/unicorn/layouts/SideBySideLayout.h</header>
+   <class>unicorn::SlidingStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>lib/unicorn/widgets/SlidingStackedWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -52,7 +52,7 @@ public:
     void handleTwiddlyMessage( const QStringList& message );
     void handleIPodDetectedMessage( const QStringList& message );
     
-    static ScrobbleService& instance() { static ScrobbleService s; return s; }
+    static ScrobbleService& instance();
 
 public slots:
     void onSessionChanged( const unicorn::Session& session );
@@ -60,7 +60,7 @@ public slots:
     void scrobbleSettingsChanged();
 
 signals:
-    void trackStarted( const Track& newTrack, const Track& oldTrack );
+    void trackStarted( const lastfm::Track& newTrack, const lastfm::Track& oldTrack );
     void resumed();
     void paused();
     void stopped();
@@ -80,7 +80,7 @@ public slots:
 
 protected slots:
     void setConnection( PlayerConnection* );
-    void onTrackStarted( const Track&, const Track& );
+    void onTrackStarted( const lastfm::Track&, const lastfm::Track& );
     void onPaused();
     void onResumed(); 
     void onStopped();
@@ -92,7 +92,7 @@ private:
     bool scrobblingOn() const;
 
 protected:
-    State state;
+    State m_state;
 
     QPointer <StopWatch> m_watch;
     QPointer <PlayerMediator> m_mediator;
@@ -100,7 +100,6 @@ protected:
     QPointer <Audioscrobbler> m_as;
     QPointer <DeviceScrobbler> m_deviceScrobbler;
     Track m_currentTrack;
-    Track m_trackToScrobble;
     QString m_currentUsername;
 };
 

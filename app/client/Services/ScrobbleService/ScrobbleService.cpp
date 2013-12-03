@@ -21,12 +21,11 @@
 #include "ScrobbleService.h"
 #include <lastfm/ws.h>
 
-#ifdef QT_DBUS_LIB
-#include "lib/listener/DBusListener.h"
-#endif
 #include "../../Application.h"
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
 #include "lib/listener/legacy/LegacyPlayerListener.h"
+#else
+#include "lib/listener/mpris2/Mpris2Listener.h"
 #endif
 #include "lib/listener/PlayerConnection.h"
 #include "lib/listener/PlayerListener.h"
@@ -45,6 +44,8 @@
 
 ScrobbleService::ScrobbleService()
 {
+    qRegisterMetaType<Track>("Track");
+
 /// mediator
     m_mediator = new PlayerMediator(this);
     connect( m_mediator, SIGNAL(activeConnectionChanged( PlayerConnection* )), SLOT(setConnection( PlayerConnection* )) );
@@ -54,7 +55,6 @@ ScrobbleService::ScrobbleService()
 #ifdef Q_OS_MAC
         ITunesListener* itunes = new ITunesListener(m_mediator);
         connect(itunes, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
-        itunes->start();
 
         SpotifyListenerMac* spotify = new SpotifyListenerMac(m_mediator);
         connect(spotify, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
@@ -69,11 +69,10 @@ ScrobbleService::ScrobbleService()
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
         o = new LegacyPlayerListener(m_mediator);
         connect(o, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
-#endif
-
-#ifdef QT_DBUS_LIB
-        DBusListener* dbus = new DBusListener(mediator);
-        connect(dbus, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
+#else
+        Mpris2Listener* mpris2 = new Mpris2Listener(m_mediator);
+        connect(mpris2, SIGNAL(newConnection(PlayerConnection*)), m_mediator, SLOT(follow(PlayerConnection*)));
+        mpris2->createConnection();
 #endif
     }
     catch(std::runtime_error& e){
@@ -86,6 +85,13 @@ ScrobbleService::ScrobbleService()
 
     connect( aApp, SIGNAL(sessionChanged(unicorn::Session)), SLOT(onSessionChanged(unicorn::Session)) );
     resetScrobbler();
+}
+
+ScrobbleService&
+ScrobbleService::instance()
+{
+    static ScrobbleService s;
+    return s;
 }
 
 
@@ -131,10 +137,12 @@ ScrobbleService::isDirExcluded( const lastfm::Track& track )
 bool
 ScrobbleService::scrobblableTrack( const lastfm::Track& track ) const
 {
-    return unicorn::UserSettings().value( "scrobblingOn", true ).toBool()
-            && track.extra( "playerId" ) != "spt"
+    unicorn::UserSettings userSettings;
+
+    return userSettings.scrobblingOn()
+            && ( track.extra( "playerId" ) != "spt" && track.extra( "playerId" ) != "mpris2" )
             && !track.artist().isNull()
-            && ( unicorn::UserSettings().value( "podcasts", true ).toBool() || !track.isPodcast() )
+            && ( userSettings.podcasts() || !track.isPodcast() )
             && !track.isVideo()
             && !isDirExcluded( track );
 }
@@ -142,20 +150,29 @@ ScrobbleService::scrobblableTrack( const lastfm::Track& track ) const
 bool
 ScrobbleService::scrobblingOn() const
 {
-    return scrobblableTrack( m_trackToScrobble );
+    return scrobblableTrack( m_currentTrack );
 }
 
 void
 ScrobbleService::scrobbleSettingsChanged()
 {
-    bool scrobblingOn = scrobblableTrack( m_trackToScrobble );
+    if ( m_watch )
+    {
+        ScrobblePoint timeout( ( m_currentTrack.duration() * unicorn::UserSettings().scrobblePoint() ) / 100.0 );
+        timeout.setEnforceScrobbleTimeMax( unicorn::UserSettings().enforceScrobbleTimeMax() );
+        m_watch->setScrobblePoint( timeout );
+    }
 
+    bool scrobblingOn = scrobblableTrack( m_currentTrack );
+
+    // Check if the current track now meets the requirements
+    // and scrobble it straight away if so
     if ( m_as
          && m_watch
-         && m_watch->scrobbled()
-         && m_trackToScrobble.scrobbleStatus() == Track::Null
+         && m_watch->elapsed() >= (m_watch->scrobblePoint() * 1000)
+         && m_currentTrack.scrobbleStatus() == Track::Null
          && scrobblingOn )
-        m_as->cache( m_trackToScrobble );
+        m_as->cache( m_currentTrack );
 
     emit scrobblingOnChanged( scrobblingOn );
 }
@@ -205,6 +222,7 @@ void
 ScrobbleService::onFoundScrobbles( QList<lastfm::Track> tracks )
 {
     m_as->cacheBatch( tracks );
+    m_as->submit();
 }
 
 
@@ -220,15 +238,10 @@ ScrobbleService::setConnection(PlayerConnection*c)
     }
 
     //
-    connect(c, SIGNAL(trackStarted(Track, Track)), SLOT(onTrackStarted(Track, Track)));
-    connect(c, SIGNAL(paused()), SLOT(onPaused()));
-    connect(c, SIGNAL(resumed()), SLOT(onResumed()));
-    connect(c, SIGNAL(stopped()), SLOT(onStopped()));
-
-    //connect(c, SIGNAL(trackStarted(Track, Track)), SIGNAL(trackStarted(Track, Track)));
-    connect(c, SIGNAL(resumed()), SIGNAL(resumed()));
-    connect(c, SIGNAL(paused()), SIGNAL(paused()));
-    connect(c, SIGNAL(stopped()), SIGNAL(stopped()));
+    connect(c, SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), this, SLOT(onTrackStarted(lastfm::Track,lastfm::Track)), Qt::QueuedConnection);
+    connect(c, SIGNAL(paused()), this, SLOT(onPaused()), Qt::QueuedConnection);
+    connect(c, SIGNAL(resumed()), this, SLOT(onResumed()), Qt::QueuedConnection);
+    connect(c, SIGNAL(stopped()), this, SLOT(onStopped()), Qt::QueuedConnection);
     connect(c, SIGNAL(bootstrapReady(QString)), SIGNAL( bootstrapReady(QString)));
 
     m_connection = c;
@@ -241,13 +254,9 @@ ScrobbleService::setConnection(PlayerConnection*c)
 }
 
 void
-ScrobbleService::onTrackStarted( const Track& t, const Track& ot )
+ScrobbleService::onTrackStarted( const lastfm::Track& t, const lastfm::Track& ot )
 {
     Q_ASSERT(m_connection);
-
-    state = Playing;
-
-    Track oldtrack = ot.isNull() ? m_currentTrack : ot;
 
     //TODO move to playerconnection
     if(t.isNull())
@@ -256,18 +265,40 @@ ScrobbleService::onTrackStarted( const Track& t, const Track& ot )
         return;
     }
 
+    Track oldtrack = ot.isNull() ? m_currentTrack : ot;
+
+    if ( unicorn::UserSettings().scrobblePoint() == 100.0 && !oldtrack.isNull() )
+    {
+        // was the last track at 100%? Should we scrobble it?
+
+        if ( m_watch )
+        {
+            /** At this point, we can't tell for ceratin if a track was played until the end.
+             * The next lowest percentage the user can set is 95% which means a 30 second track
+             * will scrobble at 28.5 seconds. As long as we're above this, I think we're fine.
+             * Here we'rechecking if the track got within 1 second of the end point At 30 seconds.
+             * At 30 seconds this equates to 96.66%, which is tolerable. Assuming an average 3
+             * minute track length, the actual percentage we will at is 99.44% which is close
+             * enough to 100% for me. As this is timing based, things can go slightly off, it's
+             * still possible that scrobbles will be missed, but these are the perils of setting
+             * your scrobble point to 100%.
+             * TODO: really the plugins should be able to tell us if the track got to 100% and
+             * we just use that, but I'm not sure if that's possible and that would be a rather
+             * big change. This should be enough for now.
+             */
+            if ( !m_watch->paused() // the watch is running (if we scrobble after the user paused and skipped, it would give away we're not actually scrobbling at 100%)
+                 && oldtrack.duration() == m_watch->duration() // the duration of the track and the stop watch duration is the same (double checking it's the same track)
+                 && m_watch->elapsed() > (m_watch->duration() * 1000) - 1000 ) // it's within a second so assume it got to 100% (see above)
+                onScrobble(); // we should scrobble the last track
+        }
+
+    }
+
+    m_state = Playing;
     m_currentTrack = t;
 
-    double trackLengthPercent = unicorn::UserSettings().value( "scrobblePoint", 50 ).toDouble() / 100.0;
-
-    //This is to prevent the next track being scrobbled
-    //instead of the track just listened
-    if ( trackLengthPercent == 1.0 && !oldtrack.isNull() )
-        m_trackToScrobble = oldtrack;
-    else
-        m_trackToScrobble = t;
-
-    ScrobblePoint timeout( m_currentTrack.duration() * trackLengthPercent );
+    ScrobblePoint timeout( ( m_currentTrack.duration() * unicorn::UserSettings().scrobblePoint() ) / 100.0 );
+    timeout.setEnforceScrobbleTimeMax( unicorn::UserSettings().enforceScrobbleTimeMax() );
     delete m_watch;
     m_watch = new StopWatch(m_currentTrack.duration(), timeout);
     m_watch->start();
@@ -297,9 +328,9 @@ ScrobbleService::onPaused()
 {
     // We can sometimes get a stopped before a play when the
     // media player is playing before the scrobbler is started
-    if ( state == Unknown ) return;
+    if ( m_state == Unknown ) return;
 
-    state = Paused;
+    m_state = Paused;
 
     //m_currentTrack.removeNowPlaying();
 
@@ -315,9 +346,9 @@ ScrobbleService::onStopped()
 {
     // We can sometimes get a stopped before a play when the
     // media player is playing before the scrobbler is started
-    if ( state == Unknown ) return;
+    if ( m_state == Unknown ) return;
 
-    state = Stopped;
+    m_state = Stopped;
 
     Q_ASSERT(m_watch);
     Q_ASSERT(m_connection);
@@ -334,9 +365,9 @@ ScrobbleService::onResumed()
 {
     // We can sometimes get a stopped before a play when the
     // media player is playing before the scrobbler is started
-    if ( state == Unknown ) return;
+    if ( m_state == Unknown ) return;
 
-    state = Playing;
+    m_state = Playing;
 
     Q_ASSERT(m_watch);
     Q_ASSERT(m_connection);
@@ -354,8 +385,10 @@ ScrobbleService::onScrobble()
 {
     Q_ASSERT(m_connection);
 
-    if( m_as && scrobblableTrack( m_trackToScrobble ) )
-        m_as->cache( m_trackToScrobble );
+    if( m_as
+            && scrobblableTrack( m_currentTrack )
+            && m_currentTrack.scrobbleStatus() == Track::Null )
+        m_as->cache( m_currentTrack );
 }
 
 void 

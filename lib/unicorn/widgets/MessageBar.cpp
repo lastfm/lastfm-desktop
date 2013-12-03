@@ -47,6 +47,7 @@ MessageBar::MessageBar( QWidget* parent )
     connect( ui.close, SIGNAL(clicked()), SLOT(onCloseClicked()));
 
     connect( qApp, SIGNAL(showMessage(QString,QString)), SLOT(show(QString,QString)));
+    connect( qApp, SIGNAL(error(QString)), SLOT(show(QString)));
 
     hide();
 }
@@ -107,6 +108,23 @@ MessageBar::onLinkActivated( const QString& link )
         confirmDialog.setReadOnly();
         confirmDialog.exec();
     }
+
+    else if ( link == "plugin" )
+    {
+#ifdef Q_OS_MAC
+        if ( !m_installer )
+            m_installer = new unicorn::ITunesPluginInstaller( this );
+
+        m_installer->install();
+#elif defined( Q_OS_WIN )
+        if ( !m_itw )
+            m_itw = new unicorn::ITunesPluginInfo( this );
+
+        m_itw->setVerbose( true );
+        m_itw->doInstall();
+#endif
+    }
+
     else
     {
         // this should be a url so open it in the browser

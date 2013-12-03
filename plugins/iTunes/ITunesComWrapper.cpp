@@ -114,6 +114,33 @@ ITunesComWrapper::libraryTrackCount()
     return m_trackCount;
 }
 
+void
+ITunesComWrapper::setPersistentIDForTrack( ITunesTrack& t, IITTrack* track )
+{
+    VARIANT variant;
+    VariantInit( &variant );
+    variant.pdispVal = reinterpret_cast<IDispatch*>( track );
+    variant.vt = VT_DISPATCH;
+
+    long high = 0;
+    long low = 0;
+    HRESULT res = m_iTunesApp->get_ITObjectPersistentIDHigh( &variant, &high );
+    if ( res == S_OK )
+        res = m_iTunesApp->get_ITObjectPersistentIDLow( &variant, &low );
+
+    if ( res == S_OK )
+    {
+        wstringstream ss;
+        ss.fill( '0' );
+        ss.width( 8 );
+        ss << hex << high << low;
+        t.setPersistentId( ss.str() );
+    }
+    else
+    {
+        LOGW( 2, "Failed to get persistent ID" );
+    }
+}
 
 ITunesTrack
 ITunesComWrapper::track( long idx )
@@ -128,6 +155,7 @@ ITunesComWrapper::track( long idx )
     // IITTrack pointer is Released by the ITunesTrack.
     // Won't throw if the track has no path.
     ITunesTrack t( track );
+    setPersistentIDForTrack( t, track );
     return t;
 }
 
@@ -251,6 +279,7 @@ ITunesComWrapper::track( const ITunesEventInterface::ITunesIdSet& ids )
     // IITTrack pointer is Released by the ITunesTrack.
     // This ctor can't throw.
     ITunesTrack t( track );
+    setPersistentIDForTrack( t, track );
     return t;
 }
 
@@ -268,6 +297,7 @@ ITunesComWrapper::currentTrack()
     // IITTrack pointer is Released by the ITunesTrack
     // This ctor can't throw.
     ITunesTrack t( track );
+    setPersistentIDForTrack( t, track );
     return t;
 }
 
@@ -367,6 +397,7 @@ ITunesComWrapper::searchForTrack( ITPlaylistSearchField searchField, wstring sea
             handleComResult( res, L"Failed to get track out of search results" );
 
             ITunesTrack t( track );
+			setPersistentIDForTrack( t, track );
             results.push_back( t );
         }
         catch ( ITunesException& )

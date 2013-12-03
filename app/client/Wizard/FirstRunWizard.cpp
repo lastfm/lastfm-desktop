@@ -45,10 +45,11 @@ FirstRunWizard::FirstRunWizard( bool startFromTour, QWidget* parent )
     :QDialog( parent ),
       ui( new Ui::FirstRunWizard ),
       m_commitPage( false ),
-      m_showWelcome( false )
+      m_showWelcome( false ),
+      m_bootstrapState( NoBootstrap )
 {
 #ifdef Q_OS_WIN32
-    m_plugins = new PluginList;
+    m_plugins = new unicorn::PluginList;
 #endif
 
     ui->setupUi( this );
@@ -69,7 +70,7 @@ FirstRunWizard::FirstRunWizard( bool startFromTour, QWidget* parent )
     connect( this, SIGNAL( accepted() ), this, SLOT( onWizardCompleted() ) );
 
     connect( aApp, SIGNAL(bootstrapStarted(QString)), SLOT(onBootstrapStarted(QString)));
-    connect( aApp, SIGNAL(bootstrapDone(int)), SLOT(onBootstrapDone(int)));
+    connect( aApp, SIGNAL(bootstrapDone(AbstractBootstrapper::BootstrapStatus)), SLOT(onBootstrapDone(AbstractBootstrapper::BootstrapStatus)));
 
     if ( startFromTour )
         ui->stackedWidget->setCurrentWidget( ui->tourScrobblesPage );
@@ -86,6 +87,18 @@ FirstRunWizard::~FirstRunWizard()
 #ifdef Q_OS_WIN32
     delete m_plugins;
 #endif
+}
+
+FirstRunWizard::BootstrapState
+FirstRunWizard::bootstrapState() const
+{
+    return m_bootstrapState;
+}
+
+AbstractBootstrapper::BootstrapStatus
+FirstRunWizard::bootstrapStatus() const
+{
+    return m_bootstrapStatus;
 }
 
 void
@@ -319,6 +332,8 @@ FirstRunWizard::initializePage( QWidget* widget )
 void
 FirstRunWizard::onBootstrapStarted( const QString& pluginId )
 {
+    m_bootstrapState = BootstrapStarted;
+
     ui->bootstrapProgressPage->setPluginId( pluginId );
 
     ui->importLabel->setText( tr( "Importing..." ) );
@@ -333,9 +348,10 @@ FirstRunWizard::onBootstrapStarted( const QString& pluginId )
 }
 
 void
-FirstRunWizard::onBootstrapDone( int status )
+FirstRunWizard::onBootstrapDone( AbstractBootstrapper::BootstrapStatus status )
 {
-    qDebug() << status;
+    m_bootstrapState = BootstrapFinished;
+    m_bootstrapStatus = status;
 
     ui->importIcon->setPixmap( QPixmap( ":/lastfm_icon_32.png" ) );
     ui->importLabel->setText( tr( "Import complete!" ) );
@@ -344,7 +360,7 @@ FirstRunWizard::onBootstrapDone( int status )
 void
 FirstRunWizard::onWizardCompleted()
 {
-    unicorn::Settings().setValue( SETTING_FIRST_RUN_WIZARD_COMPLETED, true );
+    unicorn::Settings().setFirstRunWizardCompleted( true );
 }
 
 

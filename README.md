@@ -6,9 +6,7 @@ Channel: #last.desktop
 # Build Dependencies
 
 * Qt >= 4.8
-* Ruby
-* Perl
-* liblastfm
+* liblastfm >= 1.0.7
 
 You will also need depending on your chosen platform:-
 
@@ -114,33 +112,27 @@ I found that I also needed to copy the dll into the lastfm-desktop/_bin folder. 
 
 ## Linux
 
-* pkg-config
-* taglib
-* libsamplerate
-* fftw3
-* libmad
-* libavformat
-* libgpod
-* sqlite3
+On Debian or Ubuntu, you can download all the build dependencies by running:
 
-Possibly you'll have to play around to get a phonon that works with KDE4 and 
-Qt. I can't help you there I'm afraid. An example Ubuntu installation would 
-probably go:
+    sudo apt-get install libavformat-dev libgpod-nogtk-dev liblastfm-dev \
+                         libphonon-dev libqt4-dev libqtwebkit-dev pkg-config \
+                         zlib1g-dev
 
-    sudo apt-get install libqt4-dev pkg-config libtag1-dev libsamplerate0-dev \
-                         libfftw3-dev libmad0-dev libsqlite3-dev libqt4-sql-sqlite \
-                         libavformat-dev libgpod-dev libphonon-dev phonon
+You should also install the `libqt4-sql-sqlite` plugin if you want to use the
+software to scrobble your iPod.
 
 # Build Instructions
 
     qmake -r
     make -j4
     
-`make install` currently does nothing, so running the app is a bit tricky (see below).
+`make install` currently does not work on Windows or OSX.
 
-Note: use nmake on Windows
+Windows note: use nmake on Windows
 
-Note that if you installed Qt through homebrew it will default to a release build.
+Linux note: Linux users can set the install prefix like so `qmake PREFIX=/usr/local`
+
+OSX note: if you installed Qt through homebrew it will default to a release build.
 
 # Run Instructions
 
@@ -151,9 +143,10 @@ need to tell the app where the stylesheet is, like this:
 
     ./Last.fm.exe -stylesheet path/to/Last.fm.css
     
-Or on Linux,from the root of the source directory:
+On Linux, if you have not run `make install`, you can run the app like this
+from the root of the source directory:
 
-    LD_LIBRARY_PATH=_bin:/usr/local/lib/x86_64-linux-gnu _bin/Last.fm\ Scrobbler -stylesheet app/client/Last.fm\ Scrobbler.css
+    _bin/lastfm-scrobbler -stylesheet app/client/Last.fm\ Scrobbler.css
 
 # Build Support
 

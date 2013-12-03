@@ -26,7 +26,7 @@
 #include <QStyle>
 
 #ifdef Q_OS_WIN32
-#include "../Plugins/PluginList.h"
+#include "lib/unicorn/plugins/PluginList.h"
 #endif
 
 #include "FirstRunWizard.h"
@@ -69,8 +69,8 @@ void
 PluginsPage::initializePage()
 {
 #ifdef Q_OS_WIN32
-    QList<IPluginInfo*> supportedPlugins = wizard()->pluginList()->supportedList();
-    foreach( IPluginInfo* plugin, supportedPlugins )
+    QList<unicorn::IPluginInfo*> supportedPlugins = wizard()->pluginList()->supportedList();
+    foreach( unicorn::IPluginInfo* plugin, supportedPlugins )
     {
         QCheckBox* cb;
         m_pluginsLayout->addWidget( cb = new QCheckBox( plugin->name(), this ));

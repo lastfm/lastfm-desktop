@@ -20,13 +20,15 @@
 #ifndef UNICORN_SETTINGS_H
 #define UNICORN_SETTINGS_H
 
-#include <QSettings>
-#include <QString>
-#include <QCoreApplication>
+#include "lib/unicorn/UnicornSession.h"
+
+#include "lib/DllExportMacro.h"
 
 #include <lastfm/User.h>
 
-#include "lib/DllExportMacro.h"
+#include <QSettings>
+#include <QString>
+#include <QCoreApplication>
 
 namespace unicorn
 {
@@ -36,17 +38,55 @@ namespace unicorn
     class UNICORN_DLLEXPORT Settings : public QSettings
     {
     public:
-        Settings() : QSettings( unicorn::organizationName(), "" )
-        {}
-        
+        Settings();
+
         QList<lastfm::User> userRoster() const;
 
+        bool firstRunWizardCompleted() const;
+        void setFirstRunWizardCompleted( bool firstRunWizardCompleted );
+
+        bool betaUpdates() const;
+        void setBetaUpdates( bool betaUpdates );
+
+        bool showAS();
+        void setShowAS( bool showAS );
+
+        bool showDock();
+        void setShowDock( bool showDock );
+
+        bool notifications() const;
+        void setNotifications( bool notifications );
+
+        bool sendCrashReports() const;
+        void setSendCrashReports( bool sendCrashReports );
+
+        bool checkForUpdates() const;
+        void setCheckForUpdates( bool checkForUpdates );
+
+
+    private:
+        void showWhere();
     };
 
     class UNICORN_DLLEXPORT AppSettings : public QSettings
     {
     public:
         AppSettings( QString appname = QCoreApplication::applicationName() );
+
+        bool alwaysAsk() const;
+        void setAlwaysAsk( bool alwaysAsk );
+    };
+
+    class UNICORN_DLLEXPORT OldeAppSettings : public AppSettings
+    {
+    public:
+        OldeAppSettings();
+
+        bool deviceScrobblingEnabled() const;
+        void setDeviceScrobblingEnabled( bool deviceScrobblingEnabled );
+
+        bool launchWithMediaPlayers() const;
+        void setLaunchWithMediaPlayers( bool launchWithMediaPlayers );
     };
 
 
@@ -55,8 +95,51 @@ namespace unicorn
     class UNICORN_DLLEXPORT UserSettings : public Settings
     {
     public:
+        struct SessionInfo
+        {
+
+        };
+
         UserSettings( QString userName = User() );
-        static const char* subscriptionKey() { return "subscriber"; }
+
+        unicorn::Session::Info sessionInfo();
+        void setSessionInfo( const unicorn::Session::Info& sessionInfo );
+
+        bool subscriber() const;
+        void setSubscriber( bool subscriber );
+
+        QString sessionKey() const;
+        void setSessionKey( const QString& sessionKey );
+
+        quint32 scrobbleCount() const;
+        void setScrobbleCount( quint32 scrobbleCount );
+
+        QDateTime dateRegistered() const;
+        void setDateRegistered( const QDateTime& dateRegistered );
+
+        QString realName() const;
+        void setRealName( const QString& realName );
+
+        User::Type type() const;
+        void setType( User::Type type );
+
+        double scrobblePoint() const;
+        void setScrobblePoint( double scrobblePoint );
+
+        bool fingerprinting() const;
+        void setFingerprinting( bool fingerprinting );
+
+        bool podcasts() const;
+        void setPodcasts( bool podcasts );
+
+        bool scrobblingOn() const;
+        void setScrobblingOn( bool scrobblingOn );
+
+        QStringList exclusionDirs() const;
+        void setExclusionDirs( const QStringList& exclusionDirs );
+
+        bool enforceScrobbleTimeMax() const;
+        void setEnforceScrobbleTimeMax( bool enforceScrobbleTimeMax );
     };
 }
 

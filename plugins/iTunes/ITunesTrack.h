@@ -78,6 +78,8 @@ public:
     std::wstring persistentId() const { return m_id; }
     std::wstring path() const { return m_path; }
 
+    void setPersistentId( std::wstring id ) { m_id = id; }
+
     /** podcasts have the option of not scrobbling and videos are never scrobbled */
     bool podcast();
     bool video();

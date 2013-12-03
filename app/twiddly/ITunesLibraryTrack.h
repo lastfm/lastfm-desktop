@@ -52,7 +52,7 @@ struct ITunesLibraryTrackData : public QSharedData
     {}
 
     /** the path is the uniqueId for iTunes library tracks on Windows */
-    virtual QString uniqueId() const { return QString::fromStdWString( i.path() ); }
+    virtual QString uniqueId() const { return QString::fromStdWString( i.persistentId() ); }
 
     /** @returns false if the track doesn't exist in the iTunes Library */
     virtual bool isNull() const { return i.isNull(); }
@@ -101,6 +101,7 @@ struct IPodLibraryTrackData : public ITunesLibraryTrackData
     public:
         bool isNull()      const { return !d || d->isNull(); }
         QString uniqueId() const { Q_ASSERT( d ); return d->uniqueId(); }
+        QString persistentId() const { return uniqueId(); }
         int playCount()    const { Q_ASSERT( d ); return d->playCount(); }
 
         /** @returns a TrackInfo object filled out with minimal information,

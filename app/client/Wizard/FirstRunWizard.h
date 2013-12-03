@@ -26,9 +26,10 @@
 #include <QPointer>
 
 #include "lib/unicorn/UnicornSession.h"
+#include "../Bootstrapper/AbstractBootstrapper.h"
 
 #ifdef Q_OS_WIN32
-#include "../Plugins/PluginList.h"
+#include "lib/unicorn/plugins/PluginList.h"
 #endif
 
 namespace Ui { class FirstRunWizard; }
@@ -46,6 +47,13 @@ public:
         FinishButton
     };
 
+    enum BootstrapState
+    {
+        NoBootstrap,
+        BootstrapStarted,
+        BootstrapFinished
+    };
+
 public:
     FirstRunWizard( bool startFromTour = false, QWidget* parent = 0 );
     ~FirstRunWizard();
@@ -59,8 +67,11 @@ public:
 
     void showWelcome();
 
+    BootstrapState bootstrapState() const;
+    AbstractBootstrapper::BootstrapStatus bootstrapStatus() const;
+
 #ifdef Q_OS_WIN32
-    class PluginList* pluginList() const { return m_plugins; }
+    class unicorn::PluginList* pluginList() const { return m_plugins; }
 #endif
 
 public slots:
@@ -73,7 +84,7 @@ private slots:
     void onRejected();
 
     void onBootstrapStarted( const QString& pluginId );
-    void onBootstrapDone( int status );
+    void onBootstrapDone( AbstractBootstrapper::BootstrapStatus status );
 
 private:
     void initializePage( QWidget* page );
@@ -82,13 +93,16 @@ private:
 private:
     Ui::FirstRunWizard* ui;
 #ifdef Q_OS_WIN32
-    QPointer<PluginList> m_plugins;
+    QPointer<unicorn::PluginList> m_plugins;
 #endif
 
     QList<QWidget*> m_pages;
 
     bool m_commitPage;
     bool m_showWelcome;
+
+    BootstrapState m_bootstrapState;
+    AbstractBootstrapper::BootstrapStatus m_bootstrapStatus;
 };
 
 #endif //FIRST_RUN_WIZARD_H_

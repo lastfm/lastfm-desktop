@@ -1,15 +1,35 @@
+/*
+   Copyright 2005-2009 Last.fm Ltd.
+      - Primarily authored by Max Howell, Jono Cole and Doug Mansell
+
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef PLAYBACKCONTROLS_H
 #define PLAYBACKCONTROLS_H
 
 #include <QAction>
 #include <QFrame>
 #include <QPointer>
+#include <QTimer>
 
 #include <lastfm/RadioStation.h>
 #include <lastfm/Track.h>
 
 namespace unicorn { class Session; }
-
 namespace Ui { class PlaybackControlsWidget; }
 
 class QMovie;
@@ -30,9 +50,10 @@ public:
 
     void addToMenu( class QMenu& menu, QAction* before = 0 );
 
-private slots:
-    void onSessionChanged( const unicorn::Session& session );
+private:
+    bool eventFilter( QObject *obj, QEvent *event );
 
+private slots:
     void onActionsChanged();
     void onSpace();
     void onPlayClicked( bool checked );
@@ -43,11 +64,19 @@ private slots:
     void onBanFinished();
 
     void onTuningIn( const RadioStation& station );
-    void onTrackStarted( const Track& track, const Track& oldTrack );
+    void onTrackStarted( const lastfm::Track& track, const lastfm::Track& oldTrack );
     void onError( int error , const QVariant& errorData );
     void onStopped();
 
-    void onTick( qint64 );
+    void onFrameChanged( int frame );
+    void onScrobbleStatusChanged( short scrobbleStatus );
+
+    void onVolumeChanged( qreal volume );
+    void mute();
+
+private:
+    void setTime( int frame, const Track& track );
+    void setTrack( const Track& track );
 
 private:
     Ui::PlaybackControlsWidget *ui;
@@ -55,6 +84,12 @@ private:
     QPointer<QAction> m_playAction;
 
     bool m_scrobbleTrack;
+
+    lastfm::Track m_track;
+
+    class VolumeSlider* m_volumeSlider;
+
+    QPointer<QTimer> m_volumeHideTimer;
 };
 
 #endif // PLAYBACKCONTROLS_H

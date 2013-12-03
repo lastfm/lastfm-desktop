@@ -168,9 +168,6 @@
         <file>settings_REST.png</file>
         <file>volume_knob_REST.png</file>
         <file>volume_knob_PRESS.png</file>
-        <file>volume_slot_OFF.png</file>
-        <file>volume_max.png</file>
-        <file>volume_min.png</file>
         <file alias="on-tour.png">on_tour.png</file>
         <file alias="now-playing.png">now-playing-REST.png</file>
         <file alias="now-playing-onpress.png">now-playing-PRESS.png</file>
@@ -200,5 +197,16 @@
         <file>button_dark_RIGHT_REST.png</file>
         <file>meta_ban_REST.png</file>
         <file>meta_skip_REST.png</file>
+        <file>lastfm_icon_16_grayscale.png</file>
+        <file>mac_control_bar_as_OFF.png</file>
+        <file>lastfm_icon_22_grayscale.png</file>
+        <file>scrobble_progress_OFF.png</file>
+        <file>scrobble_progress_ON.png</file>
+        <file>volume_high.png</file>
+        <file>volume_low.png</file>
+        <file>volume_mid.png</file>
+        <file>volume_mute.png</file>
+        <file>progress_slot_OFF.png</file>
+        <file>progress_slot_ON.png</file>
     </qresource>
 </RCC>

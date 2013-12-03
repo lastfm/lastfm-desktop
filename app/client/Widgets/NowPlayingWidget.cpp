@@ -51,7 +51,7 @@ NowPlayingWidget::NowPlayingWidget(QWidget *parent)
 
     connect( &RadioService::instance(), SIGNAL(tuningIn(RadioStation)), SLOT(onTuningIn(RadioStation)) );
 
-    connect( &ScrobbleService::instance(), SIGNAL(trackStarted(Track,Track)), SLOT(onTrackStarted(Track,Track)) );
+    connect( &ScrobbleService::instance(), SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), SLOT(onTrackStarted(lastfm::Track,lastfm::Track)) );
     connect( &ScrobbleService::instance(), SIGNAL(stopped()), SLOT(onStopped()) );
 }
 
@@ -69,7 +69,7 @@ NowPlayingWidget::onTuningIn( const RadioStation& )
 }
 
 void
-NowPlayingWidget::onTrackStarted( const Track& track, const Track& )
+NowPlayingWidget::onTrackStarted( const lastfm::Track& track, const lastfm::Track& )
 {
     if ( track != Track() )
     {

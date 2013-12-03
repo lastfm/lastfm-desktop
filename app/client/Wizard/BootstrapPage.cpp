@@ -19,8 +19,7 @@
 */
 
 #include "lib/unicorn/QMessageBoxBuilder.h"
-
-#include "../Dialogs/CloseAppsDialog.h"
+#include "lib/unicorn/dialogs/CloseAppsDialog.h"
 
 #include "FirstRunWizard.h"
 #include "BootstrapPage.h"
@@ -57,14 +56,14 @@ BootstrapPage::validatePage()
 {
 #ifdef Q_OS_WIN
     // make sure the user has closed their chosen plugin (except iTunes)
-    IPluginInfo* plugin = wizard()->pluginList()->pluginById( m_playerId );
+    unicorn::IPluginInfo* plugin = wizard()->pluginList()->pluginById( m_playerId );
 
-    if ( plugin->bootstrapType() == IPluginInfo::PluginBootstrap )
+    if ( plugin->bootstrapType() == unicorn::IPluginInfo::PluginBootstrap )
     {
-        QList<IPluginInfo*> plugins;
+        QList<unicorn::IPluginInfo*> plugins;
         plugins << plugin;
 
-        CloseAppsDialog* closeApps = new CloseAppsDialog( plugins, this );
+        unicorn::CloseAppsDialog* closeApps = new unicorn::CloseAppsDialog( plugins, this );
 
         if ( closeApps->result() != QDialog::Accepted )
             closeApps->exec();
@@ -100,11 +99,11 @@ BootstrapPage::initializePage()
 {
     QRadioButton* rb;
 #ifdef Q_OS_WIN
-    QList<IPluginInfo*> plugins = wizard()->pluginList()->bootstrappablePlugins();
+    QList<unicorn::IPluginInfo*> plugins = wizard()->pluginList()->bootstrappablePlugins();
 
     bool first = true;
 
-    foreach ( IPluginInfo* plugin, plugins )
+    foreach ( unicorn::IPluginInfo* plugin, plugins )
     {
         m_pluginsLayout->addWidget( rb = new QRadioButton( plugin->name()));
         rb->setObjectName( plugin->id() );

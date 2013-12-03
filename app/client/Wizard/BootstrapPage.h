@@ -29,7 +29,7 @@
 #include <QPointer>
 
 #ifdef Q_OS_WIN32
-#include "../Plugins/PluginList.h"
+#include "lib/unicorn/plugins/PluginList.h"
 #endif
 #include "../Application.h"
 

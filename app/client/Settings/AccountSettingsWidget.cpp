@@ -63,7 +63,7 @@ AccountSettingsWidget::saveSettings()
             s.setValue( "Username", urb->user() );
 
             unicorn::UserSettings us( urb->user() );
-            QString sessionKey = us.value( "SessionKey", "" ).toString();
+            QString sessionKey = us.sessionKey();
             qobject_cast<unicorn::Application *>( qApp )->changeSession( urb->user(), sessionKey, true );
         }
 

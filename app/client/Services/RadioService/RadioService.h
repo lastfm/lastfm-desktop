@@ -29,7 +29,6 @@
 #include <phonon/mediasource.h>
 #include <QList>
 #include <QPointer>
-#include <QThread>
 #include <QVariant>
 #include "lib/listener/State.h"
 

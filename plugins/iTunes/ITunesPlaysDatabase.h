@@ -32,6 +32,7 @@ extern "C"
     typedef struct sqlite3 sqlite3;
 }
 
+#define TABLE_NAME "playcounts"
 
 /** @author Christian Muehlhaeuser <chris@last.fm>
   * @contributor Jono Cole <jono@last.fm>
@@ -53,6 +54,10 @@ public:
       * playCount with iTunes before doing anything with that track generally */
     int playCount( const class ITunesTrack& track );
 
+	/** tracks unknown to us return -1, which means you should verify the 
+      * playCount with iTunes before doing anything with that track generally */
+    int playCountOld( const class ITunesTrack& track );
+
     /** call to sync the just finished playing track, NOTE the implementation
       * stores what is playing now for the next call to sync() so always call
       * this every new track
@@ -67,6 +72,7 @@ public:
     static void finit();
 #else
 	bool sync( const ExtendedITunesTrack& );
+	bool syncOld( const ExtendedITunesTrack& );
 #endif
 
 protected:
@@ -81,6 +87,7 @@ protected:
 #ifndef WIN32
     static void* onPlayStateChanged( void* );
     static void* sync( void* );
+    static void* syncOld( void* );
     
     static pthread_mutex_t s_mutex;
 #endif

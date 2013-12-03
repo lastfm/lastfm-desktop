@@ -1,11 +1,30 @@
+/*
+   Copyright 2010-2012 Last.fm Ltd.
+      - Primarily authored by Jono Cole and Michael Coffey
 
+   This file is part of the Last.fm Desktop Application Suite.
+
+   lastfm-desktop is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   lastfm-desktop is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "lib/unicorn/dialogs/ScrobbleConfirmationDialog.h"
 #include "lib/unicorn/UnicornApplication.h"
 #include "lib/unicorn/QMessageBoxBuilder.h"
 
 #include "../Application.h"
-#include "../Dialogs/CloseAppsDialog.h"
+#include "lib/unicorn/widgets/Label.h"
+#include "lib/unicorn/dialogs/CloseAppsDialog.h"
 #include "IpodDevice.h"
 #include "DeviceScrobbler.h"
 #include "../Services/ScrobbleService/ScrobbleService.h"
@@ -32,6 +51,8 @@ QString getIpodMountPath();
 DeviceScrobbler::DeviceScrobbler( QObject *parent )
     :QObject( parent )
 {
+    connect( this, SIGNAL(error(QString)), aApp, SIGNAL(error(QString)));
+
     m_twiddlyTimer = new QTimer( this );
     connect( m_twiddlyTimer, SIGNAL(timeout()), SLOT(twiddle()) );
     m_twiddlyTimer->start( BACKGROUND_CHECK_INTERVAL );
@@ -66,36 +87,58 @@ DeviceScrobbler::isITunesPluginInstalled()
 void
 DeviceScrobbler::twiddle()
 {
+    doTwiddle( false );
+}
+
+DeviceScrobbler::DoTwiddlyResult
+DeviceScrobbler::doTwiddle( bool manual )
+{
 #ifndef Q_WS_X11
-    if ( CloseAppsDialog::isITunesRunning() && isITunesPluginInstalled() )
+    if ( unicorn::CloseAppsDialog::isITunesRunning() )
     {
-        if (m_twiddly)
+        if ( isITunesPluginInstalled() )
         {
-            qWarning() << "m_twiddly already running. Early out.";
-            return;
-        }
+            if ( m_twiddly )
+            {
+                qWarning() << "m_twiddly already running. Early out.";
+                return AlreadyRunning;
+            }
 
-        //"--device diagnostic --vid 0000 --pid 0000 --serial UNKNOWN
+            //"--device diagnostic --vid 0000 --pid 0000 --serial UNKNOWN
 
-        QStringList args = (QStringList()
-                            << "--device" << "background"
-                            << "--vid" << "0000"
-                            << "--pid" << "0000"
-                            << "--serial" << "UNKNOWN");
+            QStringList args;
 
-        if ( false )
-            args += "--manual";
+            if ( sender() )
+                args << "--device" << "background";
+            else
+                args << "--device" << "diagnostic";
 
-        m_twiddly = new QProcess( this );
-        connect( m_twiddly, SIGNAL(finished( int, QProcess::ExitStatus )), SLOT(onTwiddlyFinished( int, QProcess::ExitStatus )) );
-        connect( m_twiddly, SIGNAL(error( QProcess::ProcessError )), SLOT(onTwiddlyError( QProcess::ProcessError )) );
+            args << "--vid" << "0000";
+            args << "--pid" << "0000";
+
+            if ( manual )
+            {
+                args << "--serial" << "manual";
+                args += "--manual";
+            }
+            else
+                args << "--serial" << "automatic";
+
+            m_twiddly = new QProcess( this );
+            connect( m_twiddly, SIGNAL(finished( int, QProcess::ExitStatus )), SLOT(onTwiddlyFinished( int, QProcess::ExitStatus )) );
+            connect( m_twiddly, SIGNAL(error( QProcess::ProcessError )), SLOT(onTwiddlyError( QProcess::ProcessError )) );
 #ifdef Q_OS_WIN
-        m_twiddly->start( QDir( QCoreApplication::applicationDirPath() ).absoluteFilePath( "iPodScrobbler.exe" ), args );
+            m_twiddly->start( QDir( QCoreApplication::applicationDirPath() ).absoluteFilePath( "iPodScrobbler.exe" ), args );
 #else
-        m_twiddly->start( QDir( QCoreApplication::applicationDirPath() ).absoluteFilePath( "../Helpers/iPodScrobbler" ), args );
+            m_twiddly->start( QDir( QCoreApplication::applicationDirPath() ).absoluteFilePath( "../Helpers/iPodScrobbler" ), args );
 #endif
+            return Started;
+        }
+        else
+            return ITunesPluginNotInstalled;
     }
 #endif //  Q_WS_X11
+    return ITunesNotRunning;
 }
 
 void
@@ -151,6 +194,9 @@ DeviceScrobbler::handleMessage( const QStringList& message )
     
     if( action == "complete" )
         twiddled( message );
+    else if ( action == "incompatible-plugin" )
+        emit error( tr( "Device scrobbling disabled - incompatible iTunes plugin - %1" )
+                    .arg( unicorn::Label::anchor( "plugin", tr("please update" ) ) ) );
 }
 
 
@@ -178,7 +224,7 @@ DeviceScrobbler::scrobbleIpodFiles( const QStringList& files )
 
     bool removeFiles = false;
 
-    if ( unicorn::AppSettings( OLDE_PLUGIN_SETTINGS ).value( SETTING_OLDE_ITUNES_DEVICE_SCROBBLING_ENABLED, true ).toBool() )
+    if ( unicorn::OldeAppSettings().deviceScrobblingEnabled() )
     {
         QList<lastfm::Track> scrobbles = scrobblesFromFiles( files );
 
@@ -192,7 +238,7 @@ DeviceScrobbler::scrobbleIpodFiles( const QStringList& files )
         {
             if ( scrobbles.count() > 0 )
             {
-                if ( unicorn::AppSettings().value( SETTING_ALWAYS_ASK, true ).toBool()
+                if ( unicorn::AppSettings().alwaysAsk()
                      || scrobbles.count() >= 200 ) // always get them to check scrobbles over 200
                 {
                     if ( !m_confirmDialog )
@@ -283,7 +329,7 @@ DeviceScrobbler::onScrobblesConfirmationFinished( int result )
 
         emit foundScrobbles( scrobbles );
 
-        unicorn::AppSettings().setValue( SETTING_ALWAYS_ASK, !m_confirmDialog->autoScrobble() );
+        unicorn::AppSettings().setAlwaysAsk( !m_confirmDialog->autoScrobble() );
     }
 
     // delete all the iPod scrobble files whether it was accepted or not
