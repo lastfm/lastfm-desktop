@@ -27,7 +27,6 @@
 #include "lib/unicorn/widgets/Label.h"
 #include "lib/unicorn/widgets/AvatarWidget.h"
 
-#include "PlayableItemWidget.h"
 #include "ProfileArtistWidget.h"
 #include "ContextLabel.h"
 #include "FriendWidget.h"

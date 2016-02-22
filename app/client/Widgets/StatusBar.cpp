@@ -24,14 +24,11 @@
 #include <QLabel>
 #include <QSizeGrip>
 
-#include <phonon/VolumeSlider>
-
 #include "lib/unicorn/widgets/Label.h"
 
 #include "StatusBar.h"
 
 #include "../Services/ScrobbleService.h"
-#include "../Services/RadioService.h"
 #include "../MediaDevices/DeviceScrobbler.h"
 #include "../Application.h"
 

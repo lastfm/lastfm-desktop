@@ -36,7 +36,6 @@ SUBDIRS=PrefPane
 SOURCES += \
     AudioscrobblerSettings.cpp \
     Application.cpp \
-    StationSearch.cpp \
     ScrobSocket.cpp \
     MediaDevices/MediaDevice.cpp \
     MediaDevices/IpodDevice.cpp \
@@ -106,7 +105,6 @@ HEADERS += \
     AudioscrobblerSettings.h \
     Application.h \
     MainWindow.h \
-    StationSearch.h \
     Services/ScrobbleService.h \
     Services/ScrobbleService/StopWatch.h \
     Services/ScrobbleService/ScrobbleService.h \

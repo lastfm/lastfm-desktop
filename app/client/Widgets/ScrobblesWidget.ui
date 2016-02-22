@@ -108,12 +108,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QuickStartWidget</class>
-   <extends>QWidget</extends>
-   <header>../Widgets/QuickStartWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>unicorn::SlidingStackedWidget</class>
    <extends>QStackedWidget</extends>
    <header>lib/unicorn/widgets/SlidingStackedWidget.h</header>

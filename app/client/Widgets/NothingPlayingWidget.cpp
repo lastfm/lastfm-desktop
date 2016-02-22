@@ -25,8 +25,6 @@
 
 #include "../Application.h"
 
-#include "QuickStartWidget.h"
-
 #include "lib/unicorn/widgets/Label.h"
 
 #ifdef Q_OS_WIN
