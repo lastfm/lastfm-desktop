@@ -43,9 +43,6 @@ private slots:
     void applicationDidFinishLaunching( void* aNotification );
     void onSessionChanged( const unicorn::Session& session );
     void onTrackStarted( const lastfm::Track& newTrack, const lastfm::Track& oldTrack );
-
-private:
-    bool m_lastTrackRadio;
 };
 
 #endif // MEDIA_KEY_H

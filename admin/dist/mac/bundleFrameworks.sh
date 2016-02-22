@@ -54,7 +54,6 @@ function fixFrameworks {
         if [ ! -e "$bundlePath/Contents/Frameworks/$frameworkName" ]; then 
             #cp -Rf -P /opt/qt/qt.git/lib/QtXml.framework (app name.app)/Contents/Frameworks
             cp -R -H -f $framework "$bundlePath/Contents/Frameworks"
-
             chmod -R u+w "$bundlePath/Contents/Frameworks"
 
             #install_name_tool -id /opt/qt/qt.git/lib/QtXml.framework/Contents/QtXml
@@ -155,7 +154,7 @@ echo
 echo ======= Copying Qt plugins ===========
 mkdir -p "$bundlePath/Contents/plugins"
 
-plugins="imageformats phonon_backend sqldrivers bearer"
+plugins="imageformats sqldrivers bearer"
 
 for plugin in $plugins; do
     if [ -d /Developer/Applications/Qt/plugins/ ]; then
@@ -169,43 +168,6 @@ for plugin in $plugins; do
         fixLocalLibs "$i"
         echo -n P
     done
-    echo
-done
-
-echo ======= Copying vlc plugins ===========
-
-mkdir -p "$bundlePath/Contents/plugins"
-
-vlcPlugins='libaccess_http_plugin.dylib
-            liba52tofloat32_plugin.dylib
-            liba52tospdif_plugin.dylib
-            libaudio_format_plugin.dylib
-            libconverter_fixed_plugin.dylib
-            libdolby_surround_decoder_plugin.dylib
-            libdtstofloat32_plugin.dylib
-            libdtstospdif_plugin.dylib
-            libmpgatofixed32_plugin.dylib
-            libscaletempo_plugin.dylib
-            libsimple_channel_mixer_plugin.dylib
-            libspeex_resampler_plugin.dylib
-            libtrivial_channel_mixer_plugin.dylib
-            libauhal_plugin.dylib
-            libugly_resampler_plugin.dylib
-            libfloat32_mixer_plugin.dylib
-            libmpeg_audio_plugin.dylib
-            libes_plugin.dylib
-            liblogger_plugin.dylib'
-
-
-for plugin in $vlcPlugins; do
-    pluginDir="/usr/local/lib/vlc/plugins"
-
-    mkdir -p "$bundlePath/Contents/plugins"
-    cp -R -H -f $pluginDir/$plugin "$bundlePath/Contents/plugins"
-    chmod -R u+w "$bundlePath/Contents/plugins"
-    
-    fixFrameworks "$bundlePath/Contents/plugins/$plugin"
-    fixLocalLibs "$bundlePath/Contents/plugins/$plugin"
     echo
 done
 
@@ -243,4 +205,4 @@ echo Plugins = ../plugins >> "$qtconf"
 
 
 echo ======= signing bundle ===========
-codesign -f -s "Developer ID Application: Last.fm" -i fm.last.Scrobbler "$bundlePath"
+# codesign -f --deep -s "Developer ID Application: Last.fm" -i fm.last.Scrobbler "$bundlePath"

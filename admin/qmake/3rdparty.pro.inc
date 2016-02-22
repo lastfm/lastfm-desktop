@@ -57,27 +57,8 @@ CONFIG( break ) {
 
 CONFIG( growl ) {
     mac {
-        LIBS += -framework Growl
-    }
-}
-
-CONFIG( phonon ) {
-    mac:exists( /usr/local/Cellar/kde-phonon/4.6.0/lib/libphonon.dylib ) {
-        # Prefer to use the specific phonon we build ourselves than the old one ditributed with Qt
-        LIBS += /usr/local/Cellar/kde-phonon/4.6.0/lib/libphonon.dylib
-    }
-    else:win32 {
-        CONFIG += link_pkgconfig
-
-        CONFIG(debug, debug|release) {
-            PKGCONFIG += phonon-debug
-        }
-        else {
-            PKGCONFIG += phonon-release
-        }
-    }
-    else {
-        QT += phonon
+        INCLUDEPATH += -F/Library/Frameworks
+        LIBS += -F/Library/Frameworks -framework Growl
     }
 }
 
@@ -93,7 +74,8 @@ CONFIG( sparkle ) {
         }
     }
     else:mac{
-        LIBS += -framework Sparkle
+        INCLUDEPATH += -F/Library/Frameworks
+        LIBS += -F/Library/Frameworks -framework Sparkle -Wl -rpath @loader_path/../Frameworks
     }
 }
 

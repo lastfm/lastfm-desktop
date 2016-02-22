@@ -31,8 +31,6 @@
 #include "lib/listener/PlayerListener.h"
 #include "lib/listener/PlayerMediator.h"
 #include "../MediaDevices/DeviceScrobbler.h"
-#include "../RadioService/RadioService.h"
-#include "../RadioService/RadioConnection.h"
 #include "StopWatch.h"
 #ifdef Q_WS_MAC
 #include "lib/listener/mac/SpotifyListener.h"
@@ -80,8 +78,6 @@ ScrobbleService::ScrobbleService()
         //TODO user visible warning
     }
 
-    m_mediator->follow( new RadioConnection( this ) );
-
 
     connect( aApp, SIGNAL(sessionChanged(unicorn::Session)), SLOT(onSessionChanged(unicorn::Session)) );
     resetScrobbler();
@@ -98,9 +94,6 @@ ScrobbleService::instance()
 bool
 ScrobbleService::isDirExcluded( const lastfm::Track& track )
 {
-    if ( track.source() == lastfm::Track::LastFmRadio )
-        return false;
-
     QString pathToTest = track.url().toLocalFile();
 
 #ifdef Q_OS_WIN

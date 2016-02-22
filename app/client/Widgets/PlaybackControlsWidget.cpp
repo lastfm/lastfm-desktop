@@ -19,20 +19,14 @@
 */
 
 #include "../Application.h"
-#include "../Services/RadioService.h"
 #include "../Services/ScrobbleService.h"
 #include "../Services/AnalyticsService.h"
 
 #include "PlaybackControlsWidget.h"
-#include "VolumeSlider.h"
 #include "ui_PlaybackControlsWidget.h"
 
 #include "lib/unicorn/UnicornSettings.h"
 #include "lib/unicorn/widgets/Label.h"
-
-#include <phonon/MediaObject>
-#include <phonon/SeekSlider>
-#include <phonon/VolumeSlider>
 
 #include <QShortcut>
 #include <QMenu>
@@ -64,35 +58,10 @@ PlaybackControlsWidget::PlaybackControlsWidget(QWidget *parent) :
 
     setLayoutUsesWidgetRect( this );
 
-    ui->play->setAttribute( Qt::WA_MacNoClickThrough );
-    ui->ban->setAttribute( Qt::WA_MacNoClickThrough );
     ui->love->setAttribute( Qt::WA_MacNoClickThrough );
-    ui->skip->setAttribute( Qt::WA_MacNoClickThrough );
-    ui->volume->setAttribute( Qt::WA_MacNoClickThrough );
-
-    // If the actions are triggered we should do something
-    // love is dealt with by the application
-    connect( aApp->banAction(), SIGNAL(triggered(bool)), SLOT(onBanClicked()) );
-    connect( aApp->playAction(), SIGNAL(triggered(bool)), SLOT(onPlayClicked(bool)) );
-    connect( aApp->muteAction(), SIGNAL(triggered(bool)), SLOT(mute()) );
-    connect( aApp, SIGNAL(skipTriggered()), SLOT(onSkipClicked()) );
-
-    m_playAction = new QAction( tr( "Play" ), aApp );
-    connect( m_playAction, SIGNAL(triggered(bool)), aApp->playAction(), SLOT(trigger()) );
-    connect( aApp->playAction(), SIGNAL(toggled(bool)), m_playAction, SLOT(setChecked(bool)) );
 
     // make sure this widget updates if the actions are changed elsewhere
     connect( aApp->loveAction(), SIGNAL(changed()), SLOT(onActionsChanged()) );
-    connect( aApp->banAction(), SIGNAL(changed()), SLOT(onActionsChanged()) );
-    connect( aApp->playAction(), SIGNAL(changed()), SLOT(onActionsChanged()) );
-    connect( aApp->skipAction(), SIGNAL(changed()), SLOT(onActionsChanged()) );
-    connect( aApp->skipAction(), SIGNAL(changed()), SLOT(onActionsChanged()) );
-
-    connect( &RadioService::instance(), SIGNAL(tuningIn(RadioStation)), SLOT(onTuningIn(RadioStation)));
-    connect( &RadioService::instance(), SIGNAL(error(int,QVariant)), SLOT(onError(int, QVariant)));
-
-    connect( RadioService::instance().audioOutput(), SIGNAL(volumeChanged(qreal)), SLOT(onVolumeChanged(qreal)) );
-    onVolumeChanged( RadioService::instance().audioOutput()->volume() );
 
     connect( &ScrobbleService::instance(), SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), SLOT(onTrackStarted(lastfm::Track,lastfm::Track)) );
     connect( &ScrobbleService::instance(), SIGNAL(stopped()), SLOT(onStopped()));
@@ -100,20 +69,9 @@ PlaybackControlsWidget::PlaybackControlsWidget(QWidget *parent) :
 
     onActionsChanged();
 
-    m_volumeSlider = new VolumeSlider( RadioService::instance().audioOutput(), this );
-    m_volumeSlider->hide();
-
-    m_volumeSlider->setAttribute( Qt::WA_Hover );
-    m_volumeSlider->installEventFilter( this );
-    ui->volume->setAttribute( Qt::WA_Hover );
-    ui->volume->installEventFilter( this );
 
     // if our buttons are pressed we should trigger the actions
     connect( ui->love, SIGNAL(clicked()), aApp->loveAction(), SLOT(trigger()));
-    connect( ui->ban, SIGNAL(clicked()), aApp->banAction(), SLOT(trigger()));
-    connect( ui->play, SIGNAL(clicked()), aApp->playAction(), SLOT(trigger()));
-    connect( ui->skip, SIGNAL(clicked()), aApp->skipAction(), SLOT(trigger()));
-    connect( ui->volume, SIGNAL(clicked()), SLOT(mute()));
 
     connect( &ScrobbleService::instance(), SIGNAL(frameChanged(int)), SLOT(onFrameChanged(int)) );
 }
@@ -125,12 +83,9 @@ PlaybackControlsWidget::addToMenu( QMenu& menu, QAction* before )
 
     menu.insertSeparator( before );
 
-    menu.insertAction( before, aApp->skipAction() );
-
     menu.insertSeparator( before );
 
     menu.insertAction( before, aApp->loveAction() );
-    menu.insertAction( before, aApp->banAction() );
 
     menu.insertSeparator( before );
 
@@ -141,7 +96,6 @@ PlaybackControlsWidget::addToMenu( QMenu& menu, QAction* before )
 
     //menu.addAction( tr( "Volume Up" ), &RadioService::instance(), SLOT(volumeUp()), QKeySequence( Qt::CTRL + Qt::Key_Up ));
     //menu.addAction( tr( "Volume Down" ), &RadioService::instance(), SLOT(volumeDown()), QKeySequence( Qt::CTRL + Qt::Key_Down ));
-    menu.insertAction( before, aApp->muteAction() );
 }
 
 
@@ -159,8 +113,6 @@ PlaybackControlsWidget::setScrobbleTrack( bool scrobbleTrack )
     style()->polish( ui->details );
     style()->polish( ui->status );
     style()->polish( ui->device );
-    style()->polish( ui->play );
-    style()->polish( ui->skip );
     style()->polish( ui->love );
 }
 
@@ -168,26 +120,12 @@ void
 PlaybackControlsWidget::onActionsChanged()
 {
    ui->love->setChecked( aApp->loveAction()->isChecked() );
-   ui->ban->setChecked( aApp->banAction()->isChecked() );
-   ui->play->setChecked( aApp->playAction()->isChecked() );
-   ui->skip->setChecked( aApp->skipAction()->isChecked() );
-
-   m_playAction->setText( aApp->playAction()->isChecked() ? tr( "Pause" ) : RadioService::instance().state() == Stopped ? tr( "Play" ) : tr( "Resume" ) );
 
    ui->love->setEnabled( aApp->loveAction()->isEnabled() );
-   ui->ban->setEnabled( aApp->banAction()->isEnabled() && aApp->currentSession().youRadio()  );
-   ui->play->setEnabled( aApp->playAction()->isEnabled() && aApp->currentSession().youRadio()  );
-   ui->skip->setEnabled( aApp->skipAction()->isEnabled() && aApp->currentSession().youRadio()  );
 
    ui->love->setToolTip( ui->love->isChecked() ? tr("Unlove") : tr("Love") );
-   ui->ban->setToolTip( tr("Ban") );
-   ui->play->setToolTip( ui->play->isChecked() ? tr("Pause") : tr("Play") );
-   ui->skip->setToolTip( tr("Skip") );
 
    ui->love->setText( ui->love->isChecked() ? tr("Unlove") : tr("Love") );
-   ui->ban->setText( tr("Ban") );
-   ui->play->setText( ui->play->isChecked() ? tr("Pause") : tr("Play") );
-   ui->skip->setText( tr("Skip") );
 }
 
 
@@ -204,45 +142,24 @@ PlaybackControlsWidget::onPlayClicked( bool checked )
     if ( checked )
     {
         AnalyticsService::instance().sendEvent(NOW_PLAYING_CATEGORY, PLAY_CLICKED, "PlayButtonPressed");
-
-        if ( RadioService::instance().state() == Stopped )
-            RadioService::instance().play( RadioStation( "" ) );
-        else
-        {
-            RadioService::instance().resume();
-        }
     }
     else
     {
         AnalyticsService::instance().sendEvent(NOW_PLAYING_CATEGORY, PLAY_CLICKED, "PauseButtonPressed");
-        RadioService::instance().pause();
     }
-}
-
-void
-PlaybackControlsWidget::onSkipClicked()
-{
-    RadioService::instance().skip();
-    AnalyticsService::instance().sendEvent(NOW_PLAYING_CATEGORY, SKIP_CLICKED, "SkipClicked");
 }
 
 void
 PlaybackControlsWidget::onLoveClicked( bool loved )
 {
-    MutableTrack track( RadioService::instance().currentTrack() );
-
     if ( loved )
     {
-        track.love();
         AnalyticsService::instance().sendEvent(NOW_PLAYING_CATEGORY, LOVE_TRACK, "TrackLoved");
     }
     else
     {
-        track.unlove();
         AnalyticsService::instance().sendEvent(NOW_PLAYING_CATEGORY, LOVE_TRACK, "TrackUnLoved");
     }
-
-    connect( track.signalProxy(), SIGNAL(loveToggled(bool)), ui->love, SLOT(setChecked(bool)));
 }
 
 
@@ -253,77 +170,6 @@ PlaybackControlsWidget::onLoveTriggered( bool loved )
     onLoveClicked( loved );
 }
 
-
-void
-PlaybackControlsWidget::onBanClicked()
-{
-    QNetworkReply* banReply = MutableTrack( RadioService::instance().currentTrack() ).ban();
-    connect(banReply, SIGNAL(finished()), SLOT(onBanFinished()));
-
-    AnalyticsService::instance().sendEvent(NOW_PLAYING_CATEGORY, BAN_TRACK, "BanTrackPressed");
-}
-
-
-void
-PlaybackControlsWidget::onBanFinished()
-{
-    lastfm::XmlQuery lfm;
-    lfm.parse( static_cast<QNetworkReply*>(sender()) );
-
-    if ( lfm.attribute( "status" ) != "ok" )
-    {
-    }
-
-    aApp->skipAction()->trigger();
-}
-
-void
-PlaybackControlsWidget::onTuningIn( const RadioStation& station )
-{
-    setUpdatesEnabled( false );
-
-    ui->icon->setPixmap( QPixmap( ":/control_bar_radio_as.png" ) );
-
-    ui->status->setText( tr("Tuning") );
-    ui->device->setText( station.title().isEmpty() ? tr( "A Radio Station" ) : station.title() );
-
-    ui->play->setChecked( true );
-    aApp->playAction()->setChecked( true );
-    ui->play->setChecked( false );
-
-    aApp->playAction()->setChecked( false );
-    aApp->playAction()->setEnabled( true );
-    aApp->loveAction()->setEnabled( false );
-    aApp->banAction()->setEnabled( false );
-    aApp->skipAction()->setEnabled( false );
-    aApp->tagAction()->setEnabled( false );
-    aApp->shareAction()->setEnabled( false );
-
-    ui->buttons->setVisible( true );
-    ui->love->setVisible( true );
-    ui->ban->setVisible( true );
-    ui->as->setVisible( true );
-    ui->time->setVisible( false );
-    ui->time->setText( "" );
-    ui->scrobbleMeter->setVisible( true );
-    ui->scrobbleMeter->setRange( 0, 1 );
-    ui->scrobbleMeter->setValue( 0 );
-    ui->scrobbleMeter->setToolTip( tr( "Scrobble meter: %1%" ).arg( 0 ) );
-    ui->progress->setVisible( false );
-    ui->progress->setRange( 0, 1 );
-    ui->progress->setValue( 0 );
-    ui->progressSpacer->setVisible( true );
-    ui->message->setVisible( false );
-    ui->message->setText( "" );
-    ui->as->setVisible( true );
-    ui->as->setPixmap( QPixmap( ":/scrobble_marker_OFF.png" ) );
-    ui->as->setToolTip( tr( "Not scrobbled" ) );
-    ui->volumeFrame->setVisible( true );
-
-    setScrobbleTrack( false );
-
-    setUpdatesEnabled( true );
-}
 
 void
 PlaybackControlsWidget::onTrackStarted( const lastfm::Track& track, const lastfm::Track& /*oldTrack*/ )
@@ -342,28 +188,9 @@ PlaybackControlsWidget::onStopped()
     aApp->playAction()->setChecked( false );
     aApp->playAction()->setEnabled( true );
     aApp->loveAction()->setEnabled( false );
-    aApp->banAction()->setEnabled( false );
-    aApp->skipAction()->setEnabled( false );
     aApp->tagAction()->setEnabled( false );
     aApp->shareAction()->setEnabled( false );
 }
-
-void
-PlaybackControlsWidget::setTime( int frame, const lastfm::Track& track )
-{
-    QTime duration( 0, 0 );
-    duration = duration.addMSecs( track.duration() * 1000 );
-    QTime progress( 0, 0 );
-    progress = progress.addMSecs( frame );
-
-    QString format( duration.hour() > 0 ? "h:mm:ss" : "m:ss" );
-
-    if ( m_track.source() == Track::LastFmRadio )
-        ui->time->setText( QString( "%1 / %2" ).arg( progress.toString( format ), duration.toString( format ) ) );
-    else
-        ui->time->setText( QString( "%1" ).arg( progress.toString( format ) ) );
-}
-
 
 void
 PlaybackControlsWidget::setTrack( const Track& track )
@@ -371,15 +198,10 @@ PlaybackControlsWidget::setTrack( const Track& track )
     // we're about to change loads of stuff to don't update until the end
     setUpdatesEnabled( false );
 
-    onVolumeChanged( RadioService::instance().audioOutput()->volume() );
-    m_volumeSlider->setAudioOutput( RadioService::instance().audioOutput() );
-
     disconnect( m_track.signalProxy(), SIGNAL(loveToggled(bool)), ui->love, SLOT(setChecked(bool)));
     disconnect( m_track.signalProxy(), SIGNAL(scrobbleStatusChanged(short)), this, SLOT(onScrobbleStatusChanged(short)) );
     m_track = track;
     connect( m_track.signalProxy(), SIGNAL(scrobbleStatusChanged(short)), this, SLOT(onScrobbleStatusChanged(short)) );
-
-    setTime( 0, track );
 
     ui->as->setPixmap( QPixmap( ":/scrobble_marker_OFF.png" ) );
     ui->as->setToolTip( "" );
@@ -395,62 +217,37 @@ PlaybackControlsWidget::setTrack( const Track& track )
         // be able to start the radio
         aApp->playAction()->setEnabled( true );
 
-        aApp->playAction()->setChecked( track.source() == Track::LastFmRadio );
-
-        // can only ban and skip radio tracks
-        aApp->banAction()->setEnabled( track.source() == Track::LastFmRadio );
-        aApp->skipAction()->setEnabled( track.source() == Track::LastFmRadio );
+        aApp->playAction()->setChecked( false );
 
         aApp->loveAction()->setChecked( track.isLoved() );
 
-        bool radioTrack = track.source() == Track::LastFmRadio && !m_track.url().isLocalFile();
         bool externalPlayer = track.extra( "playerId" ) == "spt" || track.extra( "playerId" ) == "mpris2";
-        bool scrobbleTrack = track.source() != Track::LastFmRadio && !externalPlayer;
-
-        ui->buttons->setVisible( radioTrack );
+        bool scrobbleTrack = !externalPlayer;
 
         ui->love->setVisible( true ); // you can always love a track
 
-        // we show back instead of ban only for local playlist tracks
-        ui->ban->setEnabled( radioTrack ); // disable when it's not radio
-
-        ui->volumeFrame->setVisible( radioTrack );
-
-        ui->as->setVisible( radioTrack || scrobbleTrack );
+        ui->as->setVisible( scrobbleTrack );
         ui->as->setToolTip( tr( "Not scrobbled" ) );
-        ui->time->setVisible( radioTrack );
 
-        ui->scrobbleMeter->setVisible( radioTrack || scrobbleTrack );
+        ui->scrobbleMeter->setVisible( scrobbleTrack );
         ui->scrobbleMeter->setRange( 0, ScrobbleService::instance().stopWatch()->scrobblePoint() * 1000 );
         ui->scrobbleMeter->setValue( 0 );
         ui->scrobbleMeter->setToolTip( tr( "Scrobble meter: %1%" ).arg( 0 ) );
 
-        ui->progress->setVisible( radioTrack );
-        ui->progress->setRange( 0, m_track.duration() * 1000 );
-        ui->progress->setValue( 0 );
-        ui->progressSpacer->setVisible( !radioTrack );
+        ui->progressSpacer->setVisible( true );
 
         connect( track.signalProxy(), SIGNAL(loveToggled(bool)), ui->love, SLOT(setChecked(bool)));
 
-        ui->status->setText( externalPlayer || radioTrack ? tr("Listening to") : tr("Scrobbling from") );
+        ui->status->setText( externalPlayer ? tr("Listening to") : tr("Scrobbling from") );
 
-        setScrobbleTrack( !radioTrack );
+        setScrobbleTrack( true );
 
         ui->message->setVisible( externalPlayer );
         ui->message->setText( track.extra( "playerId" ) == "spt" ?
                                   unicorn::Label::boldLinkStyle( tr( "Enable scrobbling by getting the %1." ).arg( unicorn::Label::anchor( "spotify:app:lastfm:route:login", tr( "Last.fm app for Spotify" ) ) ), Qt::black ):
                                   "" );
 
-        if ( radioTrack )
-        {
-            QString title = RadioService::instance().station().title();
-            ui->device->setText( title.isEmpty() ? tr( "A Radio Station" ) : title );
-        }
-        else
-        {
-            // Not a radio track
-            ui->device->setText( track.extra( "playerName" ) );
-        }
+        ui->device->setText( track.extra( "playerName" ) );
 
         // Set the icon!
         QString id = track.extra( "playerId" );
@@ -487,80 +284,17 @@ PlaybackControlsWidget::setTrack( const Track& track )
     setUpdatesEnabled( true );
 }
 
-
-void
-PlaybackControlsWidget::onVolumeChanged( qreal volume )
-{
-    QPixmap volumePixmap;
-
-    if ( RadioService::instance().audioOutput()->isMuted() )
-        volumePixmap.load( ":/volume_mute.png" );
-    else if ( volume < 0.3 )
-        volumePixmap.load( ":/volume_low.png" );
-    else if ( volume < 0.7 )
-        volumePixmap.load( ":/volume_mid.png" );
-    else
-        volumePixmap.load( ":/volume_high.png" );
-
-    ui->volume->setIconSize( volumePixmap.size() );
-    ui->volume->setIcon(  QIcon( volumePixmap ) );
-}
-
 bool
 PlaybackControlsWidget::eventFilter( QObject *obj, QEvent *event )
 {
-    if ( !m_volumeHideTimer )
-    {
-        m_volumeHideTimer = new QTimer( this );
-        m_volumeHideTimer->setInterval( 500 );
-        m_volumeHideTimer->setSingleShot( true );
-        connect( m_volumeHideTimer, SIGNAL(timeout()), m_volumeSlider, SLOT(animateClose()) );
-    }
-
-    if ( event->type() == QEvent::Enter )
-    {
-        m_volumeHideTimer->stop();
-
-        if ( obj == ui->volume && !m_volumeSlider->isVisible() )
-        {
-            QPoint topLeft( ui->volumeSplitter2->geometry().topLeft() );
-            topLeft = ui->volume->parentWidget()->mapTo( this, topLeft );
-            QRect geo( topLeft, QSize( m_volumeSlider->size().width(), ui->volume->height() ) );
-            m_volumeSlider->setGeometry( geo );
-
-            m_volumeSlider->animateOpen();
-        }
-    }
-    else if ( event->type() == QEvent::Leave )
-    {
-        if ( !m_volumeSlider->underMouse() && !ui->volume->underMouse() )
-            m_volumeHideTimer->start();
-    }
-
     return QFrame::eventFilter( obj, event );
 }
-
-void
-PlaybackControlsWidget::mute()
-{
-    qreal volume = RadioService::instance().audioOutput()->volume();
-    RadioService::instance().audioOutput()->setMuted( !RadioService::instance().audioOutput()->isMuted() );
-    RadioService::instance().audioOutput()->setVolume( volume );
-    onVolumeChanged( RadioService::instance().audioOutput()->volume() );
-}
-
 
 void
 PlaybackControlsWidget::onFrameChanged( int frame )
 {
     if ( ui->scrobbleMeter->maximum() != 1 )
     {
-        if ( m_track.source() == Track::LastFmRadio && RadioService::instance().mediaObject() )
-            setTime( RadioService::instance().mediaObject()->currentTime(), m_track );
-        else
-            setTime( frame, m_track );
-
-        ui->progress->setValue( frame >= ui->progress->maximum() ? ui->progress->maximum() : frame );
         int scrobbleValue = frame >= ui->scrobbleMeter->maximum() ? ui->scrobbleMeter->maximum() : frame;
         ui->scrobbleMeter->setRange( 0, ScrobbleService::instance().stopWatch()->scrobblePoint() * 1000 );
         ui->scrobbleMeter->setValue( scrobbleValue );

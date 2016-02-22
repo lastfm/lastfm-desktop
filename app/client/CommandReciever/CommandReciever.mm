@@ -24,7 +24,6 @@
 #include <lastfm/Track.h>
 
 #include "../Application.h"
-#include "../Services/RadioService/RadioService.h"
 
 #include "CommandReciever.h"
 
@@ -34,7 +33,6 @@
 @interface LastfmNextCommand: NSScriptCommand { } @end
 @interface LastfmPrevCommand: NSScriptCommand { } @end
 @interface LastfmLoveCommand: NSScriptCommand { } @end
-@interface LastfmBanCommand: NSScriptCommand { } @end
 
 @implementation LastfmPlayPauseCommand
 
@@ -50,7 +48,6 @@
 
 - (id)performDefaultImplementation
 {
-    aApp->skipAction()->trigger();
     return nil;
 }
 
@@ -80,7 +77,6 @@
 
 - (id)performDefaultImplementation
 {
-    aApp->banAction()->trigger();
     return nil;
 }
 
@@ -129,9 +125,6 @@ CommandReciever::CommandReciever( QObject *parent )
                                     QDir::home().filePath( "Library/Application Support/Airfoil/TrackTitles/fm.last.Scrobbler.scpt" ) );
 
     aApp->delegate()->setCommandObserver( this );
-
-    connect( &RadioService::instance(), SIGNAL(trackSpooled(Track)), SLOT(onTrackSpooled(Track)) );
-    connect( &RadioService::instance(), SIGNAL(stopped()), SLOT(onStopped()));
 }
 
 bool

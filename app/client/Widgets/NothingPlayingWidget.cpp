@@ -88,15 +88,6 @@ NothingPlayingWidget::onSessionChanged( const unicorn::Session& session )
 {
     if ( !session.user().name().isEmpty() )
         ui->top->setText( tr(  "Hello, %1!" ).arg( session.user().name() ) );
-
-    // leave them in their current state until the sessioninfo is valid
-    // this stops them getting hidden and shown again when adding a new subscriber
-    if ( session.isValid() )
-    {
-        ui->splitter->setVisible( session.youRadio() );
-        ui->quickStart->setVisible( session.youRadio() );
-        ui->start->setVisible( session.youRadio() );
-    }
 }
 
 #ifdef Q_OS_WIN

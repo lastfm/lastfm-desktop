@@ -28,7 +28,6 @@
 #include "lib/unicorn/widgets/Label.h"
 
 #include "../Application.h"
-#include "PlayableItemWidget.h"
 
 #include "FriendWidget.h"
 #include "ui_FriendWidget.h"
@@ -56,8 +55,6 @@ FriendWidget::FriendWidget( const lastfm::XmlQuery& user, QWidget* parent)
     QRegExp re( "/serve/(\\d*)s?/" );
     ui->avatar->loadUrl( user["image size=medium"].text().replace( re, "/serve/\\1s/" ), HttpImageWidget::ScaleNone );
     ui->avatar->setHref( user["url"].text() );
-
-    ui->radio->setStation( RadioStation::library( User( user["name"].text() ) ), tr("%1's Library Radio").arg( user["name"].text() ), "" );
 
     ui->avatar->setUser( m_user );
 }

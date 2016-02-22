@@ -22,8 +22,6 @@
 
 #include <QFrame>
 
-#include <lastfm/RadioStation.h>
-
 class QComboBox;
 
 namespace unicorn { class Label; }
@@ -48,7 +46,6 @@ private slots:
     void onSessionChanged( const unicorn::Session& session );
 
     void play();
-    void playNext();
 
     void setToCurrent();
 
@@ -59,8 +56,6 @@ private slots:
     void onUserGotTopArtists();
     void onChartGotTopArtists();
 
-private:
-    void setSuggestions();
 
 private:
     QString m_currentUser;

@@ -24,7 +24,6 @@
 
 #include "../Application.h"
 #include "../Services/ScrobbleService.h"
-#include "../Services/RadioService.h"
 #include "../Services/AnalyticsService.h"
 #include "ScrobbleControls.h"
 #include "BioWidget.h"
@@ -200,8 +199,6 @@ MetadataWidget::setTrackDetails( const Track& track )
             ui->trackAlbum->setText( tr("from %1").arg( Label::anchor( track.album().www().toString(), track.album())));
     }
 
-    ui->radio->setStation( RadioStation::similar( Artist( track.artist().name() ) ), tr( "Play %1 Radio" ).arg( track.artist().name() ) );
-
     connect( track.signalProxy(), SIGNAL(loveToggled(bool)), ui->scrobbleControls, SLOT(setLoveChecked(bool)));
 }
 
@@ -250,12 +247,6 @@ MetadataWidget::onArtistGotInfo()
                     widgets[i]->loadUrl( artists[i]["image size=medium"].text().replace( re, "/serve/\\1s/" ), HttpImageWidget::ScaleNone );
                     widgets[i]->setHref( artists[i]["url"].text() );
                 }
-
-                // "With yeah, blah and more."
-                if ( artists.count() == 1 )
-                    ui->radio->setDescription( tr( "With %1 and more." ).arg( artists[0]["name"].text() ) );
-                else if ( artists.count() >= 2 )
-                    ui->radio->setDescription( tr( "With %1, %2 and more.").arg( artists[0]["name"].text(), artists[1]["name"].text() ) );
             }
 
         }
@@ -622,54 +613,6 @@ QString
 MetadataWidget::getContextString( const Track& track )
 {
    QString contextString;
-
-   lastfm::TrackContext context = track.context();
-
-   if ( context.values().count() > 0 )
-   {
-       switch ( context.type() )
-       {
-       case lastfm::TrackContext::Artist:
-           {
-           switch ( context.values().count() )
-               {
-               default:
-               case 1: contextString = tr( "Recommended because you listen to %1." ).arg( Label::anchor( Artist( context.values().at(0) ).www().toString(), context.values().at(0) ) ); break;
-               case 2: contextString = tr( "Recommended because you listen to %1 and %2." ).arg( Label::anchor( Artist( context.values().at(0) ).www().toString(), context.values().at(0) ), Label::anchor( Artist( context.values().at(1) ).www().toString(), context.values().at(1) ) ); break;
-               case 3: contextString = tr( "Recommended because you listen to %1, %2, and %3." ).arg( Label::anchor( Artist( context.values().at(0) ).www().toString(), context.values().at(0) ) , Label::anchor( Artist( context.values().at(1) ).www().toString(), context.values().at(1) ), Label::anchor( Artist( context.values().at(2) ).www().toString(), context.values().at(2) ) ); break;
-               case 4: contextString = tr( "Recommended because you listen to %1, %2, %3, and %4." ).arg( Label::anchor( Artist( context.values().at(0) ).www().toString(), context.values().at(0) ), Label::anchor( Artist( context.values().at(1) ).www().toString(), context.values().at(1) ), Label::anchor( Artist( context.values().at(2) ).www().toString(), context.values().at(2) ), Label::anchor( Artist( context.values().at(3) ).www().toString(), context.values().at(3) ) ); break;
-               case 5: contextString = tr( "Recommended because you listen to %1, %2, %3, %4, and %5." ).arg( Label::anchor( Artist( context.values().at(0) ).www().toString(), context.values().at(0) ), Label::anchor( Artist( context.values().at(1) ).www().toString(), context.values().at(1) ), Label::anchor( Artist( context.values().at(2) ).www().toString(), context.values().at(2) ), Label::anchor( Artist( context.values().at(3) ).www().toString(), context.values().at(3) ), Label::anchor( Artist( context.values().at(4) ).www().toString(), context.values().at(4) ) ); break;
-               }
-           }
-           break;
-       case lastfm::TrackContext::User:
-           // Whitelist multi-user station
-           if ( !RadioService::instance().station().url().startsWith("lastfm://users/") )
-               break;
-       case lastfm::TrackContext::Friend:
-       case lastfm::TrackContext::Neighbour:
-           {
-           switch ( context.values().count() )
-               {
-               default:
-               case 1: contextString = tr( "From %1's library." ).arg( userLibrary( context.values().at(0), track.artist().name() ) ); break;
-               case 2: contextString = tr( "From %1 and %2's libraries." ).arg( userLibrary( context.values().at(0), track.artist().name() ), userLibrary( context.values().at(1), track.artist().name() ) ); break;
-               case 3: contextString = tr( "From %1, %2, and %3's libraries." ).arg( userLibrary( context.values().at(0), track.artist().name() ), userLibrary( context.values().at(1), track.artist().name() ), userLibrary( context.values().at(2), track.artist().name() ) ); break;
-               case 4: contextString = tr( "From %1, %2, %3, and %4's libraries." ).arg( userLibrary( context.values().at(0), track.artist().name() ),userLibrary(  context.values().at(1), track.artist().name() ), userLibrary( context.values().at(2), track.artist().name() ), userLibrary( context.values().at(3), track.artist().name() ) ); break;
-               case 5: contextString = tr( "From %1, %2, %3, %4, and %5's libraries." ).arg( userLibrary( context.values().at(0), track.artist().name() ), userLibrary( context.values().at(1), track.artist().name() ), userLibrary( context.values().at(2), track.artist().name() ), userLibrary( context.values().at(3), track.artist().name() ), userLibrary( context.values().at(4), track.artist().name() ) ); break;
-               }
-           }
-           break;
-       default:
-           // when there is no context they will just get scrobble counts
-           break;
-       }
-   }
-   else
-   {
-       // There's no context so just give them some scrobble counts
-   }
-
    return contextString;
 }
 
@@ -713,12 +656,6 @@ void
 MetadataWidget::setBackButtonVisible( bool visible )
 {
    ui->context->setText( contextString( m_track ) );
-
    ui->back->setVisible( visible );
-
-   ui->scrobbleControls->ui.love->setVisible( visible );
-
-   // keep the love button on for iTunes tracks
-   if ( !visible && m_track.source() != Track::LastFmRadio )
-       ui->scrobbleControls->ui.love->setVisible( true );
+   ui->scrobbleControls->ui.love->setVisible( true );
 }

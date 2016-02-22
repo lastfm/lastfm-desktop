@@ -11,7 +11,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>fm.last.Scrobbler</string>
 	<key>CFBundleVersion</key>
-	<string>2.1.36</string>
+	<string>2.1.37</string>
 	<key>SUFeedURL</key>
 	<string>http://cdn.last.fm/client/Mac/updates.xml</string>
 	<key>SUEnableAutomaticChecks</key>

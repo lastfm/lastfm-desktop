@@ -77,16 +77,6 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QCheckBox" name="mediaKeys">
-     <property name="text">
-      <string>Enable media keys</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="1">
     <widget class="QCheckBox" name="notifications">
      <property name="enabled">

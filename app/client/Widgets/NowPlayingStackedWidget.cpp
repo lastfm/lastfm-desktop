@@ -25,9 +25,7 @@
 #include <QStackedLayout>
 
 #include <lastfm/Track.h>
-#include <lastfm/RadioStation.h>
 
-#include "../Services/RadioService/RadioService.h"
 #include "../Services/ScrobbleService/ScrobbleService.h"
 
 #include "NowPlayingStackedWidget.h"
@@ -40,7 +38,6 @@ NowPlayingStackedWidget::NowPlayingStackedWidget( QWidget* parent )
     addWidget( ui.nothingPlaying = new NothingPlayingWidget( this ) );
     addWidget( ui.nowPlaying = new NowPlayingWidget( this ) );
 
-    connect( &RadioService::instance(), SIGNAL(tuningIn(RadioStation)), SLOT(showNowPlaying()) );
     connect( &ScrobbleService::instance(), SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), SLOT(showNowPlaying()));
     connect( &ScrobbleService::instance(), SIGNAL(stopped()), SLOT(showNothingPlaying()));
 }

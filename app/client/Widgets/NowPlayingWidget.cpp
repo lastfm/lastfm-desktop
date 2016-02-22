@@ -26,7 +26,6 @@
 #include "PlaybackControlsWidget.h"
 #include "MetadataWidget.h"
 
-#include "../Services/RadioService.h"
 #include "../Services/ScrobbleService.h"
 
 NowPlayingWidget::NowPlayingWidget(QWidget *parent)
@@ -49,8 +48,6 @@ NowPlayingWidget::NowPlayingWidget(QWidget *parent)
 
     ui.metadata = 0;
 
-    connect( &RadioService::instance(), SIGNAL(tuningIn(RadioStation)), SLOT(onTuningIn(RadioStation)) );
-
     connect( &ScrobbleService::instance(), SIGNAL(trackStarted(lastfm::Track,lastfm::Track)), SLOT(onTrackStarted(lastfm::Track,lastfm::Track)) );
     connect( &ScrobbleService::instance(), SIGNAL(stopped()), SLOT(onStopped()) );
 }
@@ -59,13 +56,6 @@ PlaybackControlsWidget*
 NowPlayingWidget::playbackControls() const
 {
     return ui.playbackControls;
-}
-
-void
-NowPlayingWidget::onTuningIn( const RadioStation& )
-{   
-    ui.stack->setCurrentWidget( ui.spinner );
-    m_movie->start();
 }
 
 void

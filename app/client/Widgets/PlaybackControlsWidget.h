@@ -25,8 +25,6 @@
 #include <QFrame>
 #include <QPointer>
 #include <QTimer>
-
-#include <lastfm/RadioStation.h>
 #include <lastfm/Track.h>
 
 namespace unicorn { class Session; }
@@ -57,13 +55,9 @@ private slots:
     void onActionsChanged();
     void onSpace();
     void onPlayClicked( bool checked );
-    void onSkipClicked();
     void onLoveClicked( bool loved );
     void onLoveTriggered( bool loved );
-    void onBanClicked();
-    void onBanFinished();
 
-    void onTuningIn( const RadioStation& station );
     void onTrackStarted( const lastfm::Track& track, const lastfm::Track& oldTrack );
     void onError( int error , const QVariant& errorData );
     void onStopped();
@@ -71,11 +65,7 @@ private slots:
     void onFrameChanged( int frame );
     void onScrobbleStatusChanged( short scrobbleStatus );
 
-    void onVolumeChanged( qreal volume );
-    void mute();
-
 private:
-    void setTime( int frame, const Track& track );
     void setTrack( const Track& track );
 
 private:
@@ -86,10 +76,6 @@ private:
     bool m_scrobbleTrack;
 
     lastfm::Track m_track;
-
-    class VolumeSlider* m_volumeSlider;
-
-    QPointer<QTimer> m_volumeHideTimer;
 };
 
 #endif // PLAYBACKCONTROLS_H

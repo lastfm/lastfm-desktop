@@ -45,14 +45,12 @@ GeneralSettingsWidget::GeneralSettingsWidget( QWidget* parent )
 #endif
 
 #ifdef Q_OS_MAC
-    ui->mediaKeys->setChecked( unicorn::Settings().value( "mediaKeys", true ).toBool() );
 
     ui->showAs->setChecked( unicorn::Settings().showAS() );
     ui->showDock->setChecked( unicorn::Settings().showDock() );
 
 #else
     ui->showDock->hide();
-    ui->mediaKeys->hide();
 
     ui->showAs->setChecked( unicorn::Settings().showAS() );
 #endif
@@ -71,7 +69,6 @@ GeneralSettingsWidget::GeneralSettingsWidget( QWidget* parent )
     connect( ui->beta, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
     connect( ui->showAs, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
     connect( ui->showDock, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
-    connect( ui->mediaKeys, SIGNAL(stateChanged(int)), SLOT(onSettingsChanged()) );    connect( ui->launch, SIGNAL(stateChanged(int) ), SLOT( onSettingsChanged() ) );
     connect( ui->updates, SIGNAL(stateChanged(int)), SLOT( onSettingsChanged() ) );
 }
 
@@ -138,9 +135,6 @@ GeneralSettingsWidget::saveSettings()
         aApp->setBetaUpdates( ui->beta->isChecked() );
 
 #ifdef Q_OS_MAC
-        /// media keys
-        unicorn::Settings().setValue( "mediaKeys", ui->mediaKeys->isChecked() );
-        aApp->setMediaKeysEnabled( ui->mediaKeys->isChecked() );
 
         /// dock hiding
         bool showDockOld = unicorn::Settings().showDock();
