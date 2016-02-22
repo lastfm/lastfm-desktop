@@ -17,14 +17,7 @@ You will also need depending on your chosen platform:-
 We recommend that you use Homebrew to install most of the dependancies:
 
     brew tap lastfm/lastfmdesktop
-    brew install qt kde-phonon
-    brew install --HEAD vlc
-    brew install phonon-vlc
-
-We install kde-phonon becuase the Phonon distributed with Qt is quite old.
-
-Installing phonon-vlc will remove the QuickTime phonon plugin and replace
-it with the VLC phonon plugin so that when we build the app we use .
+    brew install qt
 
 ### Other dependancies
 
@@ -56,46 +49,6 @@ Install Qt binaries from either the Qt SDK or standalone binary package. You sho
 
 You will also need the latest Windows SDK. We build using Visual Studio 2008.
 
-### Phonon
-
-We build the latest version of Phonon. This step is optional, if you're happy with the outdated one that ships with Qt.
-
-You can clone Phonon from here git://anongit.kde.org/phonon
-
-Follow their instructions to build it using cmake, etc. I found that CMake needed a little help wiht cmake-gui.
-
-Create a pkg-config file for Phonon like this:
-
-    Name: Phonon
-    Description: Multimedia Library
-    Version: 4.6.0
-    Libs: -LC:/dev/Install/Phonon/lib C:/dev/Install/Phonon/lib/phonon.lib
-    Cflags: -IC:/dev/Install/Phonon/include
-
-### VLC
-
-We use the VLC backend for phonon. This step is optional, if you are happy with the directx plugin that ships with Qt.
-
-Download Latest VLC from http://www.videolan.org/vlc/download-windows.html
-
-VLC is compiled with MinGW so we need to generate a .lib so that we can link to it with MSVC.
-
-To do this you should follow the instructions here http://wiki.videolan.org/GenerateLibFromDll
-
-- Copy the pkg-config files from 'INSTALL_DIR\VideoLAN\VLC\sdk\lib\pkgconfig' to your pkg-config search directory.
-
-I found I also had to copy libvlc.dll and libvlccore.dll into lastfm-desktop/_bin
-
-### Phonon-VLC
-
-This is the Qt plugin that gets Phonon to use libvlc. Again, this is an optional.
-
-You can clone phonon-vlc from here git://anongit.kde.org/phonon-vlc
-
-Follow there instructions for building it. I found that CMake needed a little help wiht cmake-gui.
-
-You should copy the resulting `phonon_vlc.dll` into `lastfm-desktop/_bin/plugins/phonon_backend`
-
 ### Winsparkle
 
 This is the library we use to check for app updates. You should download the latest dll and headers form here http://winsparkle.org
@@ -115,7 +68,7 @@ I found that I also needed to copy the dll into the lastfm-desktop/_bin folder. 
 On Debian or Ubuntu, you can download all the build dependencies by running:
 
     sudo apt-get install libavformat-dev libgpod-nogtk-dev liblastfm-dev \
-                         libphonon-dev libqt4-dev libqtwebkit-dev pkg-config \
+                         libqt4-dev libqtwebkit-dev pkg-config \
                          zlib1g-dev
 
 You should also install the `libqt4-sql-sqlite` plugin if you want to use the
@@ -157,7 +110,7 @@ support non-developers building from source there. However within reason!
 Please check around the net a little first. Ask your friends. Demand help
 from people standing at bus-stops.
 
-Maybe check the official forum: http://www.last.fm/forum/34905
+Maybe check the official forum: http://getsatisfaction.com/lastfm
 
 # Bugs
 
