@@ -58,6 +58,8 @@ def build
 	end
 
 	system 'qmake -r CONFIG+=release'
+	# Hack to fix the /Library/Framework includes
+	system 'sed -i -e "s/-I-F/-F/g" lib/unicorn/Makefile'
 	system 'make'
 
 	system 'rm -rf _bin/Last.fm.app'
@@ -67,6 +69,23 @@ end
 def copy_plugin
 	## copy the iTunes plugin into the bundle
 	system "cp -R _bin/Audioscrobbler.bundle '_bin/Last.fm.app/Contents/MacOS/'"
+end
+
+def sign_app
+	# We need to fix the QT dependencies, as they are not in a state to be signed in El Capitan
+	# and we're not upgrading to QT5 at the moment
+	puts "======= Fixing Qt Framework and Codesigning ==========="
+	Dir.foreach('_bin/Last.fm.app/Contents/Frameworks') do |framework|
+		if framework.start_with?('Qt')
+			puts "fixing #{framework} for codesigning"
+			system "mkdir -p _bin/Last.fm.app/Contents/Frameworks/#{framework}/Versions/Current/Resources"
+			system "mv _bin/Last.fm.app/Contents/Frameworks/#{framework}/Contents/Info.plist _bin/Last.fm.app/Contents/Frameworks/#{framework}/Versions/Current/Resources/Info.plist"
+			system "rmdir _bin/Last.fm.app/Contents/Frameworks/#{framework}/Contents"
+			system "rm _bin/Last.fm.app/Contents/Frameworks/#{framework}/*.prl"
+		end
+	end
+	puts "signing application and bundled frameworks"
+	system 'codesign -f --deep -s "Developer ID Application: Last.fm" -i fm.last.Scrobbler _bin/Last.fm.app'
 end
 
 def create_zip
@@ -155,6 +174,7 @@ if not ARGV.include?( "--no-build" )
 	clean
 	build
 	copy_plugin
+	sign_app
 end
 if not ARGV.include?( "--no-package" )
 	# package and upload the app
