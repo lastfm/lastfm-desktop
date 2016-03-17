@@ -38,7 +38,7 @@ AboutDialog::AboutDialog( QWidget* parent )
     ui->qtVersion->setText(  tr( "%1 (built on Qt %2)"  ).arg( qApp->applicationVersion(), qVersion() ) );
 
     ui->lastfmLink->setText(  "<a href='http://www.last.fm'>www.last.fm</a>" );
-    ui->ircLink->setText(  "<a href='http://www.last.fm/forum/34905'>Last.fm Client Support</a>" );
+    ui->ircLink->setText(  "<a href='https://getsatisfaction.com/lastfm/categories/lastfm_apps'>Last.fm Client Support</a>" );
 
     ui->copyright->setText( QString::fromUtf8("™ & © 2005, 2006 - 2012 Last.fm Limited") );
 }

@@ -28,11 +28,11 @@
 
 #ifdef Q_OS_WIN
 namespace qtsparkle { class Updater; }
-#define UPDATE_URL_WIN "http://cdn.last.fm/client/updates/updates.win.xml"
-#define UPDATE_URL_WIN_BETA "http://cdn.last.fm/client/updates/updates.win.beta.xml"
+#define UPDATE_URL_WIN "https://cdn.last.fm/client/updates/updates.win.xml"
+#define UPDATE_URL_WIN_BETA "https://cdn.last.fm/client/updates/updates.win.beta.xml"
 #elif defined( Q_OS_MAC )
-#define UPDATE_URL_MAC @"http://cdn.last.fm/client/updates/updates.mac.xml"
-#define UPDATE_URL_MAC_BETA @"http://cdn.last.fm/client/updates/updates.mac.beta.xml"
+#define UPDATE_URL_MAC @"https://cdn.last.fm/client/updates/updates.mac.xml"
+#define UPDATE_URL_MAC_BETA @"https://cdn.last.fm/client/updates/updates.mac.beta.xml"
 #endif
 
 namespace unicorn

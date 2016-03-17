@@ -72,7 +72,7 @@
 void qt_mac_set_dock_menu(QMenu *menu);
 #endif
 
-const QString CONFIG_URL = "http://cdn.last.fm/client/config.xml";
+const QString CONFIG_URL = "https://cdn.last.fm/client/config.xml";
 
 MainWindow::MainWindow( QMenuBar* menuBar )
     :unicorn::MainWindow( menuBar )
