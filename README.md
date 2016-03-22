@@ -16,7 +16,6 @@ You will also need depending on your chosen platform:-
 
 We recommend that you use Homebrew to install most of the dependancies:
 
-    brew tap lastfm/lastfmdesktop
     brew install qt
 
 ### Other dependancies
