@@ -34,7 +34,7 @@ end
 
 
 
-$upload_folder = '/userhome/michael/www/client/Mac'
+$upload_folder = '/tmp/desktop_client_app_release/'
 $download_folder = 'http://users.last.fm/~michael/client/Mac'
 
 ## Check that we are running from the root of the lastfm-desktop project
@@ -131,9 +131,9 @@ def upload_files
 	# scp all the deltas
 	# put them in my userhome if we are doing a test update
 
-	system "scp _bin/#{$version}/Last.fm-#{$version}.tar.bz2 badger:#{$upload_folder}"
-	system "scp _bin/#{$version}/Last.fm_Mac_Update_#{$version}.tar.bz2 badger:#{$upload_folder}"
-	system "scp _bin/#{$version}/Last.fm-#{$version}.zip badger:#{$upload_folder}"
+	system "cp _bin/#{$version}/Last.fm-#{$version}.tar.bz2 #{$upload_folder}"
+	system "cp _bin/#{$version}/Last.fm_Mac_Update_#{$version}.tar.bz2 #{$upload_folder}"
+	system "cp _bin/#{$version}/Last.fm-#{$version}.zip #{$upload_folder}"
 
 	$deltas.each do |delta|
 		system "scp _bin/#{$version}/Last.fm-#{$version}-#{delta}.delta badger:#{$upload_folder}"
