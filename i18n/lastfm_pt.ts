@@ -20,7 +20,7 @@
     </message>
     <message>
         <source>We&apos;re waiting for you to connect to Last.fm</source>
-        <translation>Estamos esperando você conectar-se à Last.fm</translation>
+        <translation>Estamos à esquera que se conecte ao Last.fm</translation>
     </message>
     <message>
         <source>&lt;&lt; Back</source>
@@ -66,7 +66,7 @@
     <name>AvatarWidget</name>
     <message>
         <source>Subscriber</source>
-        <translation>Assinante</translation>
+        <translation>Subscritor</translation>
     </message>
     <message>
         <source>Moderator</source>
@@ -74,15 +74,15 @@
     </message>
     <message>
         <source>Staff</source>
-        <translation>Equipe</translation>
+        <translation>Staff</translation>
     </message>
     <message>
         <source>Alumna</source>
-        <translation>Ex-equipe</translation>
+        <translation>Ex-staff</translation>
     </message>
     <message>
         <source>Alumnus</source>
-        <translation>Ex-equipe</translation>
+        <translation>Ex-staff</translation>
     </message>
 </context>
 <context>
@@ -100,11 +100,11 @@
     </message>
     <message>
         <source>Your plugins haven&apos;t been installed</source>
-        <translation>Seus plug-ins ainda não foram instalados</translation>
+        <translation>Os seus plug-ins ainda não foram instalados</translation>
     </message>
     <message>
         <source>You can install them later through the file menu</source>
-        <translation>Você poderá instalá-los mais tarde por meio do menu Arquivo</translation>
+        <translation>Poderá instalá-los mais tarde por meio do menu Arquivo</translation>
     </message>
     <message>
         <source>iTunes</source>
@@ -124,7 +124,7 @@
     </message>
     <message>
         <source>Skip &gt;&gt;</source>
-        <translation>Pular &gt;&gt;</translation>
+        <translation>Saltar &gt;&gt;</translation>
     </message>
 </context>
 <context>
