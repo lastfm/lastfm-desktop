@@ -81,6 +81,7 @@ SOURCES += \
     Widgets/PlayableItemWidget.cpp \
     Widgets/NowPlayingWidget.cpp \
     Widgets/RefreshButton.cpp \
+    Widgets/TrayIcon.cpp \
     Widgets/WidgetTextObject.cpp \
     Wizard/LoginPage.cpp \
     Wizard/BootstrapPage.cpp \
@@ -159,6 +160,7 @@ HEADERS += \
     Widgets/TagWidget.h \
     Widgets/ProfileArtistWidget.h \
     Widgets/RefreshButton.h \
+    Widgets/TrayIcon.h \
     Widgets/WidgetTextObject.h \
     Wizard/AccessPage.h \
     Wizard/TourMetadataPage.h \

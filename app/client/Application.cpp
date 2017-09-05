@@ -387,7 +387,7 @@ Application::tray()
 {
     if ( !m_tray )
     {
-        m_tray = new QSystemTrayIcon(this);
+        m_tray = new TrayIcon(this);
         setTrayIcon();
 
 #if defined(Q_OS_WIN) || defined(Q_WS_X11)
