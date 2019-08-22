@@ -23,6 +23,10 @@
 #define __STDC_CONSTANT_MACROS 1
 #endif
 
+#ifndef AVCODEC_MAX_AUDIO_FRAME_SIZE
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000
+#endif
+
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavutil/mathematics.h>
@@ -118,7 +122,7 @@ uint8_t * LAV_SourcePrivate::decodeOneFrame(int &dataSize, int &channels, int& n
 {
     char buf[256];
     AVPacket packet;
-    AVFrame *decodedFrame = avcodec_alloc_frame();
+    AVFrame *decodedFrame = av_frame_alloc();
     av_init_packet(&packet);
 
     int frameFinished = 0;
@@ -293,7 +297,7 @@ uint8_t * LAV_SourcePrivate::decodeOneFrame(int &dataSize, int &channels, int& n
         av_free_packet(&packet);
     }
     timestamp += (double)nSamples / decodedFrame->sample_rate;
-    avcodec_free_frame(&decodedFrame);
+    av_frame_free(&decodedFrame);
     return outBuffer;
 }
 
@@ -410,7 +414,7 @@ void LAV_Source::getInfo(int& lengthSecs, int& samplerate, int& bitrate, int& nc
 
 void LAV_Source::release()
 {
-    if ( d->inCodecContext && d->inCodecContext->codec_id != CODEC_ID_NONE )
+    if ( d->inCodecContext && d->inCodecContext->codec_id != AV_CODEC_ID_NONE )
     {
         avcodec_close(d->inCodecContext);
     }
