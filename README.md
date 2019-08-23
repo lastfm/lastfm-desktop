@@ -16,7 +16,18 @@ You will also need depending on your chosen platform:-
 
 We recommend that you use Homebrew to install most of the dependancies:
 
-    brew install qt
+In order to install the newest QT run:
+
+```
+brew install qt
+```
+
+You may want to install QT 4.8. In that case run:
+
+```
+brew install cartr/qt4/qt@4
+brew install cartr/qt4/qt-webkit@2.3
+```
 
 ### Other dependancies
 
