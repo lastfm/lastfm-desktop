@@ -123,7 +123,7 @@ software to scrobble your iPod.
 
 # Build Instructions
 
-    qmake -r
+    qmake-qt4 -r
     make -j4
     
 `make install` currently does not work on Windows or OSX.
