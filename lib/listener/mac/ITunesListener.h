@@ -39,7 +39,7 @@ signals:
     void newConnection( class PlayerConnection* );
     
 private:
-    static bool iTunesIsPlaying();
+    static QString getPlayerAppId();
 
     /** iTunes notification center callback */
     static void callback( CFNotificationCenterRef, 
@@ -50,12 +50,15 @@ private:
 
     void callback( CFDictionaryRef );
 
+    bool isPlaying();
+
 private slots:
     void setupCurrentTrack();
 
 private:
     State m_state;
     QString m_previousPid;
+    QString m_playerAppId;
     struct ITunesConnection* m_connection;
 
     AppleScript m_currentTrackScript;

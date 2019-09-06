@@ -32,6 +32,8 @@
 	<string>AppleScriptSuite.sdef</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Allow Last.fm to Scrobble music you are listening to.</string>
 	<key>BreakpadProduct</key>
 	<string>@EXECUTABLE@</string>
 	<key>BreakpadVendor</key>
