@@ -1,5 +1,0 @@
-TBA
-- Support Scrobbling on MacOS Catalina.
-
-2.1.37
-- Start of changelog.
