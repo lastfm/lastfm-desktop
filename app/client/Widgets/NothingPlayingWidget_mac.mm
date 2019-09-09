@@ -3,9 +3,10 @@
 #include "NothingPlayingWidget.h"
 
 void
-NothingPlayingWidget::oniTunesClicked()
+NothingPlayingWidget::oniTunesClicked( const QString& playerAppId )
 {
-    // launch iTunes!  
-    [[NSWorkspace sharedWorkspace] launchAppWithBundleIdentifier:@"com.apple.iTunes" options:NSWorkspaceLaunchDefault additionalEventParamDescriptor:nil launchIdentifier:NULL];
+    NSString *bundleId = [NSString stringWithUTF8String:playerAppId.toStdString().c_str()];
+    // launch iTunes or Music  
+    [[NSWorkspace sharedWorkspace] launchAppWithBundleIdentifier:bundleId options:NSWorkspaceLaunchDefault additionalEventParamDescriptor:nil launchIdentifier:NULL];
 }
 

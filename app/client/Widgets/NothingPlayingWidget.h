@@ -23,6 +23,8 @@
 
 #include <QFrame>
 
+#include "lib/unicorn/mac/AppleScript.h"
+
 namespace lastfm { class User; }
 namespace unicorn { class Session; }
 
@@ -35,6 +37,7 @@ public:
     explicit NothingPlayingWidget( QWidget* parent = 0 );
 
 private:
+    static QString getPlayerAppId();
     void setUser( const lastfm::User& user );
 #ifdef Q_OS_WIN
     void startApp( const QString& app );
@@ -44,7 +47,7 @@ private slots:
     void onSessionChanged( const unicorn::Session& session );
 
 #if defined( Q_OS_MAC ) || defined( Q_OS_WIN )
-    void oniTunesClicked();
+    void oniTunesClicked( const QString& playerAppId );
 #endif
 #ifdef Q_OS_WIN
     void onWinampClicked();
@@ -54,6 +57,7 @@ private slots:
 
 private:
     Ui::NothingPlayingWidget* ui;
+    QString m_playerAppId;
 };
 
 #endif // NOTHINGPLAYINGWIDGET_H

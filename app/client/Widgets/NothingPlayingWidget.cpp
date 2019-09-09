@@ -36,8 +36,9 @@
 #include "ui_NothingPlayingWidget.h"
 
 NothingPlayingWidget::NothingPlayingWidget( QWidget* parent )
-    :QFrame( parent ),
-      ui( new Ui::NothingPlayingWidget )
+    : QFrame( parent )
+    , ui( new Ui::NothingPlayingWidget )
+    , m_playerAppId( getPlayerAppId() )
 {   
     ui->setupUi( this );
 
@@ -60,7 +61,7 @@ NothingPlayingWidget::NothingPlayingWidget( QWidget* parent )
     ui->itunes->setVisible( true ); // always show iTunes on Mac
     ui->itunes->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
-    connect( ui->itunes, SIGNAL(clicked()), SLOT(oniTunesClicked()));
+    connect( ui->itunes, SIGNAL(clicked()), SLOT(oniTunesClicked( m_playerAppId )));
 
 #ifndef Q_OS_MAC
     unicorn::PluginList pluginList;
@@ -88,6 +89,19 @@ NothingPlayingWidget::onSessionChanged( const unicorn::Session& session )
         ui->top->setText( tr(  "Hello, %1!" ).arg( session.user().name() ) );
 }
 
+QString //static
+NothingPlayingWidget::getPlayerAppId()
+{
+    const char* code = 
+    "try\n"
+        "tell me to get application id \"com.apple.Music\"\n"
+        "return \"com.apple.Music\"\n"
+    "on error\n"
+        "return \"com.apple.iTunes\"\n"
+    "end try\n";
+    return AppleScript( code ).exec();
+}
+
 #ifdef Q_OS_WIN
 void
 NothingPlayingWidget::startApp( const QString& app )
@@ -105,7 +119,7 @@ NothingPlayingWidget::startApp( const QString& app )
 }
 
 void
-NothingPlayingWidget::oniTunesClicked()
+NothingPlayingWidget::oniTunesClicked( const QString& playerAppId )
 {
     startApp( "/iTunes/iTunes.exe" );
 }

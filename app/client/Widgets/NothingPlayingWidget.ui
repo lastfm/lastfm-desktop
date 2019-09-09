@@ -68,7 +68,7 @@
       <item>
        <widget class="QPushButton" name="itunes">
         <property name="text">
-         <string>Open iTunes</string>
+         <string>Open Music or iTunes</string>
         </property>
        </widget>
       </item>
