@@ -159,10 +159,10 @@ plugins="imageformats sqldrivers bearer"
 for plugin in $plugins; do
     if [ -d /Developer/Applications/Qt/plugins/ ]; then
         pluginDir=/Developer/Applications/Qt/plugins
-    elif [ -d /usr/local/Cellar/qt@4/4.8.7_5/lib/qt4/plugins/ ]; then
-        # Qt installed using Homebrew will be found in the Homebrew Cellar.
+    elif [ -d /usr/local/lib/qt4/plugins/ ]; then
+        # Qt installed using Homebrew will be found in your local lib.
         # Currently we only support qt v4.8.7.
-        pluginDir=/usr/local/Cellar/qt@4/4.8.7_5/lib/qt4/plugins
+        pluginDir=/usr/local/lib/qt4/plugins
     else
         pluginDir=`qmake --version |sed -n 's/^.*in \(\/.*$\)/\1/p'`/../plugins
     fi
