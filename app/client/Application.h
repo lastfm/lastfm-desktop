@@ -37,17 +37,12 @@
 class AboutDialog;
 class LicensesDialog;
 class MainWindow;
-class RadioWidget;
 class QAction;
 class ScrobbleInfoFetcher;
 class Drawer;
 class QMenuBar;
 class UserManagerDialog;
-#ifdef Q_OS_MAC
-class MediaKey;
-#endif
 
-namespace lastfm { class RadioStation; }
 namespace unicorn { class Notify; }
 using unicorn::Notify;
 
@@ -75,17 +70,11 @@ namespace audioscrobbler
 
         enum Argument
         {
-            LastFmUrl,
-            Pause, //toggles pause
-            Skip,
             Exit,
-            Stop,
             Twiddly,
             Settings,
             ArgUnknown
         };
-
-        QMap<QString, QQueue<QDateTime> > m_skips;
 
         // we delete these so QPointers
         QPointer<QSystemTrayIcon> m_tray;
@@ -93,9 +82,6 @@ namespace audioscrobbler
         QPointer<QMenuBar> m_menuBar;
         QPointer<Notify> m_notify;
         QPointer<UserManagerDialog> m_userManager;
-#ifdef Q_OS_MAC
-        QPointer<MediaKey> m_mediaKey;
-#endif
 
         QPointer<AbstractBootstrapper> m_bootstrapper;
 
@@ -111,9 +97,7 @@ namespace audioscrobbler
         QAction* m_love_action;
         QAction* m_tag_action;
         QAction* m_share_action;
-        QAction* m_ban_action;
         QAction* m_play_action;
-        QAction* m_skip_action;
         QAction* m_show_window_action;
         QAction* m_toggle_window_action;
         QAction* m_scrobble_ipod_action;
@@ -130,9 +114,7 @@ namespace audioscrobbler
         QAction* loveAction() const { return m_love_action; }
         QAction* tagAction() const { return m_tag_action; }
         QAction* shareAction() const { return m_share_action; }
-        QAction* banAction() const { return m_ban_action; }
         QAction* playAction() const { return m_play_action; }
-        QAction* skipAction() const { return m_skip_action; }
         QAction* muteAction() const { return m_mute_action; }
         QAction* scrobbleToggleAction() const { return m_submit_scrobbles_toggle; }
         QSystemTrayIcon* tray();
@@ -147,9 +129,6 @@ namespace audioscrobbler
 
         void showAs( bool showAs );
 
-#ifdef Q_OS_MAC
-        void setMediaKeysEnabled( bool enabled );
-#endif
         QString currentCategory() const;
         
     signals:
@@ -165,7 +144,6 @@ namespace audioscrobbler
 
         void finished();
 
-        void skipTriggered();
 		
         void error( const QString& message );
         void status( const QString& message, const QString& id );
@@ -197,18 +175,11 @@ namespace audioscrobbler
 
     private:
         static Argument argument( const QString& arg );
-        void saveSkips() const;
-        int minutesUntilNextSkip( const lastfm::RadioStation& station );
-
-#ifdef Q_OS_MAC
-        bool macEventFilter ( EventHandlerCallRef caller, EventRef event );
-#endif
 
     private slots:
         void onTrayActivated(QSystemTrayIcon::ActivationReason);
         void onCorrected(QString correction);
 
-        void onSkipTriggered();
         void onTagTriggered();
         void onShareTriggered();
 

@@ -24,7 +24,6 @@
 #include <QWidget>
 
 #include <lastfm/Track.h>
-#include <lastfm/RadioStation.h>
 
 class NowPlayingWidget : public QWidget
 {
@@ -44,7 +43,6 @@ public:
     class PlaybackControlsWidget* playbackControls() const;
 
 private slots:
-    void onTuningIn( const RadioStation& );
     void onTrackStarted( const lastfm::Track& track, const lastfm::Track& );
     void onStopped();
 

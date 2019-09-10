@@ -33,7 +33,6 @@
 #include "PluginsInstallPage.h"
 #include "BootstrapPage.h"
 #include "TourMetadataPage.h"
-#include "TourRadioPage.h"
 #include "TourFinishPage.h"
 #include "TourScrobblesPage.h"
 #include "TourLocationPage.h"
@@ -203,21 +202,16 @@ FirstRunWizard::next()
         // only show the radio page if you can subscribe to get radio
         else if ( currentPage == ui->tourMetadataPage )
         {
-            if ( aApp->currentSession().subscriberRadio() )
-                ui->stackedWidget->setCurrentWidget( ui->tourRadioPage );
-            else
-#ifndef Q_WS_X11 // don't show the sys tray page on linux because there isn't one
-                ui->stackedWidget->setCurrentWidget( ui->tourLocationPage );
-#else
-                ui->stackedWidget->setCurrentWidget( ui->tourFinishPage );
-#endif
-        }
-        else if ( currentPage == ui->tourRadioPage )
 #ifndef Q_WS_X11 // don't show the sys tray page on linux because there isn't one
             ui->stackedWidget->setCurrentWidget( ui->tourLocationPage );
-        else if ( currentPage == ui->tourLocationPage )
-#endif
+#else
             ui->stackedWidget->setCurrentWidget( ui->tourFinishPage );
+#endif
+        }
+        else if ( currentPage == ui->tourLocationPage )
+#ifndef Q_WS_X11 // don't show the sys tray page on linux because there isn't one
+            ui->stackedWidget->setCurrentWidget( ui->tourFinishPage );
+#endif
 
         ui->welcome->hide();
 
@@ -289,7 +283,6 @@ FirstRunWizard::skip()
         ui->stackedWidget->setCurrentWidget( ui->tourScrobblesPage );
     else if ( currentPage == ui->tourScrobblesPage
               || currentPage == ui->tourMetadataPage
-              || currentPage == ui->tourRadioPage
               || currentPage == ui->tourLocationPage )
         ui->stackedWidget->setCurrentWidget( ui->tourFinishPage );
 

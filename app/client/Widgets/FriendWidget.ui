@@ -54,13 +54,6 @@
           </property>
          </widget>
         </item>
-        <item>
-         <widget class="PlayableItemWidget" name="radio">
-          <property name="text">
-           <string notr="true">PushButton</string>
-          </property>
-         </widget>
-        </item>
        </layout>
       </widget>
      </item>
@@ -151,11 +144,6 @@
    <class>unicorn::Label</class>
    <extends>QLabel</extends>
    <header>lib/unicorn/widgets/Label.h</header>
-  </customwidget>
-  <customwidget>
-   <class>PlayableItemWidget</class>
-   <extends>QPushButton</extends>
-   <header>../Widgets/PlayableItemWidget.h</header>
   </customwidget>
   <customwidget>
    <class>AvatarWidget</class>

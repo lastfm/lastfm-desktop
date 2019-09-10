@@ -35,7 +35,6 @@
 
 
 #include "Application.h"
-#include "Services/RadioService.h"
 #include "Services/ScrobbleService.h"
 #include "Services/AnalyticsService.h"
 #include "MediaDevices/DeviceScrobbler.h"
@@ -49,7 +48,6 @@
 #include "../Widgets/StatusBar.h"
 #include "../Widgets/TitleBar.h"
 #include "../Widgets/PlaybackControlsWidget.h"
-#include "../Widgets/RadioWidget.h"
 #include "../Widgets/NowPlayingWidget.h"
 #include "lib/unicorn/widgets/DataBox.h"
 #include "lib/unicorn/widgets/MessageBar.h"
@@ -74,7 +72,7 @@
 void qt_mac_set_dock_menu(QMenu *menu);
 #endif
 
-const QString CONFIG_URL = "http://cdn.last.fm/client/config.xml";
+const QString CONFIG_URL = "https://cdn.last.fm/client/config.xml";
 
 MainWindow::MainWindow( QMenuBar* menuBar )
     :unicorn::MainWindow( menuBar )
@@ -129,12 +127,6 @@ MainWindow::MainWindow( QMenuBar* menuBar )
     connect( ui.stackedWidget, SIGNAL(currentChanged(int)), ui.friends, SLOT(onCurrentChanged(int)) );
 
 
-    ui.stackedWidget->addWidget( ui.radioScrollArea = new QScrollArea( this ) );
-    ui.radioScrollArea->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    ui.radioScrollArea->setWidget( ui.radio = new RadioWidget( this ) );
-    ui.radioScrollArea->setWidgetResizable( true );
-    ui.radio->setObjectName( "radio" );
-
     ui.statusBar = new StatusBar( this );
     ui.statusBar->setObjectName( "StatusBar" );
 
@@ -147,10 +139,6 @@ MainWindow::MainWindow( QMenuBar* menuBar )
     connect( &ScrobbleService::instance(), SIGNAL( paused() ), SLOT( onPaused() ) );
     connect( &ScrobbleService::instance(), SIGNAL( resumed() ), SLOT( onResumed() ) );
     connect( &ScrobbleService::instance(), SIGNAL( stopped() ), SLOT( onStopped() ) );
-
-    connect( &RadioService::instance(), SIGNAL(tuningIn(RadioStation)), SLOT(onTuningIn()));
-    connect( &RadioService::instance(), SIGNAL(error(int,QVariant)), SLOT(onRadioError(int,QVariant)));
-    connect( &RadioService::instance(), SIGNAL(message(const QString&)), SLOT(onRadioMessage(const QString&)));
 
     connect( &ScrobbleService::instance(), SIGNAL(foundIPodScrobbles(QList<lastfm::Track>)), SLOT(onFoundScrobbles(QList<lastfm::Track>)));
 
@@ -366,22 +354,6 @@ MainWindow::onSpace()
 void
 MainWindow::onConfigRetrieved()
 {
-    XmlQuery xq;
-
-    if( xq.parse( qobject_cast<QNetworkReply*>(sender()) ) )
-    {
-        // -- grab the song count and set it for playback.
-        int songCount = xq["songcount"].text().toInt();
-
-        if(songCount > 0)
-            RadioService::instance().setMaxUsageCount( songCount );
-
-        // -- grab the message and display it on load
-        QString message = xq["message"]["text"].text();
-
-        if ( !message.isEmpty() )
-            onRadioMessage( message );
-    }
 }
 
 void
@@ -475,63 +447,29 @@ MainWindow::checkForUpdates()
 }
 
 void
-MainWindow::onTuningIn()
-{
-    /* 0 is the now playing widget in the stack */
-    ui.sideBar->click( 0 );
-}
-
-void
 MainWindow::onTrackStarted( const lastfm::Track& t, const lastfm::Track& /*previous*/ )
 {
     m_currentTrack = t;
-
-    if ( m_currentTrack.source() == Track::LastFmRadio )
-        setWindowTitle( tr( "%1 - %2 - %3" ).arg( t.toString(), RadioService::instance().station().title(), applicationName() ) );
-    else
-        setWindowTitle( tr( "%1 - %2" ).arg( t.toString(), applicationName() ) );
+    setWindowTitle( tr( "%1 - %2" ).arg( t.toString(), applicationName() ) );
 }
-
 
 void
 MainWindow::onStopped()
 {
     m_currentTrack = Track();
-
     setWindowTitle( applicationName() );
 }
-
 
 void
 MainWindow::onResumed()
 {
-    if ( m_currentTrack.source() == Track::LastFmRadio )
-        setWindowTitle( tr( "%1 - %2 - %3" ).arg( m_currentTrack.toString(), RadioService::instance().station().title(), applicationName() ) );
-    else
-        setWindowTitle( tr( "%1 - %2" ).arg( m_currentTrack.toString(), applicationName() ) );
+    setWindowTitle( tr( "%1 - %2" ).arg( m_currentTrack.toString(), applicationName() ) );
 }
-
 
 void
 MainWindow::onPaused()
 {
-    if ( m_currentTrack.source() == Track::LastFmRadio )
-        setWindowTitle( tr( "%1 - %2" ).arg( RadioService::instance().station().title(), applicationName() ) );
-    else
-        setWindowTitle( tr( "%1" ).arg( applicationName() ) );
-}
-
-
-void
-MainWindow::onRadioError( int error, const QVariant& data )
-{
-    ui.messageBar->show( tr( "%1: %2" ).arg( data.toString(), QString::number( error ) ), "radio" );
-}
-
-void
-MainWindow::onRadioMessage(const QString &message)
-{
-    ui.messageBar->show(message, "radio");
+    setWindowTitle( tr( "%1" ).arg( applicationName() ) );
 }
 
 void
@@ -555,7 +493,6 @@ MainWindow::addWinThumbBarButton( QAction* thumbButtonAction )
 {
     m_buttons.append( thumbButtonAction );
 }
-
 
 void
 MainWindow::addWinThumbBarButtons( QList<QAction*>& thumbButtonActions )

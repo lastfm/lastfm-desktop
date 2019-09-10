@@ -76,9 +76,6 @@ private slots:
     void onScrobbleStatusChanged();
     void onCorrected( QString correction );
 
-    void play();
-    void playNext();
-
     void updateTimestamp();
 
 public:

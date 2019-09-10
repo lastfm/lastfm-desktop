@@ -42,6 +42,11 @@ extern "C" {
 
 #include <QFile>
 
+/*
+ defining the constant here to avoid using deprecated AVCODEC_MAX_AUDIO_FRAME_SIZE
+*/
+#define MAX_AUDIO_FRAME_SIZE 192000
+
 using namespace std;
 
 
@@ -70,9 +75,9 @@ public:
         , eof(false)
         , overflowSize(0)
     {
-        outBuffer = (uint8_t*)av_malloc(sizeof(uint8_t)*AVCODEC_MAX_AUDIO_FRAME_SIZE*4);
-        outBufferSize = sizeof(uint8_t)*AVCODEC_MAX_AUDIO_FRAME_SIZE*4;
-        overflow = (uint8_t*)av_malloc(sizeof(uint8_t)*AVCODEC_MAX_AUDIO_FRAME_SIZE*4);
+        outBuffer = (uint8_t*)av_malloc(sizeof(uint8_t)*MAX_AUDIO_FRAME_SIZE*4);
+        outBufferSize = sizeof(uint8_t)*MAX_AUDIO_FRAME_SIZE*4;
+        overflow = (uint8_t*)av_malloc(sizeof(uint8_t)*MAX_AUDIO_FRAME_SIZE*4);
     }
 
     ~LAV_SourcePrivate()

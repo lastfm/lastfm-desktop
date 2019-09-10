@@ -40,7 +40,7 @@ unicorn::Updater::Updater( QWidget* parent ) :
     {
         int urlIndex = qApp->arguments().indexOf( "--update" ) + 1;
 
-        if ( qApp->arguments().count() > urlIndex && qApp->arguments()[urlIndex].startsWith( "http://" ) )
+        if ( qApp->arguments().count() > urlIndex && qApp->arguments()[urlIndex].startsWith( "https://" ) )
         {
             m_updater = new qtsparkle::Updater( QUrl( QString( qApp->arguments()[urlIndex].toUtf8() ) ), m_parentWidget );
             m_updater->SetNetworkAccessManager( lastfm::nam() );

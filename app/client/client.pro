@@ -3,7 +3,7 @@ TARGET = "Last.fm Scrobbler"
 unix:!mac {
     TARGET = lastfm-scrobbler
 }
-VERSION = 2.1.36
+VERSION = 2.1.37
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 QT = core gui xml network sql
 CONFIG += lastfm unicorn listener logger phonon analytics
@@ -36,7 +36,6 @@ SUBDIRS=PrefPane
 SOURCES += \
     AudioscrobblerSettings.cpp \
     Application.cpp \
-    StationSearch.cpp \
     ScrobSocket.cpp \
     MediaDevices/MediaDevice.cpp \
     MediaDevices/IpodDevice.cpp \
@@ -52,8 +51,6 @@ SOURCES += \
     Settings/GeneralSettingsWidget.cpp \
     Services/ScrobbleService/StopWatch.cpp \
     Services/ScrobbleService/ScrobbleService.cpp \
-    Services/RadioService/RadioService.cpp \
-    Services/RadioService/RadioConnection.cpp \
     Dialogs/DiagnosticsDialog.cpp \
     Bootstrapper/PluginBootstrapper.cpp \
     Bootstrapper/ITunesDevice/itunesdevice.cpp \
@@ -63,7 +60,6 @@ SOURCES += \
     Widgets/TitleBar.cpp \
     Widgets/StatusBar.cpp \
     Widgets/SideBar.cpp \
-    Widgets/RadioWidget.cpp \
     Widgets/NothingPlayingWidget.cpp \
     Widgets/NowPlayingStackedWidget.cpp \
     Widgets/ProfileWidget.cpp \
@@ -75,10 +71,8 @@ SOURCES += \
     Widgets/ShortcutEdit.cpp \
     Widgets/ProfileArtistWidget.cpp \
     Widgets/ScrobbleControls.cpp \
-    Widgets/QuickStartWidget.cpp \
     Widgets/PointyArrow.cpp \
     Widgets/PlaybackControlsWidget.cpp \
-    Widgets/PlayableItemWidget.cpp \
     Widgets/NowPlayingWidget.cpp \
     Widgets/RefreshButton.cpp \
     Widgets/WidgetTextObject.cpp \
@@ -88,7 +82,6 @@ SOURCES += \
     Wizard/AccessPage.cpp \
     Wizard/TourMetadataPage.cpp \
     Wizard/PluginsPage.cpp \
-    Wizard/TourRadioPage.cpp \
     Wizard/TourFinishPage.cpp \
     Wizard/PluginsInstallPage.cpp \
     Wizard/BootstrapProgressPage.cpp \
@@ -106,20 +99,15 @@ SOURCES += \
     Services/AnalyticsService/PersistentCookieJar.cpp \
     Settings/CheckFileSystemModel.cpp \
     Settings/CheckFileSystemView.cpp \
-    Widgets/VolumeSlider.cpp
 
 HEADERS += \
     ScrobSocket.h \
     AudioscrobblerSettings.h \
     Application.h \
     MainWindow.h \
-    StationSearch.h \
-    Services/RadioService/RadioConnection.h \
     Services/ScrobbleService.h \
     Services/ScrobbleService/StopWatch.h \
     Services/ScrobbleService/ScrobbleService.h \
-    Services/RadioService.h \
-    Services/RadioService/RadioService.h \
     MediaDevices/MediaDevice.h \
     MediaDevices/IpodDevice.h \
     MediaDevices/DeviceScrobbler.h \
@@ -143,12 +131,9 @@ HEADERS += \
     Widgets/StatusBar.h \
     Widgets/SideBar.h \
     Widgets/ScrobbleControls.h \
-    Widgets/QuickStartWidget.h \
     Widgets/PointyArrow.h \
     Widgets/PlaybackControlsWidget.h \
-    Widgets/PlayableItemWidget.h \
     Widgets/NowPlayingWidget.h \
-    Widgets/RadioWidget.h \
     Widgets/NothingPlayingWidget.h \
     Widgets/NowPlayingStackedWidget.h \
     Widgets/ProfileWidget.h \
@@ -163,7 +148,6 @@ HEADERS += \
     Wizard/AccessPage.h \
     Wizard/TourMetadataPage.h \
     Wizard/PluginsPage.h \
-    Wizard/TourRadioPage.h \
     Wizard/TourFinishPage.h \
     Wizard/PluginsInstallPage.h \
     Wizard/BootstrapProgressPage.h \
@@ -185,18 +169,11 @@ HEADERS += \
     Services/AnalyticsService/PersistentCookieJar.h \
     Settings/CheckFileSystemModel.h \
     Settings/CheckFileSystemView.h \
-    Widgets/VolumeSlider.h
 
 mac:HEADERS += CommandReciever/CommandReciever.h \
-                MediaKeys/MediaKey.h \
-                ../../lib/3rdparty/SPMediaKeyTap/SPMediaKeyTap.h \
-                ../../lib/3rdparty/SPMediaKeyTap/SPInvocationGrabbing/NSObject+SPInvocationGrabbing.h
 
 mac:OBJECTIVE_SOURCES += CommandReciever/CommandReciever.mm \
                             Widgets/NothingPlayingWidget_mac.mm \
-                            MediaKeys/MediaKey.mm \
-                            ../../lib/3rdparty/SPMediaKeyTap/SPMediaKeyTap.m \
-                            ../../lib/3rdparty/SPMediaKeyTap/SPInvocationGrabbing/NSObject+SPInvocationGrabbing.m
 
 FORMS += \
     Widgets/PlaybackControlsWidget.ui \
@@ -216,7 +193,6 @@ FORMS += \
     Dialogs/LicensesDialog.ui \
     Widgets/ScrobblesWidget.ui \
     Widgets/ProfileWidget.ui \
-    Widgets/RadioWidget.ui
 
 unix:!mac {
     CONFIG += qdbus

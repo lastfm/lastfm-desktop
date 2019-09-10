@@ -38,7 +38,6 @@
 #include "lib/unicorn/qtsingleapplication/qtsinglecoreapplication.h"
 #include "lib/unicorn/UnicornSettings.h"
 #include "Services/ScrobbleService.h"
-#include "Services/RadioService.h"
 
 #include "lib/unicorn/CrashReporter/CrashReporter.h"
 
@@ -125,20 +124,7 @@ static pascal OSErr appleEventHandler( const AppleEvent* e, AppleEvent*, long )
     AEGetAttributePtr( e, keyEventIDAttr, typeType, 0, &id, sizeof(id), 0 );
     
     switch (id)
-    {
-        case 'GURL':
-        {
-            DescType type;
-            Size size;
-
-            char buf[1024];
-            AEGetParamPtr( e, keyDirectObject, typeChar, &type, &buf, 1023, &size );
-            buf[size] = '\0';
-
-            RadioService::instance().play( RadioStation( QString::fromUtf8( buf ) ) );
-            return noErr;
-        }
-            
+    {       
         default:
             return unimpErr;
     }
@@ -148,7 +134,4 @@ static pascal OSErr appleEventHandler( const AppleEvent* e, AppleEvent*, long )
 
 void cleanup()
 {
-    if (RadioService::instance().audioOutput()) {
-	    unicorn::AppSettings().setValue( "Volume", RadioService::instance().audioOutput()->volume() );
-    }
 }

@@ -77,8 +77,6 @@ class MainWindow : public unicorn::MainWindow
         QWidget* profile;
         class QScrollArea* friendsScrollArea;
         QWidget* friends;
-        class QScrollArea* radioScrollArea;
-        class RadioWidget* radio;
 
     } ui;
 
@@ -115,10 +113,6 @@ private slots:
     void onStopped();
     void onPaused();
     void onResumed();
-    void onTuningIn();
-
-    void onRadioError( int error, const QVariant& data );
-    void onRadioMessage(const QString& message);
 
     void checkForUpdates();
 
@@ -146,7 +140,6 @@ private:
 private:
     Track m_currentTrack;
     class ActivityListItem* m_currentActivity;
-    class QDockWidget* m_radioSideBar;
     QList<QAction*> m_buttons;
 
     QPointer<PreferencesDialog> m_preferences;

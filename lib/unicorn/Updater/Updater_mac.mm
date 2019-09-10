@@ -52,7 +52,7 @@ unicorn::Updater::Updater(QWidget *parent) :
     {
         int urlIndex = qApp->arguments().indexOf( "--update" ) + 1;
 
-        if ( qApp->arguments().count() > urlIndex && qApp->arguments()[urlIndex].startsWith( "http://" ) )
+        if ( qApp->arguments().count() > urlIndex && qApp->arguments()[urlIndex].startsWith( "https://" ) )
             [updater setFeedURL:[NSURL URLWithString: [NSString stringWithCharacters:(const unichar *)qApp->arguments()[urlIndex].unicode() length:(NSUInteger)qApp->arguments()[urlIndex].length() ]]];
         else
             setBetaUpdates( unicorn::Settings().betaUpdates() );

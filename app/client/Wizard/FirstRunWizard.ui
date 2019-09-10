@@ -50,7 +50,6 @@
      <widget class="BootstrapProgressPage" name="bootstrapProgressPage"/>
      <widget class="TourScrobblesPage" name="tourScrobblesPage"/>
      <widget class="TourMetadataPage" name="tourMetadataPage"/>
-     <widget class="TourRadioPage" name="tourRadioPage"/>
      <widget class="TourFinishPage" name="tourFinishPage"/>
      <widget class="TourLocationPage" name="tourLocationPage"/>
     </widget>
@@ -177,12 +176,6 @@
    <class>TourMetadataPage</class>
    <extends>QWidget</extends>
    <header>../Wizard/TourMetadataPage.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>TourRadioPage</class>
-   <extends>QWidget</extends>
-   <header>../Wizard/TourRadioPage.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

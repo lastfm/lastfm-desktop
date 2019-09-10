@@ -72,15 +72,12 @@
          <item>
           <widget class="QLabel" name="description">
            <property name="text">
-            <string>Start listening to some music in your media player or start a radio station:</string>
+            <string>Start listening to some music in your media player:</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
            </property>
           </widget>
-         </item>
-         <item>
-          <widget class="QuickStartWidget" name="widget" native="true"/>
          </item>
          <item>
           <spacer name="verticalSpacer">
@@ -108,12 +105,6 @@
    <class>ScrobblesListWidget</class>
    <extends>QWidget</extends>
    <header>../Widgets/ScrobblesListWidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QuickStartWidget</class>
-   <extends>QWidget</extends>
-   <header>../Widgets/QuickStartWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

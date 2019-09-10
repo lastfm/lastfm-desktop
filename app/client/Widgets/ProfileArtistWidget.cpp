@@ -22,13 +22,11 @@
 
 #include <lastfm/XmlQuery.h>
 #include <lastfm/Artist.h>
-#include <lastfm/RadioStation.h>
 
 #include "lib/unicorn/widgets/HttpImageWidget.h"
 #include "lib/unicorn/widgets/Label.h"
 
 #include "../Application.h"
-#include "PlayableItemWidget.h"
 
 #include "ProfileArtistWidget.h"
 
@@ -102,10 +100,6 @@ ProfileArtistWidget::ProfileArtistWidget( const lastfm::XmlQuery& artist, int ma
     artistName->setText( unicorn::Label::boldLinkStyle( unicorn::Label::anchor( artist["url"].text(), artist["name"].text() ), Qt::black ) );
     hl->addWidget( artistName, 1 );
     artistName->setObjectName( "artistName" );
-
-    PlayableItemWidget* radio = new PlayableItemWidget( RadioStation::similar( Artist( artist["name"].text() ) ), tr( "%1 Radio" ).arg( artist["name"].text() ) );
-    hl->addWidget( radio );
-    radio->setObjectName( "radio" );
 
     vl->addLayout( hl );
 

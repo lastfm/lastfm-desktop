@@ -543,13 +543,6 @@
                </widget>
               </item>
               <item>
-               <widget class="PlayableItemWidget" name="radio">
-                <property name="text">
-                 <string notr="true">Play Artist Radio</string>
-                </property>
-               </widget>
-              </item>
-              <item>
                <spacer name="verticalSpacer_2">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -616,11 +609,6 @@
    <class>BioWidget</class>
    <extends>QTextBrowser</extends>
    <header>../Widgets/BioWidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>PlayableItemWidget</class>
-   <extends>QPushButton</extends>
-   <header>../Widgets/PlayableItemWidget.h</header>
   </customwidget>
   <customwidget>
    <class>ContextLabel</class>
