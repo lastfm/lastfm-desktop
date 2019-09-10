@@ -16,3 +16,6 @@ admin/dist/mac/dsa_priv.pem
 *.user
 *.qm
 *.exe
+*.vscode
+Growl
+Sparkle

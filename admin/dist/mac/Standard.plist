@@ -32,6 +32,8 @@
 	<string>AppleScriptSuite.sdef</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>For Music and iTunes, this enables scrobbling. For Spotify, this lets you see Last.fm info about the currently playing song.</string>
 	<key>BreakpadProduct</key>
 	<string>@EXECUTABLE@</string>
 	<key>BreakpadVendor</key>

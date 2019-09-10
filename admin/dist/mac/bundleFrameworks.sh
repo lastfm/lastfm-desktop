@@ -159,6 +159,10 @@ plugins="imageformats sqldrivers bearer"
 for plugin in $plugins; do
     if [ -d /Developer/Applications/Qt/plugins/ ]; then
         pluginDir=/Developer/Applications/Qt/plugins
+    elif [ -d /usr/local/lib/qt4/plugins/ ]; then
+        # Qt installed using Homebrew will be found in your local lib.
+        # Currently we only support qt v4.8.7.
+        pluginDir=/usr/local/lib/qt4/plugins
     else
         pluginDir=`qmake --version |sed -n 's/^.*in \(\/.*$\)/\1/p'`/../plugins
     fi
@@ -177,18 +181,20 @@ mkdir -p "$bundlePath/Contents/Resources/qm"
 translations="qt_de.qm
                 qt_es.qm 
                 qt_fr.qm 
-                qt_it.qm 
                 qt_ja.qm 
                 qt_pl.qm 
                 qt_pt.qm 
                 qt_ru.qm 
                 qt_sv.qm 
-                qt_tr.qm
                 qt_zh_CN.qm"
 
 for translation in $translations; do
     if [ -d /Developer/Applications/Qt/plugins/ ]; then
         translationDir=/Developer/Applications/Qt/translations
+    elif [ -d /usr/local/Cellar/qt@4/4.8.7_5/translations/ ]; then
+        # Qt installed using Homebrew will be found in the Homebrew Cellar.
+        # Currently we only support qt v4.8.7.
+        translationDir=/usr/local/Cellar/qt@4/4.8.7_5/translations
     else
         translationDir=`qmake --version |sed -n 's/^.*in \(\/.*$\)/\1/p'`/../translations
     fi
