@@ -166,7 +166,8 @@ for plugin in $plugins; do
     else
         pluginDir=`qmake --version |sed -n 's/^.*in \(\/.*$\)/\1/p'`/../plugins
     fi
-    cp -R -H -f $pluginDir/$plugin "$bundlePath/Contents/plugins"
+    cp -v -R -L -f $pluginDir/$plugin "$bundlePath/Contents/plugins"
+    chmod -R -v u+w "$bundlePath/Contents/plugins"
     for i in "$bundlePath"/Contents/plugins/$plugin/*; do
         fixFrameworks "$i"
         fixLocalLibs "$i"
@@ -199,7 +200,7 @@ for translation in $translations; do
         translationDir=`qmake --version |sed -n 's/^.*in \(\/.*$\)/\1/p'`/../translations
     fi
 
-    cp -f $translationDir/$translation "$bundlePath/Contents/Resources/qm"
+    cp -v -f $translationDir/$translation "$bundlePath/Contents/Resources/qm"
     echo
 done
 
