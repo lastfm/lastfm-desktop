@@ -791,6 +791,10 @@
         <translation>Escuchar una emisora</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Abrir Music</translation>
+    </message>
+    <message>
         <source>Open iTunes</source>
         <translation>Abrir iTunes</translation>
     </message>

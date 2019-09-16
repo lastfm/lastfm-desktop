@@ -805,6 +805,10 @@
         <translation>Uruchom iTunes</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Uruchom Music</translation>
+    </message>
+    <message>
         <source>Open Windows Media Player</source>
         <translation>Uruchom Windows Media Player</translation>
     </message>

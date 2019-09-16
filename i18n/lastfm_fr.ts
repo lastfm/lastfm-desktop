@@ -791,6 +791,10 @@
         <translation>Lancer une station de radio</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Ouvrir Music</translation>
+    </message>
+    <message>
         <source>Open iTunes</source>
         <translation>Ouvrir iTunes</translation>
     </message>

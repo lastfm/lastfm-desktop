@@ -806,6 +806,10 @@
         <translation>Открыть iTunes</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Открыть Music</translation>
+    </message>
+    <message>
         <source>Open Windows Media Player</source>
         <translation>Открыть проигрыватель Windows Media</translation>
     </message>

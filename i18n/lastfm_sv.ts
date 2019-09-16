@@ -795,6 +795,10 @@
         <translation>Öppna iTunes</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Öppna Music</translation>
+    </message>
+    <message>
         <source>Open Windows Media Player</source>
         <translation>Öppna Windows Media Player</translation>
     </message>
