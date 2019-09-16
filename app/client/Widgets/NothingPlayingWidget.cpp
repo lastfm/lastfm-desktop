@@ -65,12 +65,12 @@ NothingPlayingWidget::NothingPlayingWidget( QWidget* parent )
 #if defined( Q_OS_MAC ) 
     QString MusicOrItunesId = ITunesListener::getPlayerAppId();
 
-    ui->applemusic->setVisible( MusicOrItunesId.compare("com.music.Music") == 0 );
+    ui->applemusic->setVisible( MusicOrItunesId.compare("com.apple.Music") == 0 );
     ui->applemusic->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
     connect( ui->applemusic, SIGNAL(clicked()), SLOT(onAppleMusicClicked()));    
 
-    ui->itunes->setVisible( MusicOrItunesId.compare("com.music.iTunes") == 0 );
+    ui->itunes->setVisible( MusicOrItunesId.compare("com.apple.iTunes") == 0 );
     ui->itunes->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
     connect( ui->itunes, SIGNAL(clicked()), SLOT(oniTunesClicked()));
@@ -78,7 +78,7 @@ NothingPlayingWidget::NothingPlayingWidget( QWidget* parent )
 
 #if defined( Q_OS_WIN )
     unicorn::PluginList pluginList;
-    
+
     ui->itunes->setVisible( pluginList.pluginById( "itw" )->isAppInstalled() );
     ui->itunes->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
