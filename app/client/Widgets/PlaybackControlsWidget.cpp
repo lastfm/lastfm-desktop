@@ -244,7 +244,7 @@ PlaybackControlsWidget::setTrack( const Track& track )
 
         ui->message->setVisible( externalPlayer );
         ui->message->setText( track.extra( "playerId" ) == "spt" ?
-                                  unicorn::Label::boldLinkStyle( tr( "Enable scrobbling by getting the %1." ).arg( unicorn::Label::anchor( "spotify:app:lastfm:route:login", tr( "Last.fm app for Spotify" ) ) ), Qt::black ):
+                                  unicorn::Label::boldLinkStyle( tr( "Enable scrobbling by getting the %1." ).arg( unicorn::Label::anchor( "https://www.last.fm/settings/applications", tr( "Last.fm app for Spotify" ) ) ), Qt::black ):
                                   "" );
 
         ui->device->setText( track.extra( "playerName" ) );
