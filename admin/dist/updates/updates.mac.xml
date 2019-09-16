@@ -127,24 +127,24 @@
 						<li>Users that only authenticated with 2.1.32 will be asked to authenticate again. Sorry!</li>
 						<li>First run wizard's continue button no longer gets stuck</li>
 					</ul>
-					<a class="more" href="https://cdn.last.fm/client/updates/updates.html">Full changelog</a>
-		]]></description>
-	</item>
-	<item>
-		<title>Last.fm Scrobbler 2.1.32 BROKEN! DOWNLOAD DISABLED!</title>
-		<pubDate>Tue, 22 Jan 2013 13:48:00 +0000</pubDate>
-		<description><![CDATA[
-					<h3>Bug fixes</h3>
+					<h3>Bug fixes from 2.1.32</h3>
 					<ul>
 						<li>All users should now be able to authenticate - changed to a simpler authentication mechanism</li>
 						<li>Added a beta updates option - warning: only for the brave!</li>
 						<li>Fixed some minor account bootstrap issues</li>
 						<li>Open 'media player' links now work on Windows</li>
 					</ul>
+					<a class="more" href="https://cdn.last.fm/client/updates/updates.html">Full changelog</a>
 		]]></description>
 	</item>
-	<item>
-		<title>Last.fm Scrobbler 2.1.30</title>
+<!-- 	<item>
+		<title>Last.fm Scrobbler 2.1.32 BROKEN! DOWNLOAD DISABLED!</title>
+		<pubDate>Tue, 22 Jan 2013 13:48:00 +0000</pubDate>
+		<description><![CDATA[
+			This block was commented out as it breaks later versions of Sparkle.
+		]]></description>
+	</item>
+ -->		<title>Last.fm Scrobbler 2.1.30</title>
 		<pubDate>Mon, 14 Jan 2013 16:20:00 +0000</pubDate>
 		<enclosure
 			sparkle:version="2.1.30"
