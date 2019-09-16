@@ -22,11 +22,6 @@
 
 #include "ITunesPluginInfo.h"
 
-#ifdef Q_OS_MAC
-// the iTunes listener has a static method we can use to tell if iTunes is installed
-#include "lib/listener/mac/ITunesListener.h"
-#endif
-
 unicorn::ITunesPluginInfo::ITunesPluginInfo( QObject* parent )
     :IPluginInfo( parent )
 {}
@@ -70,8 +65,6 @@ unicorn::ITunesPluginInfo::isAppInstalled() const
 {
 #ifdef Q_OS_WIN32
     return QSettings("HKEY_CURRENT_USER\\Software\\Apple Computer, Inc.\\iTunes", QSettings::NativeFormat).contains("SM Shortcut Installed");
-#elif
-    return ITunesListener::getPlayerAppId().compare("com.music.iTunes") == 0;
 #endif
 }
 
