@@ -321,6 +321,7 @@ NothingPlayingWidget QLabel#scrobble {
 }
 
 NothingPlayingWidget QAbstractButton#itunes,
+NothingPlayingWidget QAbstractButton#applemusic,
 NothingPlayingWidget QAbstractButton#wmp,
 NothingPlayingWidget QAbstractButton#winamp,
 NothingPlayingWidget QAbstractButton#foobar {
@@ -337,6 +338,10 @@ padding-left: 50px;
 
 NothingPlayingWidget QAbstractButton#itunes {
 background-image: url(":/control_bar_scrobble_itunes.png");
+}
+
+NothingPlayingWidget QAbstractButton#applemusic {
+background-image: url(":/control_bar_scrobble_applemusic.png");
 }
 
 NothingPlayingWidget QAbstractButton#wmp {
