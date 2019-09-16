@@ -1,0 +1,246 @@
+<html>
+  <head>
+    <title>Last.fm Scrobbler Changelog</title>
+    <style type="text/css">
+
+      html {
+        background: #f2f2f2;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Lucida Grande", "Helvetica Neue", Arial, sans-serif;
+        line-height: 18px;
+        color: #333;
+      }
+
+      h1, h2, h3 {
+        font-size: 18px;
+        color: #333;
+        line-height: 24px;
+      }
+
+      .branding {
+        background: -webkit-linear-gradient(#e31d2a, #bf0623);
+        background:    -moz-linear-gradient(#e31d2a, #bf0623);
+        background:       -o-liear-gradient(#e31d2a, #bf0623);
+        background:         linear-gradient(#e31d2a, #bf0623);
+        border-bottom: 1px solid #9f081e;
+        height: 60px;
+        box-shadow: rgba(0,0,0,0.3) 0 1px 1px;
+        width: 100%;
+        text-align: center;
+        position: relative;
+      }
+
+      .logo {
+        display: inline-block;
+        width: 100px;
+        height: 35px;
+        margin-top: 18px;
+        text-indent: -9999px;
+        background: url('../images/lastfm.png') no-repeat;    
+      }
+
+      .options {
+        margin: 20px 0px 0px;
+      }
+
+      .platforms,
+      .releasestates {
+        margin-left: 30px;
+      }
+
+      article {
+        border-top: 1px solid #ccc;
+        text-shadow: #fff 0 1px 0;
+        min-height: 100%;
+        max-width: 940px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .update {
+        padding: 10px;
+      }
+
+      .title {
+        padding: 0px 20px 0px;
+      }
+
+      a {
+        color: inherit; 
+      }
+
+      a:hover {
+        text-decoration: none;
+      }
+
+      .description {
+        border: solid 1px #ddd;
+        padding: 0px 20px 0px;
+      }
+
+      .more {
+        visibility: hidden;
+      }
+
+    </style>
+    <script type="text/javascript">
+
+      var BrowserDetect = {
+        init: function () {
+          this.OS = this.searchString(this.dataOS) || "an unknown OS";
+        },
+        searchString: function (data) {
+          for (var i=0;i<data.length;i++) {
+            var dataString = data[i].string;
+            var dataProp = data[i].prop;
+            this.versionSearchString = data[i].versionSearch || data[i].identity;
+            if (dataString) {
+              if (dataString.indexOf(data[i].subString) != -1)
+                return data[i].identity;
+            }
+            else if (dataProp)
+              return data[i].identity;
+          }
+        },
+        dataOS : [
+          {
+            string: navigator.platform,
+            subString: "Win",
+            identity: "Windows"
+          },
+          {
+            string: navigator.platform,
+            subString: "Mac",
+            identity: "Mac"
+          },
+          {
+               string: navigator.userAgent,
+               subString: "iPhone",
+               identity: "iPhone/iPod"
+            },
+          {
+            string: navigator.platform,
+            subString: "Linux",
+            identity: "Linux"
+          }
+        ]
+
+      };
+      BrowserDetect.init();
+
+      function getParameterByName(name)
+      {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS);
+        var results = regex.exec(window.location.search);
+        if(results == null || results=="")
+          return null;
+        else
+          return decodeURIComponent(results[1].replace(/\+/g, " "));
+      }
+
+      function onload_cb()
+      {
+        // format the update descriptions properly
+        var divElements = document.getElementsByTagName('div');
+        for (var i = 0; i < divElements.length; i++)
+        {
+          var el = divElements[i];
+          if (el.className == 'description') {
+            el.innerHTML = el.firstChild ? el.firstChild.textContent : "";
+          }
+        }
+
+        var platform = getParameterByName("platform");
+        var releasestate = getParameterByName("releasestate");
+
+        // pass on the query parameters to the relevant links
+        var aElements = document.getElementsByTagName('a');
+        for (var i = 0; i < aElements.length; i++)
+        {
+          var el = aElements[i];
+          if (el.className == "releasestate" && platform) {
+            el.setAttribute( "href", el.getAttribute("href") + "&platform=" + platform );
+          } else if (el.className == "platform" && releasestate) {
+            el.setAttribute( "href", el.getAttribute("href") + "&releasestate=" + releasestate );
+          }
+        }
+      }
+
+      function loadXMLDoc(dname)
+      {
+        if (window.XMLHttpRequest) 
+        {
+          xhttp=new XMLHttpRequest();
+        }
+        else
+        {
+          xhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xhttp.open("GET",dname,false);
+        xhttp.send("");
+        return xhttp.responseXML;
+      }
+
+      function displayResult()
+      {
+        OS = getParameterByName("platform") || BrowserDetect.OS;
+
+        if ( OS == "Mac" ) {
+          xml=loadXMLDoc( getParameterByName("releasestate") == "beta" ? "updates.mac.beta.xml" : "updates.mac.xml");
+          document.getElementById("mac").style.fontWeight="bold";
+        } else if ( OS == "Linux" ) {
+          xml=loadXMLDoc("updates.linux.xml");
+          document.getElementById("linux").style.fontWeight="bold";
+        } else {
+          xml=loadXMLDoc( getParameterByName("releasestate") == "beta" ? "updates.win.beta.xml" : "updates.win.xml");
+          document.getElementById("win").style.fontWeight="bold";
+        }
+
+        if ( getParameterByName("releasestate") == "beta" ) {
+          document.getElementById("beta").style.fontWeight="bold";
+        } else {
+          document.getElementById("production").style.fontWeight="bold";
+        }
+
+        xsl=loadXMLDoc("updates.xsl");
+        // code for IE
+        if (window.ActiveXObject)
+        {
+          ex=xml.transformNode(xsl);
+          document.getElementById("wrapper").innerHTML=ex;
+        }
+        // code for Mozilla, Firefox, Opera, etc.
+        else if (document.implementation && document.implementation.createDocument)
+        {
+          xsltProcessor=new XSLTProcessor();
+          xsltProcessor.importStylesheet(xsl);
+          resultDocument = xsltProcessor.transformToFragment(xml,document);
+          document.getElementById("wrapper").appendChild(resultDocument);
+        }
+      }
+
+    </script>
+  </head>
+  <body onload="displayResult(); onload_cb();">
+    <header>
+      <div class="branding">
+        <a href="http://www.last.fm">
+          <div class="logo">Last.fm</div>
+        </a>
+      </div>
+    </header>
+    <article>
+      <div class="options">
+        <span class="platforms">Platform: <a class="platform" id="win" href="updates.html?platform=Win">Windows</a> <a class="platform" id="mac" href="updates.html?platform=Mac">Mac</a> <a class="platform" id="linux" href="updates.html?platform=Linux">Linux</a></span>
+        <span class="releasestates">Release state: <a class="releasestate" id="production" href="updates.html?releasestate=production">Production</a> <a class="releasestate" id="beta" href="updates.html?releasestate=beta">Beta</a></span>
+      </div>
+      <div id="wrapper"></div>
+    </article>
+  </body>
+</html>
