@@ -52,19 +52,31 @@ NothingPlayingWidget::NothingPlayingWidget( QWidget* parent )
                                "<p>Start listening to some music in your media player. You can see more information about the tracks you play on the Now Playing tab.</p>") );
 
     ui->itunes->hide();
+    ui->applemusic->hide();
     ui->wmp->hide();
     ui->winamp->hide();
     ui->foobar->hide();
 
-#if defined( Q_OS_WIN ) || defined( Q_OS_MAC )
-    ui->itunes->setVisible( true ); // always show iTunes on Mac
+    unicorn::PluginList pluginList;
+
+#if defined( Q_OS_MAC ) 
+    ui->applemusic->setVisible( pluginList.pluginById( "mac" )->isAppInstalled() );
+    ui->applemusic->setAttribute( Qt::WA_LayoutUsesWidgetRect );
+
+    connect( ui->applemusic, SIGNAL(clicked()), SLOT(onAppleMusicClicked()));    
+
+    ui->itunes->setVisible( pluginList.pluginById( "osx" )->isAppInstalled() );
+    ui->itunes->setAttribute( Qt::WA_LayoutUsesWidgetRect );
+
+    connect( ui->itunes, SIGNAL(clicked()), SLOT(oniTunesClicked()));
+#endif
+
+#if defined( Q_OS_WIN )
+    ui->itunes->setVisible( pluginList.pluginById( "itw" )->isAppInstalled() );
     ui->itunes->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
     connect( ui->itunes, SIGNAL(clicked()), SLOT(oniTunesClicked()));
 
-#ifndef Q_OS_MAC
-    unicorn::PluginList pluginList;
-    ui->itunes->setVisible( pluginList.pluginById( "itw" )->isAppInstalled() );
     ui->wmp->setVisible( pluginList.pluginById( "wmp" )->isAppInstalled() );
     ui->wmp->setAttribute( Qt::WA_LayoutUsesWidgetRect );
     ui->winamp->setVisible( pluginList.pluginById( "wa2" )->isAppInstalled() );
@@ -75,7 +87,6 @@ NothingPlayingWidget::NothingPlayingWidget( QWidget* parent )
     connect( ui->wmp, SIGNAL(clicked()), SLOT(onWMPClicked()));
     connect( ui->winamp, SIGNAL(clicked()), SLOT(onWinampClicked()));
     connect( ui->foobar, SIGNAL(clicked()), SLOT(onFoobarClicked()));
-#endif
 #endif
 
     connect( aApp, SIGNAL(sessionChanged(unicorn::Session)), SLOT(onSessionChanged(unicorn::Session)) );
@@ -108,6 +119,12 @@ void
 NothingPlayingWidget::oniTunesClicked()
 {
     startApp( "/iTunes/iTunes.exe" );
+}
+
+void
+NothingPlayingWidget::onAppleMusicClicked()
+{
+    // doesn't yet exist on Windows
 }
 
 void

@@ -18,21 +18,21 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ITUNES_PLUGIN_INFO_H_
-#define ITUNES_PLUGIN_INFO_H_
+#ifndef APPLEMUSIC_PLUGIN_INFO_H_
+#define APPLEMUSIC_PLUGIN_INFO_H_
 
-#include "IPluginInfo.h"
+#include "ITunesPluginInfo.h"
 
 #include <lib/DllExportMacro.h>
 
 namespace unicorn
 {
 
-class UNICORN_DLLEXPORT ITunesPluginInfo : public IPluginInfo
+class UNICORN_DLLEXPORT AppleMusicPluginInfo : public ITunesPluginInfo
 {
     Q_OBJECT
 public:
-    ITunesPluginInfo( QObject* parent = 0 );
+    AppleMusicPluginInfo( QObject* parent = 0 );
 
     Version version() const;
     QString name() const;
@@ -50,5 +50,5 @@ public:
 
 }
 
-#endif //ITUNES_PLUGIN_INFO_H_
+#endif //APPLEMUSIC_PLUGIN_INFO_H_
 

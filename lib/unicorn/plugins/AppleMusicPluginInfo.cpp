@@ -20,70 +20,39 @@
 
 #include <QStringList>
 
-#include "ITunesPluginInfo.h"
+#include "AppleMusicPluginInfo.h"
 
 #ifdef Q_OS_MAC
 // the iTunes listener has a static method we can use to tell if iTunes is installed
 #include "lib/listener/mac/ITunesListener.h"
 #endif
 
-unicorn::ITunesPluginInfo::ITunesPluginInfo( QObject* parent )
+unicorn::AppleMusicPluginInfo::AppleMusicPluginInfo( QObject* parent )
     :IPluginInfo( parent )
 {}
 
-unicorn::Version
-unicorn::ITunesPluginInfo::version() const
+QString
+unicorn::AppleMusicPluginInfo::name() const
 {
-    return Version( 6, 0, 5, 4 );
+    return "Music";
 }
 
 QString
-unicorn::ITunesPluginInfo::name() const
+unicorn::AppleMusicPluginInfo::displayName() const
 {
-    return "iTunes";
+    return QString( "Music" );
 }
 
 QString
-unicorn::ITunesPluginInfo::displayName() const
+unicorn::AppleMusicPluginInfo::id() const
 {
-    return QString( "iTunes" );
-}
-
-QString
-unicorn::ITunesPluginInfo::processName() const
-{
-    return QString( "iTunes.exe" );
-}
-
-QString
-unicorn::ITunesPluginInfo::id() const
-{
-#ifdef Q_OS_WIN32
-    return "itw";
-#elif
-    return "osx";
-#endif
+    return "mac";
 }
 
 bool
-unicorn::ITunesPluginInfo::isAppInstalled() const
+unicorn::AppleMusicPluginInfo::isAppInstalled() const
 {
-#ifdef Q_OS_WIN32
-    return QSettings("HKEY_CURRENT_USER\\Software\\Apple Computer, Inc.\\iTunes", QSettings::NativeFormat).contains("SM Shortcut Installed");
-#elif
-    return ITunesListener::getPlayerAppId().compare("com.music.iTunes") == 0;
-#endif
+    return ITunesListener::getPlayerAppId().compare("com.music.Music") == 0;
 }
 
-unicorn::IPluginInfo::BootstrapType
-unicorn::ITunesPluginInfo::bootstrapType() const
-{
-    return ClientBootstrap;
-}
-
-QString
-unicorn::ITunesPluginInfo::pluginInstaller() const
-{
-    return "iTunesPluginWinSetup_6.0.5.4.exe";
-}
 

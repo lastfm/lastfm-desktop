@@ -73,6 +73,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="applemusic">
+        <property name="text">
+         <string>Open Music</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="wmp">
         <property name="text">
          <string>Open Windows Media Player</string>
