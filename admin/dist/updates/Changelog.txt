@@ -1,0 +1,3 @@
+The changelog is publicly places into the update files, which live on cdn.last.fm. Add your changes there.
+
+Note that build-release.rb will output a stub Sparkle update XML block (called update.xml in the project root) to be added to various files here (beta, then release versions) which is correctly signed with our dsa_priv.pem key. You must incorporate this into the update XMLs.
