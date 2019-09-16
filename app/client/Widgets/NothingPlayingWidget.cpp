@@ -32,6 +32,11 @@
 #include "lib/unicorn/plugins/PluginList.h"
 #endif
 
+#ifdef Q_OS_MAC
+// the iTunes listener has a static method we can use to tell if iTunes is installed
+#include "lib/listener/mac/ITunesListener.h"
+#endif
+
 #include "NothingPlayingWidget.h"
 #include "ui_NothingPlayingWidget.h"
 
@@ -57,21 +62,23 @@ NothingPlayingWidget::NothingPlayingWidget( QWidget* parent )
     ui->winamp->hide();
     ui->foobar->hide();
 
-    unicorn::PluginList pluginList;
-
 #if defined( Q_OS_MAC ) 
-    ui->applemusic->setVisible( pluginList.pluginById( "mac" )->isAppInstalled() );
+    QString MusicOrItunesId = ITunesListener::getPlayerAppId();
+
+    ui->applemusic->setVisible( MusicOrItunesId.compare("com.music.Music") == 0 );
     ui->applemusic->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
     connect( ui->applemusic, SIGNAL(clicked()), SLOT(onAppleMusicClicked()));    
 
-    ui->itunes->setVisible( pluginList.pluginById( "osx" )->isAppInstalled() );
+    ui->itunes->setVisible( MusicOrItunesId.compare("com.music.iTunes") == 0 );
     ui->itunes->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
     connect( ui->itunes, SIGNAL(clicked()), SLOT(oniTunesClicked()));
 #endif
 
 #if defined( Q_OS_WIN )
+    unicorn::PluginList pluginList;
+    
     ui->itunes->setVisible( pluginList.pluginById( "itw" )->isAppInstalled() );
     ui->itunes->setAttribute( Qt::WA_LayoutUsesWidgetRect );
 
