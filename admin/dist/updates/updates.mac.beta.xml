@@ -10,9 +10,9 @@
 		<enclosure
 			sparkle:version="2.1.38-beta2"
 			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.38-beta2.tar.bz2"
-			length="76912"
+			length="78096"
 			type="application/octet-stream"
-			sparkle:dsaSignature="MCwCFDNTNnOlV4DPTknkTW9/SbqUG8bAAhRI337fImRlh2eBWMqOg8AOlUFPIQ=="/>
+			sparkle:dsaSignature="MCwCFAjwkQ92UC2BAOa0tT7Tv70vCKYzAhQZeVrhveeC8WdAGEhhR4XNr9b9Yg=="/>
 		<sparkle:deltas>
 		</sparkle:deltas>
 		<description><![CDATA[
