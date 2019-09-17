@@ -244,7 +244,7 @@ PlaybackControlsWidget::setTrack( const Track& track )
 
         ui->message->setVisible( externalPlayer );
         ui->message->setText( track.extra( "playerId" ) == "spt" ?
-                                  unicorn::Label::boldLinkStyle( tr( "Enable scrobbling by getting the %1." ).arg( unicorn::Label::anchor( "spotify:app:lastfm:route:login", tr( "Last.fm app for Spotify" ) ) ), Qt::black ):
+                                  unicorn::Label::boldLinkStyle( tr( "Enable scrobbling by getting the %1." ).arg( unicorn::Label::anchor( "https://www.last.fm/settings/applications", tr( "Last.fm app for Spotify" ) ) ), Qt::black ):
                                   "" );
 
         ui->device->setText( track.extra( "playerName" ) );
@@ -254,6 +254,8 @@ PlaybackControlsWidget::setTrack( const Track& track )
 
         if ( id == "osx" || id == "itw" )
             ui->icon->setPixmap( QPixmap( ":/control_bar_scrobble_itunes.png" ) );
+        else if (id == "mac")
+            ui->icon->setPixmap( QPixmap( ":/control_bar_scrobble_applemusic.png" ) );
         else if (id == "foo")
             ui->icon->setPixmap( QPixmap( ":/control_bar_scrobble_foobar.png" ) );
         else if (id == "wa2")

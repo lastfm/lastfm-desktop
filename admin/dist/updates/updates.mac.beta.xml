@@ -5,6 +5,25 @@
 	<description>Last.fm Scrobbler Updates - Mac Beta</description>
 	<language>en</language>
 	<item>
+		<title>Last.fm Scrobbler 2.1.38-beta2</title>
+		<pubDate>Tue, 17 Sep 2019 10:52:00 +0100</pubDate>
+		<enclosure
+			sparkle:version="2.1.38-beta2"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.38-beta2.tar.bz2"
+			length="78096"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFAjwkQ92UC2BAOa0tT7Tv70vCKYzAhQZeVrhveeC8WdAGEhhR4XNr9b9Yg=="/>
+		<sparkle:deltas>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>This update is for compatibility with MacOS Catalina, where iTunes has been renamed to Music.</li>
+					<li>In this beta update we have also fixed the iTunes / Apple Music launch buttons and the links Spotify Scrobbling.</li>
+				</ul>
+				]]></description>
+	</item>
+	<item>
 		<title>Last.fm Scrobbler 2.1.38-beta1</title>
 		<pubDate>Mon, 16 Sep 2019 12:29:00 +0100</pubDate>
 		<enclosure

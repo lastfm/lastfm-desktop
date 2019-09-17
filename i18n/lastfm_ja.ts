@@ -785,6 +785,10 @@
         <translation>iTunes を開く</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Music を開く</translation>
+    </message>
+    <message>
         <source>Open Windows Media Player</source>
         <translation>Windows Media Player を開く</translation>
     </message>

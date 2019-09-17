@@ -786,6 +786,10 @@
         <translation>打开 iTunes</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>打开 Music</translation>
+    </message>
+    <message>
         <source>Open Windows Media Player</source>
         <translation>打开 Windows Media Player</translation>
     </message>

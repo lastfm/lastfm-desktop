@@ -35,11 +35,12 @@ public:
 
     enum State { Unknown = -1, Playing, Paused, Stopped };
 
+    static QString getPlayerAppId();
+
 signals:
     void newConnection( class PlayerConnection* );
     
 private:
-    static QString getPlayerAppId();
 
     /** iTunes notification center callback */
     static void callback( CFNotificationCenterRef, 
