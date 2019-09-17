@@ -65,7 +65,7 @@ unicorn::ITunesPluginInfo::isAppInstalled() const
 {
 #ifdef Q_OS_WIN32
     return QSettings("HKEY_CURRENT_USER\\Software\\Apple Computer, Inc.\\iTunes", QSettings::NativeFormat).contains("SM Shortcut Installed");
-#elif 
+#elif
     return true;
 #endif
 }
