@@ -5,6 +5,25 @@
 	<description>Last.fm Scrobbler Updates - Mac Beta</description>
 	<language>en</language>
 	<item>
+		<title>Last.fm Scrobbler 2.1.38</title>
+		<pubDate>Wed, 18 Sep 2019 16:09:00 +0100</pubDate>
+		<enclosure
+			sparkle:version="2.1.38"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.38.tar.bz2"
+			length="78096"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MC0CFQCn/CeWdtLZJOkMBSjPQaEZxClAHQIUI/Y0z/K5bgZHv4og2Z5dA4YP7ts="/>
+		<sparkle:deltas>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>This update is for compatibility with MacOS Catalina, where iTunes has been renamed to Music.</li>
+					<li>In this final update we have also fixed the iTunes / Apple Music now-playing text, and Apple Music sends a different player ID to Last.fm.</li>
+				</ul>
+				]]></description>
+	</item>
+	<item>
 		<title>Last.fm Scrobbler 2.1.38-beta2</title>
 		<pubDate>Tue, 17 Sep 2019 10:52:00 +0100</pubDate>
 		<enclosure
