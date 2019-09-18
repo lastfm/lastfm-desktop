@@ -25,15 +25,24 @@
 
 struct ITunesConnection : PlayerConnection
 {
-    ITunesConnection() : PlayerConnection( "osx", "iTunes" )
+    // PlayerConnection has compile-time constants for these.
+    QString const m_runtime_name;
+    QString const m_runtime_id;
+
+    QString runtimeName() const { return m_runtime_name; }
+    QString runtimeId() const { return m_runtime_id; }
+
+    ITunesConnection(bool isAppleMusic) : PlayerConnection( "osx", "iTunes" )
+    , m_runtime_name( isAppleMusic ? "Apple Music" : "iTunes" )
+    , m_runtime_id(   isAppleMusic ? "mac"         : "osx" )
     {}
-    
+
     void start( const Track& t )
     {
         MutableTrack mt( t );
         mt.setSource( Track::Player );
-        mt.setExtra( "playerId", id() );
-        mt.setExtra( "playerName", name() );
+        mt.setExtra( "playerId", runtimeId() );
+        mt.setExtra( "playerName", runtimeName() );
         mt.stamp();
         handleCommand( CommandStart, t ); 
     }
@@ -42,7 +51,6 @@ struct ITunesConnection : PlayerConnection
     void resume() { handleCommand( CommandResume ); }
     void stop() { handleCommand( CommandStop ); }
 };
-
 
 ITunesListener::ITunesListener( QObject* parent )
     : QObject( parent )
@@ -53,7 +61,7 @@ ITunesListener::ITunesListener( QObject* parent )
     qDebug() << "Detected player app ID: " << m_playerAppId;
     qRegisterMetaType<Track>("Track");
 
-    QString mediaTypeFields = m_playerAppId == "com.apple.Music"
+    QString mediaTypeFields = isAppleMusic()
         ? "\"false\" & \"\n\" & \"none\"\n"
         : "podcast & \"\n\" & video kind\n";
 
@@ -93,6 +101,13 @@ ITunesListener::ITunesListener( QObject* parent )
 ITunesListener::~ITunesListener()
 {
     delete m_connection;
+}
+
+
+bool
+ITunesListener::isAppleMusic()
+{
+    return m_playerAppId == "com.apple.Music";
 }
 
     
@@ -190,7 +205,7 @@ void
 ITunesListener::callback( CFDictionaryRef info )
 {
     if ( !m_connection )
-        emit newConnection( m_connection = new ITunesConnection );
+        emit newConnection( m_connection = new ITunesConnection(isAppleMusic()) );
 
     ITunesDictionaryHelper dict( info );
     State const previousState = m_state;
@@ -306,7 +321,7 @@ ITunesListener::setupCurrentTrack()
         t.setVideo( video );
 
         if ( !m_connection )
-            emit newConnection( m_connection = new ITunesConnection );
+            emit newConnection( m_connection = new ITunesConnection(isAppleMusic()) );
 
         m_connection->start( t );
     }

@@ -53,6 +53,8 @@ private:
 
     bool isPlaying();
 
+    bool isAppleMusic();
+
 private slots:
     void setupCurrentTrack();
 
