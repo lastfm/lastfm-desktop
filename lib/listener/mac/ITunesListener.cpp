@@ -37,8 +37,6 @@ struct ITunesConnection : PlayerConnection
     , m_runtime_id(   isAppleMusic ? "mac"         : "osx" )
     {}
 
-    bool isAppleMusic;
-
     void start( const Track& t )
     {
         MutableTrack mt( t );
