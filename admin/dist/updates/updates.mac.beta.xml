@@ -4,15 +4,16 @@
 	<link>https://cdn.last.fm/client/updates/updates.mac.beta.xml</link>
 	<description>Last.fm Scrobbler Updates - Mac Beta</description>
 	<language>en</language>
+
 	<item>
-		<title>Last.fm Scrobbler 2.1.38</title>
-		<pubDate>Wed, 18 Sep 2019 16:09:00 +0100</pubDate>
+		<title>Last.fm Scrobbler 2.1.39</title>
+		<pubDate>Wed, 18 Sep 2019 16:26:00 +0100</pubDate>
 		<enclosure
-			sparkle:version="2.1.38"
-			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.38.tar.bz2"
-			length="78096"
+			sparkle:version="2.1.39"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.39.tar.bz2"
+			length="76296"
 			type="application/octet-stream"
-			sparkle:dsaSignature="MC0CFQCn/CeWdtLZJOkMBSjPQaEZxClAHQIUI/Y0z/K5bgZHv4og2Z5dA4YP7ts="/>
+			sparkle:dsaSignature="MC0CFQCmOcvAMz+PoMNOsNMP22ggfjFyzgIUVgXjj2WdaQmM/S7HFxsXR3iAHGQ="/>
 		<sparkle:deltas>
 		</sparkle:deltas>
 		<description><![CDATA[
