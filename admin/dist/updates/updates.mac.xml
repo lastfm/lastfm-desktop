@@ -5,6 +5,28 @@
 	<description>Last.fm Scrobbler Updates - Mac</description>
 	<language>en</language>
 	<item>
+		<title>Last.fm Scrobbler 2.1.39</title>
+		<pubDate>Wed, 18 Sep 2019 16:26:00 +0100</pubDate>
+		<enclosure
+			sparkle:version="2.1.39"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.39.tar.bz2"
+			length="76296"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MC0CFQCmOcvAMz+PoMNOsNMP22ggfjFyzgIUVgXjj2WdaQmM/S7HFxsXR3iAHGQ="/>
+		<sparkle:deltas>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>This update ensures that scrobbling continues to work with Mac OS Catalina. It is now compatible with the Music app, which was formerly known as iTunes.</li>
+				</ul>
+				<h3>Bug Fixes</h3>
+				<ul>
+					<li>The link to activate scrobbling in Spotify has been fixed. You can add scrobbling for Spotify through your Last.fm <a href="https://www.last.fm/settings/applications">settings page</a>.</li>
+				</ul>
+				]]></description>
+	</item>
+	<item>
 		<title>Last.fm Scrobbler 2.1.37</title>
 		<pubDate>Tue, 22 Mar 2016 15:31:00 +0000</pubDate>
 		<enclosure
@@ -137,14 +159,17 @@
 					<a class="more" href="https://cdn.last.fm/client/updates/updates.html">Full changelog</a>
 		]]></description>
 	</item>
-<!-- 	<item>
+<!--
+ 	<item>
 		<title>Last.fm Scrobbler 2.1.32 BROKEN! DOWNLOAD DISABLED!</title>
 		<pubDate>Tue, 22 Jan 2013 13:48:00 +0000</pubDate>
 		<description><![CDATA[
 			This block was commented out as it breaks later versions of Sparkle.
 		]]></description>
 	</item>
- -->		<title>Last.fm Scrobbler 2.1.30</title>
+ -->
+ 	<item>
+ 		<title>Last.fm Scrobbler 2.1.30</title>
 		<pubDate>Mon, 14 Jan 2013 16:20:00 +0000</pubDate>
 		<enclosure
 			sparkle:version="2.1.30"
