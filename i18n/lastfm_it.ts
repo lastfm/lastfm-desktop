@@ -795,6 +795,10 @@
         <translation>Apri iTunes</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Apri Music</translation>
+    </message>
+    <message>
         <source>Open Windows Media Player</source>
         <translation>Apri Windows Media Player</translation>
     </message>

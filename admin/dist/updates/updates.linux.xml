@@ -1,0 +1,435 @@
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+	<title>Last.fm Scrobbler Updates</title>
+	<link>http://cdn.last.fm/client/updates/updates.lin.xml</link>
+	<description>Last.fm Scrobbler Updates - Linux</description>
+	<language>en</language>
+	<item>
+		<title>Last.fm Scrobbler 2.1.33</title>
+		<pubDate>Thr, 24 Jan 2013 11:00:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+					<ul>
+						<li>First run wizard's continue button no longer gets stuck</li>
+					</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.32</title>
+		<pubDate>Tue, 22 Jan 2013 13:48:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+					<h3>Bug fixes</h3>
+					<ul>
+						<li>All users should now be able to authenticate - changed to a simpler authentication mechanism</li>
+						<li>Added a beta updates option - warning: only for the brave!</li>
+						<li>Fixed some minor account bootstrap issues</li>
+					</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.30</title>
+		<pubDate>Mon, 14 Jan 2013 16:20:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Translations updated and complete</li>
+					<li>Don't fingerprint files from audio CDs</li>
+					<li>Fixed some problems upgrading from The Scrobbler 1.x</li>
+					<li>Fixed a crash when enabling/disabling device scrobbling</li>
+					<li>Fixed a crash when switching user accounts</li>
+					<li>A temporary workaround for a device scrobbling error</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.29</title>
+		<pubDate>Mon, 14 Jan 2013 12:00:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Translations updated and complete</li>
+					<li>Don't fingerprint files from audio CDs</li>
+					<li>Fixed some problems upgrading from The Scrobbler 1.x</li>
+					<li>Fixed a crash when enabling/disabling device scrobbling</li>
+					<li>Fixed a crash when switching user accounts</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.28</title>
+		<pubDate>Tue, 08 Jan 2013 11:30:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Changes</h3>
+				<ul>
+					<li>Side bar images updated slightly</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Restore the main window size and position correctly after restart</li>
+					<li>Fixed spurious device scrobbles caused by a race condition</li>
+					<li>Fixed triple scrobbling when scrobbling offline cached scrobbles</li>
+					<li>Don't run the device scrobble checker so often - it was running almost all the time on Windows</li>
+					<li>Device scrobble performance improvements</li>
+					<li>Minimize and Zoom menu options now work</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.27</title>
+		<pubDate>Fri, 21 Dec 2012 15:30:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Fixed a crash on startup for new users</li>
+					<li>Fixed iTunes plays being picked up as device scrobbles Windows (may improve Mac too)</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.26</title>
+		<pubDate>Mon, 17 Dec 2012 12:15:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Translations! (almost complete)</li>
+					<li>Proxy settings - you can set them from the advanced settings tab and the first step of first run wizard</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Don't divide by zero (crash) for users that are using the app on the same day as they registered</li>
+					<li>Fixed restarting the app in Mac, still not working on Windows.</li>
+					<li>Radio now goes into the stopped state correctly</li>
+					<li>Device scrobble Window is now a child of the main window (it appears positioned on top of it nicely now)</li>
+					<li>Fixed a double delete crash when the fingerprinter failed</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.24</title>
+		<pubDate>Wed, 26 Sep 2012 11:50:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Windows only bug fix release</h3>
+				<ul>
+					<li>Fixed an issue where iTunes devices (iPod/iPhone) wouldn't scrobble if the app was not installed to the default location</li>
+					<li>Fixed a crash with iTunes device scrobbling introduced with the 'album artist' scrobble changes</li>
+					<li>Fixed a crash caused by fingerprinting .flac files</li>
+					<li>Fixed an issue where the volume would reset to maximum at the start of every radio track</li>
+					<li>Fixed a CPU usage issue</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.21</title>
+		<pubDate>Tue, 04 Sep 2012 14:20:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>We now scrobble 'album artist' as well as 'artist' for cleaner album pages on the website (all plugins have been updated)</li>
+					<li>Fingerprinting local tracks has been added (can be turned off in preferences)</li>
+					<li>"Scrobbling is off" message has been added to the status bar</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Better album images in the scrobble list</li>
+					<li>We now only ask you to install plugins for apps we've detcted you've installed</li>
+					<li>We now make sure you close your media players before plugins are installed</li>
+					<li>We now make sure you close WMP or Winamp before bootstrapping (won't bootstrap if they are left open)</li>
+					<li>Profile widget now refreshed when you switch to it so data doesn't get as out of date</li>
+					<li>Fixed some bugs in the preferences dialog</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.20</title>
+		<pubDate>Fri, 01 Jun 2012 16:30:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+    		<h3>Bug fixes</h3>
+    		<ul>
+				<li>Fixed some radio playback issues introduced with the switch to VLC</li>
+			</ul>
+	    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.19</title>
+		<pubDate>Wed, 30 May 2012 14:50:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+			<h3>Features</h3>
+			<ul>
+				<li>[Mac] Media keys on your keyboard now control the radio - play/pause and skip</li>
+				<li>More scrobble tab design improvements</li>
+			</ul>
+			<h3>Bug fixes</h3>
+			<ul>
+				<li>[Mac] Fixed radio playback issue - some users had trouble skipping between songs</li>
+				<ul>
+					<li>Updated Phonon library from 4.4 to 4.6</li>
+					<li>Switched to VLC as the audio backend</li>
+					<li>Note: for users that didn't have this problem, they should notice some general playback performace improvements</li>
+					<li>Also note: we made these changes for Windows too - there wasn't this specific bug, but you may still notice a performance improvement</li>
+				</ul>
+			</ul>
+	    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.18</title>
+			<pubDate>Thr, 26 Apr 2012 16:30:00 +0000</pubDate>
+			<enclosure url="http://apt.last.fm" />
+			<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Scrobble tab design improvements</li>
+					<li>Can now delete scrobbles from the list through the right click menu</li>
+					<li>Added a licenses dialog for third party software</li>
+					<li>About box now has the Last.fm logo</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Quit dialog now asks a question</li>
+					<li>Scrobble repeated tracks</li>
+					<li>Now restores same size and position when reopening</li>
+					<li>Initial window size adjusts for very small/low resolution screens</li>
+					<li>Doesn't filter other user's personal stations from your recent stations anymore</li>
+					<li>Windows installer now has updated images</li>
+					<li>Doesn't need to fetch track info when refreshing the scrobbles list anymore</li>
+					<li>Should now run on Mac OSX 10.5.x</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.17</title>
+			<pubDate>Mon, 14 Mar 2012 18:30:00 +0000</pubDate>
+			<enclosure url="http://apt.last.fm" />
+			<description><![CDATA[
+					<h3>Features</h3>
+					<ul>
+						<li>Can now set the language - the app itself isn't translated yet, but this affects artist bios, etc</li>
+						<li>Scrobbles list rewritten and improved</li>
+						<ul>
+							<li>Corrections asterisk with hover over now shown</li>
+							<li>Displays if the scrobble is cached and yet to be submitted</li>
+							<li>Displays if their was an error when submitting the scrobble - i.e. bad metadata</li>
+						</ul>
+						<li>Profile, Friends, and Radio tab design improvements</li>
+					</ul>
+					<h3>Bug fixes</h3>
+					<ul>
+						<li>Always start on the scrobble list when switching to that tab, not the previous track info view</li>
+						<li>Less calls made to track.getInfo</li>
+						<li>If app is closed to tray and notifications turned off, the only web services called are for scrobbling</li>
+					</ul>
+				]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.16</title>
+		<pubDate>Thr, 15 Mar 2012 11:10:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Now has a max width of 800px</li>
+					<li>Use app icon for all radio stations</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Fixed the now playing display bug</li>
+					<li>Fixed a crash that manifested itself in several places (cancelling getting info for a track)</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Beta Version 2.1.15</title>
+		<pubDate>Tue, 28 Feb 2012 16:00:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Radio controls are now in the sys tray too</li>
+					<li>Buy links now in the scrobble list view</li>
+					<li>There's now a diagnostics dialog - only one tab with the ability to force a check for iPod scrobbles and see the log so far</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Dialogs, like preferences, are now brought to the front if reopened</li>
+					<li>Many copy changes around the app</li>
+					<li>Doesn't erroneously display two now playing tracks anymore</li>
+					<li>iPod scrobbles are submitted immeditaly instead of just cached</li>
+					<li>Doesn't fetch track info as much</li>
+					<li>The loved state of the current track is now reliable</li>
+					<li>[Win] iPod scrobbling should now work</li>
+					<li>[Win] 'Close' and 'Apply' buttons now work correctly</li>
+					<li>[Mac] Don't ask where Spotify is, if it isn't installed</li>
+					<li>[Mac] Extra dock icons no longer appear</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Beta Version 2.1.14</title>
+		<pubDate>Tue, 14 Feb 2012 13:30:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>This is the first public beta version</h3>
+					<h3>Bug fixes</h3>
+				<ul>
+					<li>Updates to the wizard copy</li>
+					<li>Buy links now work for uk, us, and de users (was only ever doing uk links)</li>
+					<li>Other very minor fixes</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Alpha Version 2.0.13</title>
+		<pubDate>Fri, 10 Feb 2012 18:50:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Changed the API key. Everyone will have to go through the wizard again</li>
+					<li>[Mac] Now opens lastfm:// radio urls from the web site</li>
+					<li>[Mac] Upgraded to Qt 4.8.0</li>
+					<li>[Mac] Now tells you to close iTunes when there is a new plugin to install</li>
+					<li>Message bar now styles nicely</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Doesn't show two now playing tracks in the scrobble list any more</li>
+					<li>Fixed quite a few bugs in the frist run wizard</li>
+					<li>Fixed some bugs with the account management settings</li>
+					<li>[Mac] Friend list trackpad scrolling is now smooth (Qt 4.8.0)</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.12</title>
+		<pubDate>Thr, 02 Feb 2012 18:20:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Now branded as a beta version!</li>
+					<li>Tag dialog now implemented to similar standard as the share dialog</li>
+					<li>Only fetches track metadata if the window is visable</li>
+					<li>Scrobble toggle now in preferences</li>
+					<li>'Play' menu option is now not checkable, but has 'play', 'pause' and 'resume' states</li>
+					<li>Progress bar now reports the state correctly for podcasts and videos</li>
+					<li>Don't display metadata for Spotify ads</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>[Win] iPod scrobbling should now work (as well as it does on mac)! The installer was incorrect</li>
+					<li>iTunes plugin now handles device names with ' and \ in them correctly</li>
+					<li>Device names are now interpreted as utf-8 by the app</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.11</title>
+		<pubDate>Wed, 25 Jan 2012 20:10:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Bug fixes 2.0.11</h3>
+				<ul>
+					<li>Incorrectly though some radio tracks were podcasts or videos</li>
+				</ul>
+				<h3>Features - 2.0.10</h3>
+				<ul>
+					<li>Added option to turn off podcast scrobbling</li>
+					<li>Now doesn't scrobble videos from iTunes, that aren't music videos</li>
+					<li>Added option to disable desktop notifications</li>
+					<li>Added option to disable launching the app with media players</li>
+				</ul>
+				<h3>Bug fixes 2.0.10</h3>
+				<ul>
+					<li>Some user setting fixes, you will have to go through the wizard again</li>
+					<li>[Win] Fixes to iTunes plugin communication problems (named pipe type incompatibilities)</li>
+					<li>[Mac] Fixed iTunes plugin crashing iTunes for some Snow Leopard people</li>
+					<li>[Mac] Fixed the menubar not showing sometimes at startup</li>
+					<li>If the app is started with --tray option (i.e. from a media player) it now doesn't show the main window</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.10</title>
+		<pubDate>Wed, 25 Jan 2012 17:30:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Added option to turn off podcast scrobbling</li>
+					<li>Now doesn't scrobble videos from iTunes, that aren't music videos</li>
+					<li>Added option to disable desktop notifications</li>
+					<li>Added option to disable launching the app with media players</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Some user setting fixes, you will have to go through the wizard again</li>
+					<li>[Win] Fixes to iTunes plugin communication problems (named pipe type incompatibilities)</li>
+					<li>[Mac] Fixed iTunes plugin crashing iTunes for some Snow Leopard people</li>
+					<li>[Mac] Fixed the menubar not showing sometimes at startup</li>
+					<li>If the app is started with --tray option (i.e. from a media player) it now doesn't show the main window</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.9</title>
+		<pubDate>Mon, 16 Jan 2012 11:20:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>[Win] New iTunes plugin was not working due to a change in Qt</li>
+					<li>iPod scrobble device associations were getting corrupted</li>
+					<li>Cleaned up and fixed some bugs in the apps user settings</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.8</title>
+		<pubDate>Thu, 12 Jan 2012 11:45:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+		<h3>Features/Improvements</h3>
+		<ul>
+			<li>Settings toolbar now looks better and has assets </li>
+			<li>Crash Reporting implemented in client, but disabled. (needs oops server set up by ops)</li>
+		</ul>
+		<h3>Bug fixes</h3>
+		<ul>
+			<li>[Mac] Stops from iTunes are picked up - end of a playlist, quit iTunes, etc</li>
+			<li>[Mac] Resume iTunes track after playing and pausing radio is now picked up</li>
+			<li>Spacebar now works again as a global shortcut</li>
+		</ul>
+	]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.7</title>
+		<pubDate>Wed, 04 Jan 2012 12:45:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+		<description><![CDATA[
+			<ul>
+				<li>Fixed a major bug with batch scrobbling</li>
+				<li>Fixed a crash for unkown length tracks (iTunes radio streams)</li>
+			</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.6</title>
+		<pubDate>Fri, 23 Dec 2011 17:00:00 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.1</title>
+		<pubDate>Wed, 02 Nov 2011 11:11:11 +0000</pubDate>
+		<enclosure url="http://apt.last.fm" />
+	</item>
+</channel>
+</rss>

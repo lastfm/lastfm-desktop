@@ -796,6 +796,10 @@
         <translation>Abrir o iTunes</translation>
     </message>
     <message>
+        <source>Open Music</source>
+        <translation>Abrir o Music</translation>
+    </message>
+    <message>
         <source>Open Windows Media Player</source>
         <translation>Abrir o Windows Media Player</translation>
     </message>

@@ -35,11 +35,12 @@ public:
 
     enum State { Unknown = -1, Playing, Paused, Stopped };
 
+    static QString getPlayerAppId();
+
 signals:
     void newConnection( class PlayerConnection* );
     
 private:
-    static bool iTunesIsPlaying();
 
     /** iTunes notification center callback */
     static void callback( CFNotificationCenterRef, 
@@ -50,12 +51,17 @@ private:
 
     void callback( CFDictionaryRef );
 
+    bool isPlaying();
+
+    bool isAppleMusic();
+
 private slots:
     void setupCurrentTrack();
 
 private:
     State m_state;
     QString m_previousPid;
+    QString m_playerAppId;
     struct ITunesConnection* m_connection;
 
     AppleScript m_currentTrackScript;

@@ -1,0 +1,766 @@
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+	<title>Last.fm Scrobbler Updates</title>
+	<link>https://cdn.last.fm/client/updates/updates.mac.beta.xml</link>
+	<description>Last.fm Scrobbler Updates - Mac Beta</description>
+	<language>en</language>
+
+	<item>
+		<title>Last.fm Scrobbler 2.1.39</title>
+		<pubDate>Wed, 18 Sep 2019 16:26:00 +0100</pubDate>
+		<enclosure
+			sparkle:version="2.1.39"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.39.tar.bz2"
+			length="76296"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MC0CFQCmOcvAMz+PoMNOsNMP22ggfjFyzgIUVgXjj2WdaQmM/S7HFxsXR3iAHGQ="/>
+		<sparkle:deltas>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>This update is for compatibility with MacOS Catalina, where iTunes has been renamed to Music.</li>
+					<li>In this final update we have also fixed the iTunes / Apple Music now-playing text, and Apple Music sends a different player ID to Last.fm.</li>
+				</ul>
+				]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.38-beta2</title>
+		<pubDate>Tue, 17 Sep 2019 10:52:00 +0100</pubDate>
+		<enclosure
+			sparkle:version="2.1.38-beta2"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.38-beta2.tar.bz2"
+			length="78096"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFAjwkQ92UC2BAOa0tT7Tv70vCKYzAhQZeVrhveeC8WdAGEhhR4XNr9b9Yg=="/>
+		<sparkle:deltas>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>This update is for compatibility with MacOS Catalina, where iTunes has been renamed to Music.</li>
+					<li>In this beta update we have also fixed the iTunes / Apple Music launch buttons and the links Spotify Scrobbling.</li>
+				</ul>
+				]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.38-beta1</title>
+		<pubDate>Mon, 16 Sep 2019 12:29:00 +0100</pubDate>
+		<enclosure
+			sparkle:version="2.1.38-beta1"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.38-beta1.tar.bz2"
+			length="76296"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MC0CFFfQzsnAc5zU+y44twZk2+g55l4FAhUAkbWYW51YYTrKfFAWtA2BqZdthqM="/>
+		<sparkle:deltas>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>This update is for compatibility with MacOS Catalina, where iTunes has been renamed to Music.</li>
+					<li>Please enjoy this beta update and address your kindest words to Stephen and Maciek for figuring out the issues involved in making this update possible.</li>
+				</ul>
+				]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.37</title>
+		<pubDate>Tue, 22 Mar 2016 15:31:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.37"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.37.tar.bz2"
+			length="56792"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MC0CFFQ7XARhNXoLR504/gd+D5gXazP0AhUAkjA63yXEafvxMm+PH07DYwlOm1I="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>This is mainly a security update for OSX El Capitan to allow loading of all future updates over HTTPS.</li>
+					<li>This update also removes some unused functions of the client.</li>
+				</ul>
+				<h3>Bug Fixes</h3>
+				<ul>
+					<li>Some users were experiencing crashes on sleep/wake. This should be fixed.</li>
+				</ul>
+				]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.36</title>
+		<pubDate>Tue, 03 Sep 2013 12:14:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.36"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.36.tar.bz2"
+			length="51752"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MC0CFFZ5FiReyWRw5dPD42JBuv/R6dJZAhUAqTyhf6TS6ITk+bKOFBxPRlpmKBg="/>
+		<sparkle:deltas>
+			<enclosure
+				url="https://cdn.last.fm/client/Mac/Last.fm-2.1.36-2.1.35.delta"
+				sparkle:version="2.1.36"
+				sparkle:deltaFrom="2.1.35"
+				length="14048"
+				type="application/octet-stream"
+				sparkle:dsaSignature="MCwCFAWzRcmOvVQYogpm82Mp1fM1ITCcAhR1McMEgB5xCNv4LnOdHFrzFB6tjA=="/>
+		</sparkle:deltas>
+		<description><![CDATA[
+			<h3>Features</h3>
+			<ul>
+				<li>New playback controls and progress bar design!</li>
+			</ul>
+			<h3>Bug fixes</h3>
+			<ul>
+				<li>iPod scrobbles with multiple plays are now submitted at 1 second intervals instead of all at the same time</li>
+				<li>Fingerprinting is fixed and back - it's now also in a different process so fingerprinting problems don't bring down the whole app (just a precaution)</li>
+				<li>Fixed some memory leaks</li>
+				<li>Scrobble count on profile tab now updated correctly (unless you scrobble elsewhere)</li>
+				<li>Do not display corrections in the client (it wasn't respecting the website setting and was causing a few issues)</li>
+				<li>'Similar Artist' header in the track metadata view is now a link to more similar artists on the site</li>
+				<li>There is now a warning/explanation in the iPod scrobble confirmation dialog when you have red/invalid iPod scrobbles</li>
+				<li>Now shows the correct modifier keys on Windows for the raise/hide Scrobbler option</li>
+				<li>Mute now works from the system tray and menu option</li>
+				<li>The last page of the wizard now doesn't say we've imported your listening history, if we haven't</li>
+				<li>Fixed an issue where the tray icon would be invisible if the first run wizard tour was skipped</li>
+				<li>Less logging (there was an issue with log file sizes getting very big)</li>
+			</ul>
+			]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.35</title>
+		<pubDate>Wed, 06 Mar 2013 10:43:00 +0000</pubDate>
+		<enclosure
+		sparkle:version="2.1.35"
+		url="https://cdn.last.fm/client/Mac/Last.fm-2.1.35.tar.bz2"
+		length="38768"
+		type="application/octet-stream"
+		sparkle:dsaSignature="MCwCFFG28YT06hPjBcVJMIfevbCA9VZ7AhQ4aA9lp8cIv3HcPA7Smtvzz/mAyA=="/>
+		<sparkle:deltas>
+			<enclosure
+				url="https://cdn.last.fm/client/Mac/Last.fm-2.1.35-2.1.34.delta"
+				sparkle:version="2.1.35"
+				sparkle:deltaFrom="2.1.34"
+				length="904"
+				type="application/octet-stream"
+				sparkle:dsaSignature="MCwCFCtPKeOs9zB2edu4OD9mQlt/za2UAhQ6U9LMoWL0I3znzVBSlILIDCoaew=="/>
+		</sparkle:deltas>
+		<description><![CDATA[
+			<h3>Features</h3>
+			<ul>
+				<li>Exclude directories! You can now exclude music in certain directories from being scrobbled</li>
+				<li>Systray/menu bar icon is greyed out when scrobbling is disabled</li>
+				<li>Users can now hide both the dock icon and the menu bar icon (restart only required when hiding dock icon on 10.6)</li>
+				<li>Binary delta updates will be supported from the release after this one</li>
+				<li>[Experimental] Added the ability to use SSL for all web services calls</li>
+			</ul>
+			<h3>Bug fixes</h3>
+			<ul>
+				<li>Fingerprinting was causing crashes so has been temporarily disabled until we find a proper fix</li>
+				<li>Fixed an issue where it was possible to get two running versions of the applications after an update. <b>Please note</b> that as this fix was to the update mechanism it will only be corrected in the update after this one so please make sure you don't have two versions of the app running after this update.</li>
+				<li>Device scrobbling improvements</li>
+				<ul>
+					<li>We now force that a compatible iTunes plugin version is installed before trying to device scrobble</li>
+					<li>Prompt to install the new plugin has been improved</li>
+				</ul>
+				<li>Don't crash if Airfoil is connected during the first run wizard</li>
+				<li>Tracks now get their scrobble and loved status updated when the scrobble list is refreshed</li>
+				<li>Fixed scrobbling problems associated with setting the scrobble point to 100%</li>
+				<ul>
+					<li>Fixed double scrobble and missed scrobbles</li>
+					<li>There's now a setting to turn of the maximum scrobble point being 4 minutes</li>
+					<li>Scrobble point and max scrobble turn off now take effect during the current track</li>
+				</ul>
+			</ul>
+			<p><a class="more" href="https://cdn.last.fm/client/updates/updates.html>Full changelog</a></p>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.33</title>
+		<pubDate>Thr, 24 Jan 2013 11:00:00 +0000</pubDate>
+		<enclosure
+				sparkle:version="2.1.33"
+				url="https://cdn.last.fm/client/Mac/Last.fm-2.1.33.tar.bz2"
+				length="51496"
+				type="application/octet-stream"
+				sparkle:dsaSignature="MCwCFDb/I9Bxyigl2lBJw+JiFwmvnzZnAhQf/Ua3boCkXB1uH2eLpJEC83Zhlg=="/>
+		<description><![CDATA[
+					<ul>
+						<li>Users that only authenticated with 2.1.32 will be asked to authenticate again. Sorry!</li>
+						<li>First run wizard's continue button no longer gets stuck</li>
+					</ul>
+					<h3>Bug fixes from 2.1.32</h3>
+					<ul>
+						<li>All users should now be able to authenticate - changed to a simpler authentication mechanism</li>
+						<li>Added a beta updates option - warning: only for the brave!</li>
+						<li>Fixed some minor account bootstrap issues</li>
+						<li>Open 'media player' links now work on Windows</li>
+					</ul>
+					<a class="more" href="https://cdn.last.fm/client/updates/updates.html">Full changelog</a>
+		]]></description>
+	</item>
+<!-- 	<item>
+		<title>Last.fm Scrobbler 2.1.32 BROKEN! DOWNLOAD DISABLED!</title>
+		<pubDate>Tue, 22 Jan 2013 13:48:00 +0000</pubDate>
+		<description><![CDATA[
+			This block was commented out as it breaks later versions of Sparkle.
+		]]></description>
+	</item>
+ -->	<item>
+		<title>Last.fm Scrobbler 2.1.30</title>
+		<pubDate>Mon, 14 Jan 2013 16:20:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.30"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.30.tar.bz2"
+			length="51488"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MC0CFB81slNAjFgUeLzRzduBcPn5Gf4pAhUApgKlc0e88mKviG7b7Sv8l96FooQ="/>
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Translations updated and complete</li>
+					<li>Don't fingerprint files from audio CDs</li>
+					<li>Fixed some problems upgrading from The Scrobbler 1.x</li>
+					<li>Fixed a crash when enabling/disabling device scrobbling</li>
+					<li>Fixed a crash when switching user accounts</li>
+					<li>A temporary workaround for an device scrobbling error</li>
+				</ul>
+		]]></description>
+	</item>	
+	<item>
+		<title>Last.fm Scrobbler 2.1.29</title>
+		<pubDate>Mon, 14 Jan 2013 12:00:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.29"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.29.tar.bz2"
+			length="51496"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFHT3/y44rhssHuDtfmt5rL+3Ww6eAhRXpdFTCf731RywSz2rK0ItHCmuzA=="/>
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Translations updated and complete</li>
+					<li>Don't fingerprint files from audio CDs</li>
+					<li>Fixed some problems upgrading from The Scrobbler 1.x</li>
+					<li>Fixed a crash when enableing/disabling device scrobbling</li>
+					<li>Fixed a crash when switching user accounts</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.28</title>
+		<pubDate>Tue, 08 Jan 2013 11:30:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.28"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.28.tar.bz2"
+			length="51480"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFDwayTlkMI06J0RSHrRulFniTT3VAhRq4XJxuw8oVXBXTZkBb6Lt8nR57g=="/>
+		<description><![CDATA[
+				<h3>Changes</h3>
+				<ul>
+					<li>Side bar images updated slightly</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Restore the main window size and position correctly after restart</li>
+					<li>Fixed a crash caused by VLC when monitors plugged in, etc</li>
+					<li>Fixed spurious device scrobbles caused by a race condition</li>
+					<li>Fixed triple scrobbling when scrobbling offline cached scrobbles</li>
+					<li>Don't run the device scrobble checker so often - it was running almost all the time on Windows</li>
+					<li>Device scrobble performance improvements</li>
+					<li>Minimize and Zoom menu options now work</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.27</title>
+		<pubDate>Fri, 21 Dec 2012 15:30:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.27"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.27.tar.bz2"
+			length="51280"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFFdVhVVxkTyH7dcmJD+OLXACK5kgAhQcLYsjGQSRxcONf6VGPUrxPRKUqg=="/>
+		<sparkle:deltas>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Fixed a crash on startup for new users</li>
+					<li>Fixed iTunes plays being picked up as device scrobbles Windows (may improve Mac too)</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.26</title>
+		<pubDate>Mon, 17 Dec 2012 12:15:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.26"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.26.tar.bz2"
+			length="50456"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFEB1oHQYNVi+HQXxSt6xGn/mzsr4AhR+vrS/dxoDvCqQyN51HypLawcucw=="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Translations! (almost complete)</li>
+					<li>Proxy settings - you can set them from the advanced settings tab and the first step of first run wizard</li>
+					<li>Text should now look nicer on Retina screens</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>iPod scrobbling - fixed a problem where non-local tracks (iTunes Match) would not get their playcounts synced and lead to duplicates scrobbles</li>
+					<li>Media keys are now ignored if you last listened to audio through another app</li>
+					<li>Don't divide by zero (crash) for users that are using the app on the same day as they registered</li>
+					<li>Fixed restarting the app in Mac, still not working on Windows.</li>
+					<li>Radio now goes into the stopped state correctly</li>
+					<li>Device scrobble Window is now a child of the main window (it appears positioned on top of it nicely now)</li>
+					<li>Fixed a double delete crash when the fingerprinter failed</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.25</title>
+		<pubDate>Thr, 25 Oct 2012 13:20:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.25"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.25.tar.bz2"
+			length="49704"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFCX24RpRaDjf5+luL4aSX7Uqhz/gAhRulwjHFesGWsIJrSNoRCrvixbiUg=="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Now called "Last.fm Scrobbler"</li>
+					<li>iPod scrobbling has been reworked to allow for WiFi sync - Scrobble your device before updating so you don't lose scrobbles</li>
+					<li>The app is now partially translated with translations from the old app. A fully translated version will be coming soon</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Some CPU usage fixes</li>
+					<li>Fingerprinting backend has changed, fixing a rare crash</li>
+					<li>Other minor bugs</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.21</title>
+		<pubDate>Mon, 10 Sep 2012 10:26:00 +0000</pubDate>
+		<enclosure
+			sparkle:version="2.1.21"
+			url="https://cdn.last.fm/client/Mac/Last.fm-2.1.21.tar.bz2"
+			length="28528"
+			type="application/octet-stream"
+			sparkle:dsaSignature="MCwCFFQ3ZyY6bowbSgQHih7rwDP/zasoAhRJrKkzhmeV/hrOIP+qVmmxPn1svw=="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Added option to hide app icon from the dock (also has to hide app's menu bar, and icon in tab switcher)</li>
+					<li>We now scrobble 'album artist' as well as 'artist' for cleaner album pages on the website (all plugins have been updated)</li>
+					<li>Fingerprinting local tracks has been added (can be turned off in preferences)</li>
+					<li>"Scrobbling is off" message has been added to the status bar</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Better album images in the scrobble list</li>
+					<li>We now only ask you to install plugins for apps we've detected you've installed</li>
+					<li>We now make sure you close your media players before plugins are installed</li>
+					<li>We now make sure you close WMP or Winamp before bootstrapping (won't bootstrap if they are left open)</li>
+					<li>Profile widget now refreshed when you switch to it so data doesn't get as out of date</li>
+					<li>Fixed some bugs in the preferences dialog</li>
+				</ul>
+		]]></description>
+	</item>
+	<item>
+	<title>Last.fm Scrobbler 2.1.20</title>
+        <pubDate>Fri, 01 Jun 2012 14:20:00 +0000</pubDate>
+        <enclosure
+                sparkle:version="2.1.20"
+                url="https://cdn.last.fm/client/Mac/Last.fm-2.1.20.tar.bz2"
+                length="24088"
+                type="application/octet-stream"
+                sparkle:dsaSignature="MCwCFDXdsIAA9RR+fm1HASw9Wj9faEENAhQcojkXrhPuK3a19Pc1vyOLfGRRiA=="/>
+        <description><![CDATA[
+        		<h3>Bug fixes</h3>
+        		<ul>
+					<li>Fixed some radio playback issues introduced with the switch to VLC</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+        <title>Last.fm Scrobbler 2.1.19</title>
+        <pubDate>Wed, 30 May 2012 14:50:00 +0000</pubDate>
+        <enclosure
+                sparkle:version="2.1.19"
+                url="https://cdn.last.fm/client/Mac/Last.fm-2.1.19.tar.bz2"
+                length="28480"
+                type="application/octet-stream"
+                sparkle:dsaSignature="MC0CFQCnoxk6NB25D6bS7pjvj5zV1qqvFwIULUJgTSO3kIKxdeJz7xV9kV7xT5U="/>
+        <description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Media keys on your keyboard now control the radio - play/pause and skip</li>
+					<li>More scrobble tab design improvements</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Fixed radio playback issue - some users had trouble skipping between songs</li>
+					<ul>
+						<li>Updated Phonon library from 4.4 to 4.6</li>
+						<li>Switched to VLC as the audio backend</li>
+						<li>Note: for users that didn't have this problem, they should notice some general playback performace improvements</li>
+						<li>Also note: we made these changes for Windows too - there wasn't this specific bug, but you may still notice a performance improvement</li>
+					</ul>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.18</title>
+		<pubDate>Thu, 26 Apr 2012 19:20:00 +0000</pubDate>
+		<enclosure
+				 sparkle:version="2.1.18"
+				 url="https://cdn.last.fm/client/Mac/Last.fm-2.1.18.tar.bz2"
+				 length="23368"
+				 type="application/octet-stream"
+				 sparkle:dsaSignature="MCwCFGjp/NirSPRth1LDL77QPCPmkQAyAhQfUM6JKHUD5X2EUJ6wWwdhhXG0fg=="/>
+		<sparkle:deltas>
+		<enclosure
+				 url="https://cdn.last.fm/client/Mac/Last.fm-2.1.18-2.1.16.delta"
+				 sparkle:version="2.1.18"
+				 sparkle:deltaFrom="2.1.16"
+				 length="1688"
+				 type="application/octet-stream"
+				 sparkle:dsaSignature="MC0CFQCRB1VjXyXaUpOVBsbDx1Rd8Hc68AIUPxqzKj34I8SeOLRiJmzyCPWjWLA="/>
+		<enclosure
+				 url="https://cdn.last.fm/client/Mac/Last.fm-2.1.18-2.1.17.delta"
+				 sparkle:version="2.1.18"
+				 sparkle:deltaFrom="2.1.17"
+				 length="2064"
+				 type="application/octet-stream"
+				 sparkle:dsaSignature="MCwCFHOvbrgU7ttfYmhVk40FguibWWWYAhQQ+ezGEWuOPCeV4gVTK5Q3KXZ1Fg=="/>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Scrobble tab design improvements</li>
+					<li>Can now delete scrobbles from the list through the right click menu</li>
+					<li>Added a licenses dialog for third party software</li>
+					<li>About box now has the Last.fm logo</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Quit dialog now asks a question</li>
+					<li>Scrobble repeated tracks</li>
+					<li>Now restores same size and position when reopening</li>
+					<li>Initial window size adjusts for very small/low resolution screens</li>
+					<li>Doesn't filter other user's personal stations from your recent stations anymore</li>
+					<li>Windows installer now has updated images</li>
+					<li>Doesn't need to fetch track info when refreshing the scrobbles list anymore</li>
+					<li>Should now run on Mac OSX 10.5.x</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+	<title>Last.fm Scrobbler 2.1.17</title>
+		<pubDate>Tue, 10 Apr 2012 12:00:00 +0000</pubDate>
+		<enclosure
+			 sparkle:version="2.1.17" 
+			 url="https://cdn.last.fm/client/Mac/Last.fm-2.1.17.tar.bz2" 
+			 length="22920" 
+			 type="application/octet-stream" 
+			 sparkle:dsaSignature="MC0CFFTxxxig47d43vfUk0cazGJneKVEAhUAjhtrQMpb3dCxr2QG+IAQa8UidiY="/>
+		<sparkle:deltas>
+			<enclosure
+				 url="https://cdn.last.fm/client/Mac/Last.fm-2.1.17-2.1.16.delta" 
+				 sparkle:version="2.1.17" 
+				 sparkle:deltaFrom="2.1.16" 
+				 length="936" 
+				 type="application/octet-stream" 
+				 sparkle:dsaSignature="MCwCFD5bA6NPhtof5kQSbnywYqUK9wvOAhRGkOuC+rDdpl1z5OTJCMTYFbZFtw=="/>
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Can now set the language - the app itself isn't translated yet, but this affects artist bios, etc</li>
+					<li>Scrobbles list rewritten and improved</li>
+					<ul>
+						<li>Corrections asterisk with hover over now shown</li>
+						<li>Displays if the scrobble is cached and yet to be submitted</li>
+						<li>Displays if their was an error when submitting the scrobble - i.e. bad metadata</li>
+					</ul>
+					<li>Profile, Friends, and Radio tab design improvements</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Always start on the scrobble list when switching to that tab, not the previous track info view</li>
+					<li>Less calls made to track.getInfo</li>
+					<li>If app is closed to tray and notifications turned off, the only web services called are for scrobbling</li>
+				</ul>
+		    ]]></description>
+</item>
+	<item>
+		<title>Last.fm Scrobbler 2.1.16</title>
+		<pubDate>Thu, 15 Mar 2012 12:20:00 +0000</pubDate>
+		<enclosure sparkle:version="2.1.16"
+		 url="https://cdn.last.fm/client/Mac/Last.fm-2.1.16.tar.bz2"
+		 length="22960"
+		 type="application/octet-stream"
+		 sparkle:dsaSignature="MC0CFQCEQyJvAbR7S4wVhJaUZ92yqeB40AIUe1N1zKt3QnW6pkbMP8gpKw9HxRk="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Now has a max width of 800px</li>
+					<li>Use app icon for all radio stations</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Fixed the now playing display bug</li>
+					<li>Fixed a crash that manifested itself in several places (cancelling getting info for a track)</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Beta Version 2.1.15</title>
+		<pubDate>Tue, 28 Feb 2012 16:00:00 +0000</pubDate>
+		<enclosure sparkle:version="2.1.15"
+		           url="https://cdn.last.fm/client/Mac/Last.fm-2.1.15.zip"
+		           length="59032" 
+		           type="application/octet-stream" 
+		           sparkle:dsaSignature="MCwCFHWXu3Odz1EEYnpTRHLZUoc8KKO5AhRqmaZ50QhLxIpATrwkCk1clzQzyw=="/>
+		<sparkle:deltas>
+			<enclosure url="https://cdn.last.fm/client/Mac/Last.fm-2.1.15-2.1.14.delta"
+						sparkle:version="2.1.15"
+						sparkle:deltaFrom="2.1.14"
+						length="3384"
+						type="application/octet-stream"
+						sparkle:dsaSignature="MC0CFGEcpucDQFUoe7EQaFM1Z9VgLp2FAhUAgPgQIud6T+CP/XG8igI0MrkdW2c=" />
+		</sparkle:deltas>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Radio controls are now in the sys tray too</li>
+					<li>Buy links now in the scrobble list view</li>
+					<li>There's now a diagnostics dialog - only one tab with the ability to force a check for iPod scrobbles and see the log so far</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Dialogs, like preferences, are now brought to the front if reopened</li>
+					<li>Many copy changes around the app</li>
+					<li>Doesn't erroneously display two now playing tracks anymore</li>
+					<li>iPod scrobbles are submitted immeditaly instead of just cached</li>
+					<li>Doesn't fetch track info as much</li>
+					<li>The loved state of the current track is now reliable</li>
+					<li>Don't ask where Spotify is, if it isn't installed</li>
+					<li>Extra dock icons no longer appear</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Beta Version 2.1.14</title>
+		<pubDate>Tue, 14 Feb 2012 17:10:00 +0000</pubDate>
+		<enclosure sparkle:version="2.1.14"
+		           url="https://cdn.last.fm/client/Mac/Last.fm-2.1.14.zip"
+		           length="58976" 
+		           type="application/octet-stream" 
+		           sparkle:dsaSignature="MC0CFQCm/tD1PCjr4Mi1/qvLOG1OoaKNxQIUI+WsnFViB0P9lDF/sMm8KroUSHw="/>
+		<description><![CDATA[
+				<h3>This is the first public beta version!!!</h3>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Updates to the wizard copy</li>
+					<li>Buy links now work for uk, us, and de users (was only ever doing uk links)</li>
+					<li>Other very minor fixes</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Alpha Version 2.0.13</title>
+		<pubDate>Fri, 10 Feb 2012 17:10:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.13"
+		           url="https://cdn.last.fm/client/Mac/Last.fm-2.0.13.zip"
+		           length="59176" 
+		           type="application/octet-stream" 
+		           sparkle:dsaSignature="MCwCFHHXLm4vnHA/163VDxm8s4qQssgvAhRbwKVMPS63OImXmO5mMkapIeU8MA=="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Changed the API key. Everyone will have to go through the wizard again</li>
+					<li>Now opens lastfm:// radio urls from the web site</li>
+					<li>Upgraded to Qt 4.8.0</li>
+					<li>Now tells you to close iTunes when there is a new plugin to install</li>
+					<li>Message bar now styles nicely</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Doesn't show two now playing tracks in the scrobble list any more</li>
+					<li>Fixed quite a few bugs in the frist run wizard</li>
+					<li>Fixed some bugs with the account management settings</li>
+					<li>Friend list trackpad scrolling is now smooth (Qt 4.8.0)</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.12</title>
+		<pubDate>Thu, 02 Feb 2012 17:10:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.12"
+		           url="https://cdn.last.fm/client/Mac/Last.fm-2.0.12.zip"
+		           length="53848" 
+		           type="application/octet-stream" 
+		           sparkle:dsaSignature="MCwCFFmYvxQ1+8M06EI1AhtsJDETVrO/AhRTInZ6JAM93MPe6o/UaKIK9uyU3w=="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Now branded as a beta version!</li>
+					<li>Tag dialog now implemented to similar standard as the share dialog</li>
+					<li>Only fetches track metadata if the window is visable</li>
+					<li>Scrobble toggle now in preferences</li>
+					<li>'Play' menu option is now not checkable, but has 'play', 'pause' and 'resume' states</li>
+					<li>Progress bar now reports the state correctly for podcasts and videos</li>
+					<li>Don't display metadata for Spotify ads</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>iTunes plugin now handles device names with ' and \ in them correctly</li>
+					<li>Device names are now interpreted as utf-8 by the app</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.11</title>
+		<pubDate>Wed, 25 Jan 2012 19:46:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.11"
+		           url="https://cdn.last.fm/client/Mac/Last.fm-2.0.11.zip"
+		           length="54408" 
+		           type="application/octet-stream" 
+		           sparkle:dsaSignature="MCwCFDdv1lLNaTRPJTaHIoZLvqI2klD2AhQ+uQJOYHyM9kFsshbkkW0ALtHkOQ=="/>
+		<description><![CDATA[
+				<h3>Bug fixes 2.0.11</h3>
+				<ul>
+					<li>Incorrectly thought some radio tracks were podcasts or videos</li>
+				</ul>
+				<h3>Features - 2.0.10</h3>
+				<ul>
+					<li>Added option to turn off podcast scrobbling</li>
+					<li>Now doesn't scrobble videos from iTunes, that aren't music videos</li>
+					<li>Added option to disable desktop notifications</li>
+					<li>Added option to disable launching the app with media players</li>
+				</ul>
+				<h3>Bug fixes 2.0.10</h3>
+				<ul>
+					<li>Some user setting fixes, you will have to go through the wizard again</li>
+					<li>Fixed iTunes plugin crashing iTunes for some Snow Leopard people</li>
+					<li>Fixed the menubar not showing sometimes at startup</li>
+					<li>If the app is started with --tray option (i.e. from a media player) it now doesn't show the main window</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.10</title>
+		<pubDate>Wed, 25 Jan 2012 16:20:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.10"
+		           url="https://cdn.last.fm/client/Mac/Last.fm-2.0.10.zip"
+		           length="54496" 
+		           type="application/octet-stream" 
+		           sparkle:dsaSignature="MCwCFEQAxtXPwDtGHruTYrx04PP8FROxAhQwVpzAFN8X297zXXvTyQqn5K6quw=="/>
+		<description><![CDATA[
+				<h3>Features</h3>
+				<ul>
+					<li>Added option to turn off podcast scrobbling</li>
+					<li>Now doesn't scrobble videos from iTunes, that aren't music videos</li>
+					<li>Added option to disable desktop notifications</li>
+					<li>Added option to disable launching the app with media players</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Some user setting fixes, you will have to go through the wizard again</li>
+					<li>Fixed iTunes plugin crashing iTunes for some Snow Leopard people</li>
+					<li>Fixed the menubar not showing sometimes at startup</li>
+					<li>If the app is started with --tray option (i.e. from a media player) it now doesn't show the main window</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.9</title>
+		<pubDate>Mon, 16 Jan 2012 10:20:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.9"
+		           url="https://cdn.last.fm/client/Mac/Last.fm-2.0.9.zip"
+		           length="52088" 
+		           type="application/octet-stream" 
+		           sparkle:dsaSignature="MCwCFBtr5ldX6tmaqfn7RL//XLJPZqdWAhQu5HFQXpNtd4QoDatlNBfzOrNASA=="/>
+		<description><![CDATA[
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>iPod scrobble device associations were getting corrupted</li>
+					<li>Cleaned up and fixed some bugs in the apps user settings</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.8</title>
+		<pubDate>Thu, 12 Jan 2012 10:55:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.8" url="https://cdn.last.fm/client/Mac/Last.fm-2.0.8.zip" length="51896" type="application/octet-stream" sparkle:dsaSignature="MCwCFBuMoqm2G0qlrCyFygeLf6e5e05ZAhQB/hQ067CDeqJsv1LyaDMtRIqU1g=="/>
+		<description><![CDATA[
+				<h3>Features/Improvements</h3>
+				<ul>
+					<li>Settings toolbar now looks better and has assets </li>
+					<li>Crash Reporting implemented in client, but disabled. (needs oops server set up by ops)</li>
+				</ul>
+				<h3>Bug fixes</h3>
+				<ul>
+					<li>Stops from iTunes are picked up - end of a playlist, quit iTunes, etc</li>
+					<li>Resume iTunes track after playing and pausing radio is now picked up</li>
+					<li>Spacebar now works again as a global shortcut</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.7</title>
+		<pubDate>Wed, 04 Jan 2012 12:20:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.7" url="https://cdn.last.fm/client/Mac/Last.fm-2.0.7.zip" length="50344" type="application/octet-stream" sparkle:dsaSignature="MCwCFFlKwnxI0WAcCBHYPRp9IvNywXvMAhREH2R5d5IUZK+bULZ3u8XFgwt+dA=="/>
+		<description><![CDATA[
+		        <ul>
+					<li>Fixed a major bug with batch scrobbling</li>
+					<li>Fixed a crash for unkown length tracks (iTunes radio streams)</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.6</title>
+		<pubDate>Fri, 23 Dec 2011 17:00:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.6" url="https://cdn.last.fm/client/Mac/Last.fm-2.0.6.zip" length="50496" type="application/octet-stream" sparkle:dsaSignature="MC0CFQCGwuA+Sd2RvbtWK3xrjCf3i+eJBgIULgTgtcvxYt3xX3etnF7ZvhXeUwA="/>
+		<description><![CDATA[
+		        <ul>
+					<li>New friends list</li>
+					<li>Now installs media player plugins on Windows</li>
+					<li>Bootstrapping for all media players now works</li>
+					<li>Many other bug fixes and improvements</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.5</title>
+		<pubDate>Thu, 17 Nov 2011 16:57:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.5" url="https://cdn.last.fm/client/Mac/Last.fm.2.0.5.zip" length="50368" type="application/octet-stream" sparkle:dsaSignature="MCwCFCi+YjPJ2yvXKXoh/S/Z/B/c8PO7AhRG53S7/K3fMeBChE58OyuPht3oxA=="/>
+		<description><![CDATA[
+		        <ul>
+					<li>Lots of UI changes - welcome screen changed, metadata view improved, etc etc</li>
+					<li>Supports updates with libsparkle!</li>
+					<li>Uses the Growl framework to show notifications with album art</li>
+					<li>Airfoil metadata support</li>
+					<li>Scriptable with AppleScript (see the dictionary)</li>
+					<li>Campaign tracking when linking to the website</li>
+					<li>Radio quick start widget now shows artist and tag suggestions</li>
+					<li>Big play buttons now resume the last radio</li>
+					<li>Friends list now sorted by most recently listened</li>
+					<li>Switching tabs now has a slide animation</li>
+				</ul>
+		    ]]></description>
+	</item>
+	<item>
+		<title>Last.fm Scrobbler Version 2.0.4</title>
+		<pubDate>Tue, 08 Nov 2011 15:30:00 +0000</pubDate>
+		<enclosure sparkle:version="2.0.4" url="https://cdn.last.fm/client/Mac/Last.fm.2.0.4.zip" length="50496" type="application/octet-stream" sparkle:dsaSignature="MCwCFB+JR/g7HGKNroRRj7PStc2aH0j4AhR7vlzYCGxVgcdO0pmi7vO2vss0Vg=="/>
+		<description><![CDATA[
+		        <h3>Embedded release notes!</h3>
+		        ...
+		    ]]></description>
+	</item>
+</channel>
+</rss>

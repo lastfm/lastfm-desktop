@@ -43,6 +43,9 @@ private:
 private slots:
     void onSessionChanged( const unicorn::Session& session );
 
+#if defined( Q_OS_MAC )
+    void onAppleMusicClicked();
+#endif
 #if defined( Q_OS_MAC ) || defined( Q_OS_WIN )
     void oniTunesClicked();
 #endif

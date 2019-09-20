@@ -53,7 +53,7 @@ def build
 		Dir.mkdir("_release")
 		Dir.chdir("_release") do
 			system 'cmake -D CMAKE_BUILD_TYPE:STRING=Release ..'
-			system 'sudo make install'
+			system 'make -j8 install'
 		end
 	end
 

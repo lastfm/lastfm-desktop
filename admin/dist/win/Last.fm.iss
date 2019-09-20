@@ -154,13 +154,11 @@ Source: "..\..\..\i18n\*.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_de.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_es.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_fr.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
-;Source: "%QTDIR%\translations\qt_it.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_ja.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_pl.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_pt.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_ru.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_sv.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
-;Source: "%QTDIR%\translations\qt_tr.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 Source: "%QTDIR%\translations\qt_zh_CN.qm"; DestDir: "{app}\i18n"; Flags: ignoreversion
 
 ;The add/modify/remove file

@@ -25,15 +25,24 @@
 
 struct ITunesConnection : PlayerConnection
 {
-    ITunesConnection() : PlayerConnection( "osx", "iTunes" )
+    // PlayerConnection has compile-time constants for these.
+    QString const m_runtime_name;
+    QString const m_runtime_id;
+
+    QString runtimeName() const { return m_runtime_name; }
+    QString runtimeId() const { return m_runtime_id; }
+
+    ITunesConnection(bool isAppleMusic) : PlayerConnection( "osx", "iTunes" )
+    , m_runtime_name( isAppleMusic ? "Apple Music" : "iTunes" )
+    , m_runtime_id(   isAppleMusic ? "mac"         : "osx" )
     {}
-    
+
     void start( const Track& t )
     {
         MutableTrack mt( t );
         mt.setSource( Track::Player );
-        mt.setExtra( "playerId", id() );
-        mt.setExtra( "playerName", name() );
+        mt.setExtra( "playerId", runtimeId() );
+        mt.setExtra( "playerName", runtimeName() );
         mt.stamp();
         handleCommand( CommandStart, t ); 
     }
@@ -43,28 +52,47 @@ struct ITunesConnection : PlayerConnection
     void stop() { handleCommand( CommandStop ); }
 };
 
-
 ITunesListener::ITunesListener( QObject* parent )
-    :QObject( parent ), m_connection( 0 )
+    : QObject( parent )
+    , m_previousPid()
+    , m_playerAppId( getPlayerAppId() )
+    , m_connection( 0 ) 
 {
+    qDebug() << "Detected player app ID: " << m_playerAppId;
     qRegisterMetaType<Track>("Track");
 
-    m_currentTrackScript = AppleScript("tell application \"iTunes\" to tell current track\n"
-                                          "try\n"
-                                              "set L to location\n"
-                                              "set L to POSIX path of L\n"
-                                          "on error\n"
-                                              "set L to \"\"\n"
-                                          "end try\n"
-                                          "return artist & \"\n\" & album artist & \"\n\" & album & \"\n\" & name & \"\n\" & (duration as integer) & \"\n\" & L & \"\n\" & persistent ID & \"\n\" & podcast & \"\n\" & video kind\n"
-                                      "end tell\n" );
+    QString mediaTypeFields = isAppleMusic()
+        ? "\"false\" & \"\n\" & \"none\"\n"
+        : "podcast & \"\n\" & video kind\n";
 
-    CFNotificationCenterAddObserver( CFNotificationCenterGetDistributedCenter(),
-                                    this,
-                                    callback,
-                                    CFSTR( "com.apple.iTunes.playerInfo" ),
-                                    NULL,
-                                    CFNotificationSuspensionBehaviorDeliverImmediately );
+    m_currentTrackScript = AppleScript(
+        "tell application id \"" + m_playerAppId + "\" to tell current track\n"
+            "try\n"
+                "set L to location\n"
+                "set L to POSIX path of L\n"
+            "on error\n"
+                "set L to \"\"\n"
+            "end try\n"
+            "return artist & \"\n\" & "
+                    "album artist & \"\n\" & "
+                    "album & \"\n\" & "
+                    "name & \"\n\" & "
+                    "(duration as integer) & \"\n\" & "
+                    "L & \"\n\" & "
+                    "persistent ID & \"\n\" & " +
+                    mediaTypeFields +
+        "end tell"
+    );
+
+    QString name = m_playerAppId + ".playerInfo";
+    CFNotificationCenterAddObserver(
+        CFNotificationCenterGetDistributedCenter(),
+        this,
+        callback,
+        CFStringCreateWithCString( NULL, name.toStdString().c_str(), kCFStringEncodingASCII ),
+        NULL,
+        CFNotificationSuspensionBehaviorDeliverImmediately
+    );
 
     QMetaObject::invokeMethod( this, "setupCurrentTrack", Qt::QueuedConnection );
 }
@@ -73,6 +101,13 @@ ITunesListener::ITunesListener( QObject* parent )
 ITunesListener::~ITunesListener()
 {
     delete m_connection;
+}
+
+
+bool
+ITunesListener::isAppleMusic()
+{
+    return m_playerAppId == "com.apple.Music";
 }
 
     
@@ -170,7 +205,7 @@ void
 ITunesListener::callback( CFDictionaryRef info )
 {
     if ( !m_connection )
-        emit newConnection( m_connection = new ITunesConnection );
+        emit newConnection( m_connection = new ITunesConnection(isAppleMusic()) );
 
     ITunesDictionaryHelper dict( info );
     State const previousState = m_state;
@@ -228,19 +263,30 @@ ITunesListener::callback( CFDictionaryRef info )
 
 }
 
-
-bool //static
-ITunesListener::iTunesIsPlaying()
+QString //static
+ITunesListener::getPlayerAppId()
 {
-    const char* code = "tell application \"iTunes\" to if running then return player state is playing";
-    return AppleScript( code ).exec() == "true";
+    const char* code = 
+    "try\n"
+        "tell me to get application id \"com.apple.Music\"\n"
+        "return \"com.apple.Music\"\n"
+    "on error\n"
+        "return \"com.apple.iTunes\"\n"
+    "end try\n";
+    return AppleScript( code ).exec();
 }
 
+bool //static
+ITunesListener::isPlaying()
+{
+    QString code = "tell application id \"" + m_playerAppId + "\" to if running then return player state is playing";
+    return AppleScript( code ).exec() == "true";
+}
 
 void
 ITunesListener::setupCurrentTrack()
 {  
-    if ( !iTunesIsPlaying() )
+    if ( !isPlaying() )
         return;
 
     QString output = m_currentTrackScript.exec();
@@ -275,7 +321,7 @@ ITunesListener::setupCurrentTrack()
         t.setVideo( video );
 
         if ( !m_connection )
-            emit newConnection( m_connection = new ITunesConnection );
+            emit newConnection( m_connection = new ITunesConnection(isAppleMusic()) );
 
         m_connection->start( t );
     }
