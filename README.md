@@ -14,30 +14,75 @@ You will also need depending on your chosen platform:-
 
 ### Homebrew
 
-We recommend that you use Homebrew to install most of the dependancies:
+We recommend that you use Homebrew to install most of the dependencies.
 
-In order to install the newest QT run:
+We recommend you have XCode set as your build toolchain.
 
 ```
-brew install qt
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
 ```
 
-You may want to install QT 4.8. In that case run:
+```
+brew install ffmpeg coreutils cmake fftw libsamplerate
+```
+
+
+We recommend Qt 4.8.7, the last version with Webkit support.
 
 ```
 brew install cartr/qt4/qt@4
 brew install cartr/qt4/qt-webkit@2.3
 ```
 
-### Other dependancies
+### liblastfm
+
+Download liblastfm from https://github.com/lastfm/liblastfm parallel to the build of lastfm-desktop.
+
+As the Desktop Client supports only Qt4 at the moment, you will need to set it to Qt4 mode.
+
+In CMakeLists.txt, change
+```
+option(BUILD_WITH_QT4 "Build liblastfm with Qt4" ON)
+
+```
+
+Then build and make.
+```
+cd liblastfm
+mkdir _build && cd _build
+cmake ..
+make -j4
+make install
+```
+
+### Other dependencies
 
 You'll also need the Growl and libsparkle frameworks.
 
-Get the latest Growl SDk from here http://code.google.com/p/growl/downloads/list
+Get the latest Growl SDk from here http://code.google.com/p/growl/downloads/list - latest tested 1.2.2
 
-Get the latest Sparkle from here http://sparkle.andymatuschak.org/
+Get the latest Sparkle from here http://sparkle.andymatuschak.org/ - latest tested 1.21.3
 
 Unzip both and put their frameworks in /Library/Frameworks/ so the build will find them.
+
+You may need to symlink the headers files into the lastfm-desktop directory:
+
+```
+ln -s /Library/Frameworks/Sparkle.framework/Headers Sparkle
+ln -s /Library/Frameworks/Growl.framework/Headers Growl
+```
+
+### Now you're ready!
+
+```
+cd lastfm-desktop
+rm -r _bin
+qmake -r
+make clean
+make -j4
+```
+
 
 ## Windows
 
