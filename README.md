@@ -122,9 +122,11 @@ I found that I also needed to copy the dll into the lastfm-desktop/_bin folder. 
 
 On Debian or Ubuntu, you can download all the build dependencies by running:
 
-    sudo apt-get install libavformat-dev libgpod-nogtk-dev liblastfm-dev \
+    sudo apt-get install libavformat-dev liblastfm-dev \
                          libqt4-dev libqtwebkit-dev pkg-config \
-                         zlib1g-dev
+                         zlib1g-dev libcanberra-gtk-module libcanberra-gtk3-module \
+                         libphonon-dev libphonon4 phonon-backend-gstreamer
+
 
 You should also install the `libqt4-sql-sqlite` plugin if you want to use the
 software to scrobble your iPod.
