@@ -5,7 +5,7 @@ Channel: #last.desktop
 
 # Build Dependencies
 
-* Qt >= 4.8
+* Qt >= 4.8 (http://download.qt.io/archive/qt/4.8/4.8.7/qt-opensource-windows-x86-vs2010-4.8.7.exe)
 * liblastfm >= 1.0.7
 
 You will also need depending on your chosen platform:-
