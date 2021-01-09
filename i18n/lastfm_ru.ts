@@ -1383,7 +1383,7 @@ Your profile will be updated with the new tracks in a few minutes.</source>
     <name>ScrobbleSettingsWidget</name>
     <message>
         <source>Scrobble at</source>
-        <translation>Скробблиниг на</translation>
+        <translation>Скробблить на</translation>
     </message>
     <message>
         <source>percent of the track</source>
@@ -1407,7 +1407,7 @@ Your profile will be updated with the new tracks in a few minutes.</source>
     </message>
     <message>
         <source>Selected directories will not be scrobbled</source>
-        <translation>Не удалось выполнить скробблинг для выбранных каталогов</translation>
+        <translation>Для выбранных директорий не будет выполняться скробблинг</translation>
     </message>
 </context>
 <context>
@@ -1969,7 +1969,7 @@ or choose from below</source>
     </message>
     <message>
         <source>Scrobble iPod...</source>
-        <translation>Скробблиниг iPod...</translation>
+        <translation>Скробблинг iPod...</translation>
     </message>
     <message>
         <source>Visit Last.fm profile</source>
