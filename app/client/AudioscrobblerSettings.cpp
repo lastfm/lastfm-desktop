@@ -24,6 +24,13 @@ AudioscrobblerSettings::AudioscrobblerSettings()
 {
 }
 
+bool
+AudioscrobblerSettings::raiseShortcutEnabled() const
+{
+    const bool fEnabled = true;
+    return value( "raiseShortcutEnabled", fEnabled ).toBool();
+}
+
 Qt::KeyboardModifiers
 AudioscrobblerSettings::raiseShortcutModifiers() const
 {
@@ -53,6 +60,12 @@ AudioscrobblerSettings::raiseShortcutDescription() const
     "Ctrl+Shift+S"
 #endif
      ) ).toString();
+}
+
+void
+AudioscrobblerSettings::setRaiseShortcutEnabled( bool f )
+{
+    setValue( "raiseShortcutEnabled", f );
 }
 
 void

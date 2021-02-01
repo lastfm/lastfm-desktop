@@ -123,6 +123,7 @@ namespace audioscrobbler
 
         void setBetaUpdates( bool betaUpdates );
 
+        void unsetRaiseHotKey();
         void setRaiseHotKey( Qt::KeyboardModifiers mods, int key );
 
         void startBootstrap( const QString& pluginId );

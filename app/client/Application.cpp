@@ -279,8 +279,15 @@ Application::init()
 
     m_toggle_window_action = new QAction( this ), SLOT( trigger());
 #ifndef Q_WS_X11
-     AudioscrobblerSettings settings;
-     setRaiseHotKey( settings.raiseShortcutModifiers(), settings.raiseShortcutKey() );
+    AudioscrobblerSettings settings;
+    if ( settings.raiseShortcutEnabled() )
+    {
+        setRaiseHotKey( settings.raiseShortcutModifiers(), settings.raiseShortcutKey() );
+    }
+    else
+    {
+        unsetRaiseHotKey();
+    }
 #endif
     m_tag_action->setShortcut( Qt::CTRL + Qt::Key_T );
     m_share_action->setShortcut( Qt::CTRL + Qt::Key_S );
@@ -389,10 +396,18 @@ Application::showAs( bool showAs )
 }
 
 void
-Application::setRaiseHotKey( Qt::KeyboardModifiers mods, int key )
+Application::unsetRaiseHotKey()
 {
     if( m_raiseHotKeyId >= (void *)0 )
         unInstallHotKey( m_raiseHotKeyId );
+    m_raiseHotKeyId = (void*)-1;
+}
+
+void
+Application::setRaiseHotKey( Qt::KeyboardModifiers mods, int key )
+{
+    // unset the raise hotkey if needed
+    unsetRaiseHotKey();
 
     m_raiseHotKeyId = installHotKey( mods, key, m_toggle_window_action, SLOT(trigger()));
 }
