@@ -32,6 +32,7 @@
 #include <QTcpSocket>
 #include <QAction>
 #include <QNetworkProxy>
+#include <QSslSocket>
 
 #include <lastfm/UrlBuilder.h>
 #include <lastfm/InternetConnectionMonitor.h>
@@ -82,15 +83,15 @@ using audioscrobbler::Application;
 #define APPLE_KEY_CHAR QString::fromUtf8("⌘")
 #define SKIP_LIMIT 6
 
-#ifdef Q_WS_X11
-#define AS_TRAY_ICON ":/22x22.png"
-#define AS_TRAY_ICON_OFF ":/lastfm_icon_22_grayscale.png"
-#elif defined( Q_WS_WIN )
-#define AS_TRAY_ICON ":/16x16.png"
-#define AS_TRAY_ICON_OFF ":/lastfm_icon_16_grayscale.png"
-#elif defined( Q_OS_MAC )
+#if defined( Q_OS_MAC )
 #define AS_TRAY_ICON ":/systray_icon_rest_mac.png"
 #define AS_TRAY_ICON_OFF ":/mac_control_bar_as_OFF.png"
+#elif defined( Q_OS_WIN )
+#define AS_TRAY_ICON ":/16x16.png"
+#define AS_TRAY_ICON_OFF ":/lastfm_icon_16_grayscale.png"
+#else
+#define AS_TRAY_ICON ":/22x22.png"
+#define AS_TRAY_ICON_OFF ":/lastfm_icon_22_grayscale.png"
 #endif
 
 Application::Application(int& argc, char** argv) 
@@ -124,7 +125,11 @@ Application::Application(int& argc, char** argv)
         nam->setUserProxy( proxy );
 
     AudioscrobblerSettings settings;
-    lastfm::ws::setScheme( settings.value( "enableSsl", true ).toBool() ? lastfm::ws::Https : lastfm::ws::Http );
+    // SSL on by default, but only where Qt actually has a TLS backend -
+    // otherwise every web service call would fail with the settings
+    // checkbox for turning it off hidden (AdvancedSettingsWidget hides it
+    // when !QSslSocket::supportsSsl())
+    lastfm::ws::setScheme( settings.value( "enableSsl", QSslSocket::supportsSsl() ).toBool() ? lastfm::ws::Https : lastfm::ws::Http );
 }
 
 void
@@ -166,7 +171,7 @@ Application::init()
     // Initialise the unicorn base class first!
     unicorn::Application::init();
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     setWindowIcon( QIcon( ":/as.png" ) );
 #endif
 
@@ -244,7 +249,7 @@ Application::init()
     }
 
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     menu->addSeparator();
     m_scrobble_ipod_action = menu->addAction( tr( "Scrobble iPod..." ) );
     connect( m_scrobble_ipod_action, SIGNAL( triggered() ), ScrobbleService::instance().deviceScrobbler(), SLOT( onScrobbleIpodTriggered() ) );
@@ -279,7 +284,7 @@ Application::init()
     m_mw->addWinThumbBarButton( m_play_action );
 
     m_toggle_window_action = new QAction( this ), SLOT( trigger());
-#ifndef Q_WS_X11
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC)
      AudioscrobblerSettings settings;
      setRaiseHotKey( settings.raiseShortcutModifiers(), settings.raiseShortcutKey() );
 #endif
@@ -352,7 +357,7 @@ Application::tray()
         m_tray = new QSystemTrayIcon(this);
         setTrayIcon();
 
-#if defined(Q_OS_WIN) || defined(Q_WS_X11)
+#ifndef Q_OS_MAC
         connect( m_tray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), SLOT( onTrayActivated(QSystemTrayIcon::ActivationReason)) );
 #endif
         showAs( unicorn::Settings().showAS() );
@@ -370,16 +375,27 @@ Application::setTrayIcon()
         bool scrobblingOn = unicorn::UserSettings().value( "scrobblingOn", true ).toBool();
 
 #ifdef Q_OS_MAC
-        // Build a template icon with 1x and 2x representations so the menu
-        // bar renders it at the right point size on Retina displays and
-        // recolours it for light/dark menu bars and the pressed state.
-        // Scrobbling-off is shown as a dimmed glyph, per template-icon
-        // convention, instead of the old grayscale asset.
+        // Menu-bar icon as a template (mask) image: QIcon::setIsMask() maps to
+        // NSImage.template, so AppKit tints the glyph for light/dark menu bars
+        // and the pressed state - replacing the old separate pressed/grayscale
+        // assets. Alpha controls tint coverage, hence 40% opacity for the
+        // scrobbling-off state. Two representations are added because Qt picks
+        // by pixel size (needs Qt::AA_UseHighDpiPixmaps, set in main.cpp); the
+        // source PNG is only 18x18 so the 2x rep is an upscale - it buys the
+        // correct point size on Retina, not extra sharpness. A real @2x asset
+        // would sharpen it.
         QIcon trayIcon;
 
         for ( int scale = 1; scale <= 2; ++scale )
         {
             QPixmap glyph( AS_TRAY_ICON );
+
+            if ( glyph.isNull() )
+            {
+                qWarning() << "setTrayIcon: missing resource" << AS_TRAY_ICON << "- the menu bar item will be invisible";
+                break;
+            }
+
             glyph = glyph.scaled( glyph.size() * scale, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
             if ( !scrobblingOn )
@@ -497,16 +513,6 @@ Application::onTrackStarted( const lastfm::Track& track, const Track& oldTrack )
         if ( trackFileInfo.exists()
              && trackFileInfo.isWritable() ) // this stops us fingerprinting CDs (but maybe other things)
         {
-            QProcess* fpProcess = new QProcess( this );
-            connect( fpProcess, SIGNAL(finished(int)), fpProcess, SLOT(deleteLater()) );
-
-            QStringList arguments;
-            arguments << "--username" << User().name();
-            arguments << "--filename" << track.url().toLocalFile();
-            arguments << "--title" << track.title();
-            arguments << "--album" << track.album();
-            arguments << "--artist" << track.artist();
-
 #ifdef Q_OS_WIN
             QString fpExe = QDir( QCoreApplication::applicationDirPath() ).absoluteFilePath( "fingerprinter.exe" );
 #elif defined( Q_OS_MAC )
@@ -514,7 +520,26 @@ Application::onTrackStarted( const lastfm::Track& track, const Track& oldTrack )
 #else
             QString fpExe = QDir( QCoreApplication::applicationDirPath() ).absoluteFilePath( "fingerprinter" );
 #endif
-            fpProcess->start( fpExe, arguments );
+            // The fingerprinter helper isn't currently built (see Last.fm.pro),
+            // so don't spawn a QProcess that can never start: finished() would
+            // never fire and the object would leak once per played track
+            if ( !QFileInfo( fpExe ).isExecutable() )
+                qDebug() << "Not fingerprinting:" << fpExe << "does not exist in this build";
+            else
+            {
+                QProcess* fpProcess = new QProcess( this );
+                connect( fpProcess, SIGNAL(finished(int)), fpProcess, SLOT(deleteLater()) );
+                connect( fpProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), fpProcess, SLOT(deleteLater()) );
+
+                QStringList arguments;
+                arguments << "--username" << User().name();
+                arguments << "--filename" << track.url().toLocalFile();
+                arguments << "--title" << track.title();
+                arguments << "--album" << track.album();
+                arguments << "--artist" << track.artist();
+
+                fpProcess->start( fpExe, arguments );
+            }
         }
     }
 
@@ -640,7 +665,7 @@ void
 Application::onTrayActivated( QSystemTrayIcon::ActivationReason reason ) 
 {
     if( reason == QSystemTrayIcon::Context ) return;
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     if( reason != QSystemTrayIcon::DoubleClick ) return;
 #endif
     m_show_window_action->trigger();

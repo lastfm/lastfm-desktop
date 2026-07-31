@@ -126,6 +126,18 @@ unicorn::Label::prettyTime( Label& timestampLabel, const QDateTime& timestamp, Q
 {
     QDateTime now = QDateTime::currentDateTime();
 
+    // An invalid timestamp (e.g. a friend's now-playing track) makes secsTo()
+    // return 0, which used to schedule a 0ms single-shot timer that re-entered
+    // here immediately and pinned a CPU core. There's nothing sensible to
+    // display for it either, so show nothing and don't reschedule.
+    if ( !timestamp.isValid() )
+    {
+        timestampLabel.setText( QString() );
+        timestampLabel.setToolTip( QString() );
+        if ( callback ) callback->stop();
+        return;
+    }
+
     // Full time in the tool tip
     timestampLabel.setToolTip( timestamp.toString( Qt::DefaultLocaleLongDate ) );
 
@@ -136,10 +148,9 @@ unicorn::Label::prettyTime( Label& timestampLabel, const QDateTime& timestamp, Q
         // Less than an hour ago
         int minutesAgo = ( timestamp.secsTo( now ) / 60 );
         timestampLabel.setText( tr( "%n minute(s) ago", "", minutesAgo ) );
-        // An invalid timestamp (e.g. a friend's now-playing track) yields a
-        // 0ms interval here, which would make the single-shot timer refire
-        // continuously and pin a CPU core - so never schedule below 1s.
-        if ( callback && timestamp.isValid() )
+        // The qMax clamp keeps a valid-but-non-positive interval (clock skew,
+        // DST, landing exactly on the minute boundary) from spinning the timer
+        if ( callback )
             callback->start( qMax<qint64>( 1, now.secsTo( timestamp.addSecs(((minutesAgo + 1 ) * 60 ) + 1 ) ) ) * 1000 );
     }
     else if ( secondsAgo < (60 * 60 * 6) || now.date() == timestamp.date() )
@@ -147,7 +158,7 @@ unicorn::Label::prettyTime( Label& timestampLabel, const QDateTime& timestamp, Q
         // Less than 6 hours ago or on the same date
         int hoursAgo = ( timestamp.secsTo( now ) / (60 * 60) );
         timestampLabel.setText( tr( "%n hour(s) ago", "", hoursAgo ) );
-        if ( callback && timestamp.isValid() )
+        if ( callback )
             callback->start( qMax<qint64>( 1, now.secsTo( timestamp.addSecs( ( (hoursAgo + 1) * 60 * 60 ) + 1 ) ) ) * 1000 );
     }
     else if ( secondsAgo < (60 * 60 * 24 * 365) )

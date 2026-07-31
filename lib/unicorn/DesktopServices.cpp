@@ -46,7 +46,7 @@ unicorn::DesktopServices::openUrl( QUrl url )
         query.addQueryItem( "utm_term", "WIN" );
 #elif __APPLE__
         query.addQueryItem( "utm_term", "OSX" );
-#elif defined (Q_WS_X11)
+#else
         query.addQueryItem( "utm_term", "X11" );
 #endif
         url.setQuery( query );

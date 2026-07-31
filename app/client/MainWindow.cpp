@@ -312,7 +312,7 @@ MainWindow::setupMenuBar()
 
     /// Tools (should only show on non-mac)
     QMenu* toolsMenu = appMenuBar()->addMenu( tr("Tools") );
-#ifndef Q_WS_X11
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC)
     QAction* c4u = toolsMenu->addAction( tr("Check for Updates"), this, SLOT(checkForUpdates()) );
     c4u->setMenuRole( QAction::ApplicationSpecificRole );
 #endif
@@ -339,7 +339,7 @@ MainWindow::setupMenuBar()
     helpMenu->addAction( tr("Tour"), aApp, SLOT(onTourTriggered()) );
     helpMenu->addSeparator();
     helpMenu->addAction( tr("Show Licenses"), aApp, SLOT(onLicensesTriggered()) );
-#ifndef Q_WS_X11 // it's only the scrobble log tab at the moment so no use on linux
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC) // it's only the scrobble log tab at the moment so no use on linux
     helpMenu->addSeparator();
     helpMenu->addAction( tr("Diagnostics"), aApp, SLOT(onDiagnosticsTriggered()) );
 #endif

@@ -54,7 +54,7 @@ DiagnosticsDialog::DiagnosticsDialog( QWidget *parent )
     ui->tabs->removeTab( 0 );
     ui->tabs->removeTab( 0 );
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     ui->tabs->removeTab( 0 );
 #endif
 
@@ -78,7 +78,7 @@ DiagnosticsDialog::DiagnosticsDialog( QWidget *parent )
 
     onScrobblePointReached();
 
-#ifndef Q_WS_X11
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC)
     QString path = unicorn::CoreApplication::log( "iPodScrobbler" ).absoluteFilePath();
 
     // we seek to the end below, but then twiddly's logger pretruncates the file

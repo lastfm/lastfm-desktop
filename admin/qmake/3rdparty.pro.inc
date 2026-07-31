@@ -1,5 +1,5 @@
 mac {
-    # Homebrew (Apple Silicon) and legacy /usr/local
+    # Homebrew: /opt/homebrew on Apple Silicon, /usr/local on Intel
     LIBS += -L/opt/homebrew/lib -L/usr/local/lib
     INCLUDEPATH += /opt/homebrew/include /usr/local/include
 
@@ -38,11 +38,6 @@ CONFIG( ffmpeg ) {
     }
 }
 
-CONFIG( analytics ) {
-    # QtWebKit no longer exists in Qt5 - analytics is disabled
-    # QT += webkit
-    # DEFINES += LASTFM_ANALYTICS
-}
 
 CONFIG( boost ) {
     mac:CONFIG(app_bundle){
@@ -66,10 +61,15 @@ CONFIG( break ) {
 
 CONFIG( growl ) {
     mac {
-        # Growl is long dead; NSUserNotification is used instead (LASTFM_USER_NOTIFICATIONS)
+        # Growl is long dead and this code path is unreachable at runtime -
+        # NSUserNotificationCenter always exists on the supported macOS
+        # versions, so notifications go through Notification Center. This
+        # only remains for building against historic setups.
         exists( /Library/Frameworks/Growl.framework ) {
+            message( "Growl.framework found - compiling the (unreachable) Growl path" )
             DEFINES += HAVE_GROWL
-            INCLUDEPATH += -F/Library/Frameworks
+            QMAKE_CXXFLAGS += -F/Library/Frameworks
+            QMAKE_OBJECTIVE_CFLAGS += -F/Library/Frameworks
             LIBS += -F/Library/Frameworks -framework Growl
         }
     }
@@ -95,13 +95,18 @@ CONFIG( sparkle ) {
         else:exists( $$(HOME)/Library/Frameworks/Sparkle.framework ):SPARKLE_DIR = $$(HOME)/Library/Frameworks
 
         !isEmpty( SPARKLE_DIR ) {
+            message( "Sparkle found in $$SPARKLE_DIR - auto-update enabled" )
             DEFINES += HAVE_SPARKLE
             QMAKE_CXXFLAGS += -F$$SPARKLE_DIR
             QMAKE_OBJECTIVE_CFLAGS += -F$$SPARKLE_DIR
             LIBS += -F$$SPARKLE_DIR -framework Sparkle
-            # Sparkle 2 has an @rpath install name; dev builds run from _bin
-            # so they need to find the framework where it was linked from
+            # Sparkle's install name is @rpath/Sparkle.framework/..., so both
+            # dev runs and macdeployqt need this on the rpath to resolve it.
+            # NB an absolute developer path baked into the binary - macdeployqt
+            # strips it from the app, see the README packaging notes.
             QMAKE_RPATHDIR += $$SPARKLE_DIR
+        } else {
+            warning( "Sparkle.framework not found - the auto-updater will be compiled OUT of this build" )
         }
     }
 }

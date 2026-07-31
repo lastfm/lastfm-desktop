@@ -80,11 +80,21 @@ unicorn::Updater::checkForUpdates()
     [[SUUpdater sharedUpdater] checkForUpdates:0];
 }
 
-#else // !HAVE_SPARKLE - Sparkle.framework not installed, auto-update disabled
+#else // !HAVE_SPARKLE - Sparkle.framework not found in /Library/Frameworks or
+      // ~/Library/Frameworks at qmake time (admin/qmake/3rdparty.pro.inc), so
+      // this build cannot update itself. Fall back to the download page so the
+      // "Check for Updates" menu item stays honest.
+
+#warning "Sparkle.framework not found: auto-update is compiled out of this build"
+
+#include <QDebug>
+#include <QUrl>
+#include "../DesktopServices.h"
 
 unicorn::Updater::Updater(QWidget *parent) :
     QObject(parent)
 {
+    qDebug() << "Built without Sparkle: auto-update is unavailable";
 }
 
 void
@@ -95,6 +105,8 @@ unicorn::Updater::setBetaUpdates( bool )
 void
 unicorn::Updater::checkForUpdates()
 {
+    qDebug() << "Built without Sparkle: sending the user to the download page instead";
+    unicorn::DesktopServices::openUrl( QUrl( "https://www.last.fm/about/trackmymusic" ) );
 }
 
 #endif

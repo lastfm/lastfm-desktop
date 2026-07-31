@@ -23,7 +23,6 @@
     #include <ApplicationServices/ApplicationServices.h>
     #include <QMainWindow>
     #include "UnicornApplicationDelegate.h"
-    // qt_mac_set_menubar_icons() no longer exists in Qt5; use Qt::AA_DontShowIconsInMenus
 #elif defined WIN32
     #include <windows.h>
     #include <QAbstractEventDispatcher>

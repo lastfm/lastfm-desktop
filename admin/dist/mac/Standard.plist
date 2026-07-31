@@ -48,6 +48,10 @@
 	<string>Last.fm Scrobbler</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>LSMinimumSystemVersion</key>
+	<string>11.0</string>
+	<!-- The app stylesheet is a light-only design; without this the dark
+	     system palette bleeds into unstyled panes as black-on-black text -->
 	<key>NSRequiresAquaSystemAppearance</key>
 	<true/>
     <key>CFBundleURLTypes</key>

@@ -36,7 +36,7 @@ MediaDevice::associateDevice( QString username )
     if ( deviceId().isEmpty() || deviceName().isEmpty() )
         return false;
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     if ( mountPath().isEmpty() || !QFile::exists( mountPath() ) )
         return false;
 #endif
@@ -64,7 +64,7 @@ MediaDevice::associateDevice( QString username )
     us.setValue( "deviceId", deviceId() );
     us.setValue( "deviceName", deviceName() );
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     us.setValue( "mountPath", QDir::toNativeSeparators( mountPath() ) );
 #endif
 

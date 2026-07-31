@@ -25,6 +25,7 @@
 #include <Foundation/NSUserNotification.h>
 #endif
 
+#include <QDebug>
 #include <QPixmap>
 
 #ifdef HAVE_GROWL
@@ -137,7 +138,13 @@ unicorn::Notify::newTrack( const lastfm::Track& track )
     else
 #endif
     {
+#ifdef HAVE_GROWL
         m_trackImageFetcher->startAlbum();
+#else
+        // No notification backend: NSUserNotificationCenter is gone and Growl
+        // isn't compiled in. Don't fetch artwork nothing will display.
+        qDebug() << "Notify: no notification backend available, dropping notification for" << track.toString();
+#endif
     }
 }
 
@@ -170,11 +177,11 @@ unicorn::Notify::stopped()
 {
 #ifdef LASTFM_USER_NOTIFICATIONS
     if ( [NSUserNotificationCenter class] )
-    {
         [[NSUserNotificationCenter defaultUserNotificationCenter] removeAllDeliveredNotifications];
-        delete m_trackImageFetcher;
-    }
 #endif
+
+    // m_trackImageFetcher is a QPointer so this nulls it too
+    delete m_trackImageFetcher;
 }
 
 void
@@ -194,12 +201,13 @@ unicorn::Notify::onFinished( const QPixmap& pixmap )
 #ifdef LASTFM_USER_NOTIFICATIONS
     if ( [NSUserNotificationCenter class] )
     {
-        NSUserNotification* userNotification = [NSUserNotification alloc];
+        NSUserNotification* userNotification = [[NSUserNotification alloc] init];
 
         [userNotification setTitle:nsTitle];
         [userNotification setSubtitle:nsDescription];
 
         [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:userNotification];
+        [userNotification release];
     }
     else
 #endif

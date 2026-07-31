@@ -30,7 +30,12 @@ CONFIG( lastfm ) {
 
     }
     mac{
-        # NSUserNotification is available on all modern SDKs
+        # Notification Center support. This used to be gated behind
+        # CONFIG(notifications), which nothing ever set, so the NSUserNotification
+        # path had never actually been compiled before the Qt5 port.
+        # NSUserNotification is deprecated since macOS 11 - port
+        # lib/unicorn/notify/Notify.mm to UNUserNotificationCenter before an
+        # SDK finally drops it.
         DEFINES += LASTFM_USER_NOTIFICATIONS
 
         LIBS += -weak_framework Carbon -weak_framework CoreFoundation -weak_framework Foundation

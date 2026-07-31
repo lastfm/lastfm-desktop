@@ -192,7 +192,7 @@ FirstRunWizard::next()
                 ui->stackedWidget->setCurrentWidget( ui->bootstrapPage );
             else
                 ui->stackedWidget->setCurrentWidget( ui->tourScrobblesPage );
-#elif defined Q_WS_X11
+#else
             ui->stackedWidget->setCurrentWidget( ui->tourScrobblesPage );
 #endif
         else if ( currentPage == ui->bootstrapPage )
@@ -202,14 +202,14 @@ FirstRunWizard::next()
         // only show the radio page if you can subscribe to get radio
         else if ( currentPage == ui->tourMetadataPage )
         {
-#ifndef Q_WS_X11 // don't show the sys tray page on linux because there isn't one
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC) // don't show the sys tray page on linux because there isn't one
             ui->stackedWidget->setCurrentWidget( ui->tourLocationPage );
 #else
             ui->stackedWidget->setCurrentWidget( ui->tourFinishPage );
 #endif
         }
         else if ( currentPage == ui->tourLocationPage )
-#ifndef Q_WS_X11 // don't show the sys tray page on linux because there isn't one
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC) // don't show the sys tray page on linux because there isn't one
             ui->stackedWidget->setCurrentWidget( ui->tourFinishPage );
 #endif
 
@@ -274,7 +274,7 @@ FirstRunWizard::skip()
             ui->stackedWidget->setCurrentWidget( ui->bootstrapPage );
         else
             ui->stackedWidget->setCurrentWidget( ui->tourScrobblesPage );
-#elif defined Q_WS_X11
+#else
         ui->stackedWidget->setCurrentWidget( ui->tourScrobblesPage );
 #endif
     else if ( currentPage == ui->bootstrapPage )
