@@ -48,6 +48,8 @@
 	<string>Last.fm Scrobbler</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<true/>
     <key>CFBundleURLTypes</key>
 	<array>
 		<dict>

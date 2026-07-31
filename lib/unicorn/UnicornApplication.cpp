@@ -23,7 +23,7 @@
     #include <ApplicationServices/ApplicationServices.h>
     #include <QMainWindow>
     #include "UnicornApplicationDelegate.h"
-    extern void qt_mac_set_menubar_icons( bool );
+    // qt_mac_set_menubar_icons() no longer exists in Qt5; use Qt::AA_DontShowIconsInMenus
 #elif defined WIN32
     #include <windows.h>
     #include <QAbstractEventDispatcher>
@@ -88,8 +88,8 @@ unicorn::Application::init()
     addLibraryPath( applicationDirPath() + "/plugins" );
 #endif
 
-#ifdef Q_WS_MAC
-    qt_mac_set_menubar_icons( false );
+#ifdef Q_OS_MAC
+    setAttribute( Qt::AA_DontShowIconsInMenus );
 #endif
 
     CoreApplication::init();
@@ -106,7 +106,7 @@ unicorn::Application::init()
     AEInstallEventHandler( kCoreEventClass, kAEReopenApplication, openHandler, 0, false );
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #define CSS_PATH "/../Resources/"
 #else
 #define CSS_PATH "/"
@@ -221,7 +221,7 @@ unicorn::Application::translate()
     QString qmExt = iso639.left( 2 ) == "zh" ? iso639 : iso639.left( 2 );
     qDebug() << "Language ext: " << qmExt;
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QDir const d = lastfm::dir::bundle().filePath( "Contents/Resources/qm" );
 #elif defined(Q_OS_WIN)
     QDir const d = qApp->applicationDirPath() + "/i18n";

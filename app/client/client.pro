@@ -5,8 +5,8 @@ unix:!mac {
 }
 VERSION = 2.1.39
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
-QT = core gui xml network sql
-CONFIG += lastfm unicorn listener logger phonon analytics
+QT = core gui widgets xml network sql
+CONFIG += lastfm unicorn listener logger analytics
 win32:LIBS += user32.lib kernel32.lib psapi.lib
 DEFINES += LASTFM_COLLAPSE_NAMESPACE
 

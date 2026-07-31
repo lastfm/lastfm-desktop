@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QStyle>
 #include <QHBoxLayout>
 #include <QMovie>
 #include <QTimer>

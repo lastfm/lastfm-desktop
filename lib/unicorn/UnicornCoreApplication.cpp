@@ -85,7 +85,7 @@ unicorn::CoreApplication::init()
 #endif
     new Logger( path );
 
-    qInstallMsgHandler( qMsgHandler );
+    qInstallMessageHandler( qMsgHandler );
     qDebug() << "Introducing" << applicationName()+' '+applicationVersion();
     qDebug() << "Directed by" << lastfm::platform();
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
@@ -95,19 +95,18 @@ unicorn::CoreApplication::init()
 
 
 void
-unicorn::CoreApplication::qMsgHandler( QtMsgType type, const char* msg )
+unicorn::CoreApplication::qMsgHandler( QtMsgType type, const QMessageLogContext& context, const QString& message )
 {
+    Q_UNUSED( context );
+    QByteArray msg = message.toLocal8Bit();
+
 #ifndef NDEBUG
-#ifdef WIN32
-    qWinMsgHandler( type, msg );
-#else
     Q_UNUSED( type );
-    fprintf( stderr, "%s\n", msg );
+    fprintf( stderr, "%s\n", msg.constData() );
     fflush( stderr );
 #endif
-#endif
-      
-    Logger::the().log( msg );
+
+    Logger::the().log( msg.constData() );
 }
 
 

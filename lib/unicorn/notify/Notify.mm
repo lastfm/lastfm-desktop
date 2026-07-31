@@ -18,13 +18,18 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+
 #ifdef LASTFM_USER_NOTIFICATIONS
 #include <Foundation/NSUserNotification.h>
 #endif
 
 #include <QPixmap>
 
+#ifdef HAVE_GROWL
 #include <Growl/Growl.h>
+#endif
 
 #include <lastfm/Track.h>
 
@@ -59,6 +64,7 @@
 @end
 #endif
 
+#ifdef HAVE_GROWL
 @interface GrowlClickDelegate : NSObject <GrowlApplicationBridgeDelegate> {
     unicorn::Notify* m_observer;
 }
@@ -83,6 +89,7 @@
     self->m_observer->growlNotificationWasClicked();
 }
 @end
+#endif // HAVE_GROWL
 
 unicorn::Notify::Notify(QObject *parent) :
     QObject(parent)
@@ -97,8 +104,10 @@ unicorn::Notify::Notify(QObject *parent) :
     else
 #endif
     {
+#ifdef HAVE_GROWL
         GrowlClickDelegate* growlDelegate = [[GrowlClickDelegate alloc] init: this];
         [GrowlApplicationBridge setGrowlDelegate:growlDelegate];
+#endif
     }
 }
 
@@ -195,24 +204,20 @@ unicorn::Notify::onFinished( const QPixmap& pixmap )
     else
 #endif
     {
-        NSData* data = nil;
+#ifdef HAVE_GROWL
+        Q_UNUSED(pixmap)
 
-        if ( !pixmap.isNull() )
-        {
-            CGImageRef cgImage = pixmap.toMacCGImageRef();
-            NSImage* nsImage = [[NSImage alloc] initWithCGImage:(CGImageRef)cgImage size:(NSSize)NSZeroSize];
-            data = [nsImage TIFFRepresentation];
-        }
-
-        // TODO: Do the growl notification here. It'll be great!
+        // Growl can't take the QPixmap directly and QPixmap::toMacCGImageRef
+        // no longer exists in Qt5, so the notification goes without an icon
         [GrowlApplicationBridge notifyWithTitle:(NSString *)nsTitle
           description:(NSString *)nsDescription
           notificationName:(NSString *)@"New track"
-                                    iconData:(NSData *)data
+                                    iconData:(NSData *)nil
                                     priority:(signed int)0
                                     isSticky:(BOOL)NO
                                     clickContext:(id)@"context"
                                     identifier:(NSString*)@"identifier" ];
+#endif
     }
 
 }

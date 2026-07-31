@@ -33,7 +33,7 @@ AudioscrobblerSettings::raiseShortcutModifiers() const
 int
 AudioscrobblerSettings::raiseShortcutKey() const
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     const int sKeyCode = 1;
     return value( "raiseShortcutKey", sKeyCode ).toInt();
 #elif defined Q_WS_WIN

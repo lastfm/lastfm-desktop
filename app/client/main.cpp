@@ -66,6 +66,8 @@ int main( int argc, char** argv )
     lastfm::UserAgent = "Last.fm Client " APP_VERSION " (X11)";
 #endif
 
+    QtSingleCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
+
     try
     {
         audioscrobbler::Application app( argc, argv );

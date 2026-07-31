@@ -100,7 +100,7 @@ ScrobbleConfirmationDialog::addTracks( const QList<lastfm::Track>& tracks )
     ui->scrobblesView->setSortingEnabled( false );
     ui->scrobblesView->setSortingEnabled( true );
 
-    ui->scrobblesView->horizontalHeader()->setResizeMode( QHeaderView::Interactive );
+    ui->scrobblesView->horizontalHeader()->setSectionResizeMode( QHeaderView::Interactive );
 
     ui->scrobblesView->resizeColumnsToContents();
 }

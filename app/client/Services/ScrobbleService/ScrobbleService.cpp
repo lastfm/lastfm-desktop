@@ -32,7 +32,7 @@
 #include "lib/listener/PlayerMediator.h"
 #include "../MediaDevices/DeviceScrobbler.h"
 #include "StopWatch.h"
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 #include "lib/listener/mac/SpotifyListener.h"
 #include "lib/listener/mac/ITunesListener.h"
 #endif

@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QUrlQuery>
 #include <QApplication>
 #include <QPainter>
 #include <QTimer>
@@ -127,10 +128,12 @@ void
 ShareDialog::shareTwitter( const Track& track )
 {
     QUrl twitterShareIntent( "http://twitter.com/intent/tweet" );
-    twitterShareIntent.addEncodedQueryItem( "text", QUrl::toPercentEncoding( tr("Check out %1").arg( track.toString() ) ) );
-    twitterShareIntent.addEncodedQueryItem( "url", QUrl::toPercentEncoding( track.www().toEncoded() ) );
-    twitterShareIntent.addQueryItem( "via", "lastfm" );
-    twitterShareIntent.addQueryItem( "related", "lastfm,lastfmpresents" );
+    QUrlQuery query;
+    query.addQueryItem( "text", tr("Check out %1").arg( track.toString() ) );
+    query.addQueryItem( "url", QString::fromUtf8( track.www().toEncoded() ) );
+    query.addQueryItem( "via", "lastfm" );
+    query.addQueryItem( "related", "lastfm,lastfmpresents" );
+    twitterShareIntent.setQuery( query );
     unicorn::DesktopServices::openUrl( twitterShareIntent );
 
 }
@@ -139,8 +142,10 @@ void
 ShareDialog::shareFacebook( const Track& track )
 {
     QUrl facebookShareIntent( "http://www.facebook.com/sharer.php" );
-    facebookShareIntent.addEncodedQueryItem( "t", QUrl::toPercentEncoding( track.toString() ) );
-    facebookShareIntent.addEncodedQueryItem( "u", QUrl::toPercentEncoding( track.www().toEncoded() ) );
+    QUrlQuery query;
+    query.addQueryItem( "t", track.toString() );
+    query.addQueryItem( "u", QString::fromUtf8( track.www().toEncoded() ) );
+    facebookShareIntent.setQuery( query );
     unicorn::DesktopServices::openUrl( facebookShareIntent );
 }
 

@@ -25,6 +25,7 @@
 #include <QNetworkDiskCache>
 #include <QMenu>
 #include <QMenuBar>
+#include <QPainter>
 #include <QDebug>
 #include <QProcess>
 #include <QShortcut>
@@ -87,7 +88,7 @@ using audioscrobbler::Application;
 #elif defined( Q_WS_WIN )
 #define AS_TRAY_ICON ":/16x16.png"
 #define AS_TRAY_ICON_OFF ":/lastfm_icon_16_grayscale.png"
-#elif defined( Q_WS_MAC )
+#elif defined( Q_OS_MAC )
 #define AS_TRAY_ICON ":/systray_icon_rest_mac.png"
 #define AS_TRAY_ICON_OFF ":/mac_control_bar_as_OFF.png"
 #endif
@@ -123,7 +124,7 @@ Application::Application(int& argc, char** argv)
         nam->setUserProxy( proxy );
 
     AudioscrobblerSettings settings;
-    lastfm::ws::setScheme( settings.value( "enableSsl", false ).toBool() ? lastfm::ws::Https : lastfm::ws::Http );
+    lastfm::ws::setScheme( settings.value( "enableSsl", true ).toBool() ? lastfm::ws::Https : lastfm::ws::Http );
 }
 
 void
@@ -368,9 +369,37 @@ Application::setTrayIcon()
     {
         bool scrobblingOn = unicorn::UserSettings().value( "scrobblingOn", true ).toBool();
 
+#ifdef Q_OS_MAC
+        // Build a template icon with 1x and 2x representations so the menu
+        // bar renders it at the right point size on Retina displays and
+        // recolours it for light/dark menu bars and the pressed state.
+        // Scrobbling-off is shown as a dimmed glyph, per template-icon
+        // convention, instead of the old grayscale asset.
+        QIcon trayIcon;
+
+        for ( int scale = 1; scale <= 2; ++scale )
+        {
+            QPixmap glyph( AS_TRAY_ICON );
+            glyph = glyph.scaled( glyph.size() * scale, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+
+            if ( !scrobblingOn )
+            {
+                QPixmap dimmed( glyph.size() );
+                dimmed.fill( Qt::transparent );
+                QPainter p( &dimmed );
+                p.setOpacity( 0.4 );
+                p.drawPixmap( 0, 0, glyph );
+                p.end();
+                glyph = dimmed;
+            }
+
+            glyph.setDevicePixelRatio( scale );
+            trayIcon.addPixmap( glyph );
+        }
+
+        trayIcon.setIsMask( true );
+#else
         QIcon trayIcon( scrobblingOn ? AS_TRAY_ICON : AS_TRAY_ICON_OFF );
-#ifdef Q_WS_MAC
-        trayIcon.addFile( ":systray_icon_pressed_mac.png", QSize(), QIcon::Selected );
 #endif
 
         m_tray->setIcon(trayIcon);

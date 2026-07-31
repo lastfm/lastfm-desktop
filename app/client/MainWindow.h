@@ -152,7 +152,7 @@ private:
     QPointer<unicorn::PluginList> m_pluginList;
 #endif
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QPointer<unicorn::ITunesPluginInstaller> m_installer;
 #endif
 };

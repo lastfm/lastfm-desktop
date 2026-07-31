@@ -29,6 +29,8 @@
 #include <Foundation/Foundation.h>
 #include <Foundation/NSURL.h>
 
+#ifdef HAVE_SPARKLE
+
 #include <Sparkle/Sparkle.h>
 #include <Sparkle/SUUpdater.h>
 
@@ -77,6 +79,25 @@ unicorn::Updater::checkForUpdates()
 {
     [[SUUpdater sharedUpdater] checkForUpdates:0];
 }
+
+#else // !HAVE_SPARKLE - Sparkle.framework not installed, auto-update disabled
+
+unicorn::Updater::Updater(QWidget *parent) :
+    QObject(parent)
+{
+}
+
+void
+unicorn::Updater::setBetaUpdates( bool )
+{
+}
+
+void
+unicorn::Updater::checkForUpdates()
+{
+}
+
+#endif
 
 unicorn::Updater::~Updater()
 {

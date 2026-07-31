@@ -254,5 +254,5 @@ logException( QString message )
     
     // we do this because LfmApp splits on spaces in parseMessage()
     message.replace( ' ', '_' );
-    static_cast<TwiddlyApplication*>(qApp)->sendBusMessage( QString( "container://Notification/Twiddly/Error/" + message ).toAscii() );
+    static_cast<TwiddlyApplication*>(qApp)->sendBusMessage( QString( "container://Notification/Twiddly/Error/" + message ).toLatin1() );
 }

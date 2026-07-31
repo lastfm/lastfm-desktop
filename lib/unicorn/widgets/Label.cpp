@@ -136,14 +136,19 @@ unicorn::Label::prettyTime( Label& timestampLabel, const QDateTime& timestamp, Q
         // Less than an hour ago
         int minutesAgo = ( timestamp.secsTo( now ) / 60 );
         timestampLabel.setText( tr( "%n minute(s) ago", "", minutesAgo ) );
-        if ( callback ) callback->start( now.secsTo( timestamp.addSecs(((minutesAgo + 1 ) * 60 ) + 1 ) ) * 1000 );
+        // An invalid timestamp (e.g. a friend's now-playing track) yields a
+        // 0ms interval here, which would make the single-shot timer refire
+        // continuously and pin a CPU core - so never schedule below 1s.
+        if ( callback && timestamp.isValid() )
+            callback->start( qMax<qint64>( 1, now.secsTo( timestamp.addSecs(((minutesAgo + 1 ) * 60 ) + 1 ) ) ) * 1000 );
     }
     else if ( secondsAgo < (60 * 60 * 6) || now.date() == timestamp.date() )
     {
         // Less than 6 hours ago or on the same date
         int hoursAgo = ( timestamp.secsTo( now ) / (60 * 60) );
         timestampLabel.setText( tr( "%n hour(s) ago", "", hoursAgo ) );
-        if ( callback ) callback->start( now.secsTo( timestamp.addSecs( ( (hoursAgo + 1) * 60 * 60 ) + 1 ) ) * 1000 );
+        if ( callback && timestamp.isValid() )
+            callback->start( qMax<qint64>( 1, now.secsTo( timestamp.addSecs( ( (hoursAgo + 1) * 60 * 60 ) + 1 ) ) ) * 1000 );
     }
     else if ( secondsAgo < (60 * 60 * 24 * 365) )
     {

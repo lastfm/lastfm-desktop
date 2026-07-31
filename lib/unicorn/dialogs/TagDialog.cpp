@@ -20,6 +20,7 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <QtWidgets>
 #include <QPushButton>
 
 #include <lastfm/XmlQuery.h>

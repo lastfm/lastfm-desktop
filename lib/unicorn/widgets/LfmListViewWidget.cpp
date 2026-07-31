@@ -176,7 +176,7 @@ LfmListModel::data( const QModelIndex & index, int role ) const
             return item.m_type->toString();
 
         case CursorRole:
-            return Qt::PointingHandCursor;
+            return static_cast<int>( Qt::PointingHandCursor );
 
         case WwwRole:
             return item.m_type->www();

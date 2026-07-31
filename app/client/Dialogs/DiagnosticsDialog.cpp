@@ -46,8 +46,8 @@ DiagnosticsDialog::DiagnosticsDialog( QWidget *parent )
 
     setAttribute( Qt::WA_DeleteOnClose );
 
-    ui->cached->header()->setResizeMode( QHeaderView::Stretch );
-    ui->fingerprints->header()->setResizeMode( QHeaderView::Stretch );
+    ui->cached->header()->setSectionResizeMode( QHeaderView::Stretch );
+    ui->fingerprints->header()->setSectionResizeMode( QHeaderView::Stretch );
     
     m_delay = new DelayedLabelText( ui->subs_status );
 

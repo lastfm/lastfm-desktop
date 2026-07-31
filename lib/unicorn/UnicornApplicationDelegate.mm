@@ -23,6 +23,7 @@
 
 #include <QWidget>
 #include <QApplication>
+#include <QBuffer>
 #include <QDebug>
 
 #import <Cocoa/Cocoa.h>
@@ -140,9 +141,12 @@ enum {
 
         if ( !pixmap.isNull() )
         {
-            CGImageRef cgImage = pixmap.toMacCGImageRef();
-            NSImage* nsImage = [[NSImage alloc] initWithCGImage:(CGImageRef)cgImage size:(NSSize)NSZeroSize];
-            NSData* data = [nsImage TIFFRepresentation];
+            // QPixmap::toMacCGImageRef no longer exists in Qt5; go via PNG bytes
+            QByteArray bytes;
+            QBuffer buffer( &bytes );
+            buffer.open( QIODevice::WriteOnly );
+            pixmap.save( &buffer, "PNG" );
+            NSData* data = [NSData dataWithBytes:bytes.constData() length:bytes.size()];
             return data;
         }
         else

@@ -34,7 +34,7 @@ namespace unicorn
     	friend class Application;
 	
     	static void init();
-    	static void qMsgHandler( QtMsgType, const char* );
+    	static void qMsgHandler( QtMsgType, const QMessageLogContext&, const QString& );
 	
     public:
         CoreApplication( const QString& id, int& argc, char** argv );

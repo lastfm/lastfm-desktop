@@ -1,5 +1,8 @@
 #include "CloseAppsDialog.h"
 
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+
 QString qt_mac_NSStringToQString(const NSString *nsstr)
 {
     NSRange range;

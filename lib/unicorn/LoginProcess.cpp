@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QUrlQuery>
 #include "LoginProcess.h"
 #include "QMessageBoxBuilder.h"
 #include "UnicornApplication.h"
@@ -69,8 +70,10 @@ LoginProcess::onGotToken()
         m_token = lfm["token"].text();
 
         authUrl.setUrl( "http://www.last.fm/api/auth/" );
-        authUrl.addQueryItem( "api_key", lastfm::ws::ApiKey );
-        authUrl.addQueryItem( "token", m_token );
+        QUrlQuery query;
+        query.addQueryItem( "api_key", lastfm::ws::ApiKey );
+        query.addQueryItem( "token", m_token );
+        authUrl.setQuery( query );
         QDesktopServices::openUrl( authUrl );
     }
     else

@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QDebug>
 

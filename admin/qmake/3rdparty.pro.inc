@@ -1,6 +1,14 @@
 mac {
-    LIBS += -L/usr/local/lib
-    INCLUDEPATH += /usr/local/include
+    # Homebrew (Apple Silicon) and legacy /usr/local
+    LIBS += -L/opt/homebrew/lib -L/usr/local/lib
+    INCLUDEPATH += /opt/homebrew/include /usr/local/include
+
+    # liblastfm built parallel to this repo (Qt5 build, see README)
+    isEmpty(LIBLASTFM_ROOT):LIBLASTFM_ROOT = $$ROOT_DIR/../liblastfm/_install
+    exists( $$LIBLASTFM_ROOT/lib ) {
+        LIBS += -L$$LIBLASTFM_ROOT/lib
+        INCLUDEPATH += $$LIBLASTFM_ROOT/include
+    }
 }
 
 CONFIG( taglib ) {
@@ -31,8 +39,9 @@ CONFIG( ffmpeg ) {
 }
 
 CONFIG( analytics ) {
-    QT += webkit
-    DEFINES += LASTFM_ANALYTICS
+    # QtWebKit no longer exists in Qt5 - analytics is disabled
+    # QT += webkit
+    # DEFINES += LASTFM_ANALYTICS
 }
 
 CONFIG( boost ) {
@@ -57,8 +66,12 @@ CONFIG( break ) {
 
 CONFIG( growl ) {
     mac {
-        INCLUDEPATH += -F/Library/Frameworks
-        LIBS += -F/Library/Frameworks -framework Growl
+        # Growl is long dead; NSUserNotification is used instead (LASTFM_USER_NOTIFICATIONS)
+        exists( /Library/Frameworks/Growl.framework ) {
+            DEFINES += HAVE_GROWL
+            INCLUDEPATH += -F/Library/Frameworks
+            LIBS += -F/Library/Frameworks -framework Growl
+        }
     }
 }
 
@@ -74,8 +87,22 @@ CONFIG( sparkle ) {
         }
     }
     else:mac{
-        INCLUDEPATH += -F/Library/Frameworks
-        LIBS += -F/Library/Frameworks -framework Sparkle -Wl -rpath @loader_path/../Frameworks
+        # Sparkle 2.x from https://github.com/sparkle-project/Sparkle/releases
+        # installed into either framework search location. If it isn't there
+        # the updater compiles as a no-op (see Updater_mac.mm).
+        SPARKLE_DIR =
+        exists( /Library/Frameworks/Sparkle.framework ):SPARKLE_DIR = /Library/Frameworks
+        else:exists( $$(HOME)/Library/Frameworks/Sparkle.framework ):SPARKLE_DIR = $$(HOME)/Library/Frameworks
+
+        !isEmpty( SPARKLE_DIR ) {
+            DEFINES += HAVE_SPARKLE
+            QMAKE_CXXFLAGS += -F$$SPARKLE_DIR
+            QMAKE_OBJECTIVE_CFLAGS += -F$$SPARKLE_DIR
+            LIBS += -F$$SPARKLE_DIR -framework Sparkle
+            # Sparkle 2 has an @rpath install name; dev builds run from _bin
+            # so they need to find the framework where it was linked from
+            QMAKE_RPATHDIR += $$SPARKLE_DIR
+        }
     }
 }
 

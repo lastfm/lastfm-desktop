@@ -4,12 +4,12 @@ SUBDIRS = lib/logger \
           lib/unicorn \
           lib/listener \
           i18n \
-          app/client \
-          app/twiddly \ 
-          app/fingerprinter
+          app/client
+          #app/twiddly
+          #app/fingerprinter
           #app/boffin
 
-unix:!mac:SUBDIRS -= app/twiddly
+mac:SUBDIRS += app/twiddly
 
 CONFIG( tests ) {
     SUBDIRS += \

@@ -21,7 +21,7 @@
 #define MESSAGE_BOX_BUILDER_H
 
 #include <lib/DllExportMacro.h>
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include <QAbstractButton>
 #include <QPushButton>
 
@@ -139,7 +139,7 @@ public:
 	
     QMessageBoxBuilder& sheet()
     {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
         if( box.parentWidget())
             box.setWindowFlags( Qt::Sheet | ( box.windowFlags() & ~Qt::Drawer ) );
 #endif

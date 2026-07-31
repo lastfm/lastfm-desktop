@@ -21,7 +21,24 @@ unix:!mac:QMAKE_CXXFLAGS += -fno-operator-names
 
 macx* {
     QMAKE_PKGINFO_TYPEINFO = last
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.0
+
+    # Modern dylib handling: @rpath install names for our own libs, and
+    # rpaths on the apps so dev builds run from _bin and macdeployqt can
+    # resolve everything when packaging.
+    contains( TEMPLATE, lib ) {
+        QMAKE_SONAME_PREFIX = @rpath
+    }
+    contains( TEMPLATE, app ) {
+        QMAKE_RPATHDIR += @executable_path/../Frameworks
+        QMAKE_RPATHDIR += $$ROOT_DIR/_bin
+        exists( $$ROOT_DIR/../liblastfm/_install/lib ):QMAKE_RPATHDIR += $$ROOT_DIR/../liblastfm/_install/lib
+
+        # Sparkle is linked by libunicorn; the app needs the framework dir on
+        # its own rpath so dev runs and macdeployqt can resolve it
+        exists( /Library/Frameworks/Sparkle.framework ):QMAKE_RPATHDIR += /Library/Frameworks
+        else:exists( $$(HOME)/Library/Frameworks/Sparkle.framework ):QMAKE_RPATHDIR += $$(HOME)/Library/Frameworks
+    }
 }
 
 include( qmake/debug.pro.inc )
@@ -73,9 +90,6 @@ macx:CONFIG( app_bundle ): contains( TEMPLATE, app ) {
     QMAKE_POST_LINK += echo Symlink olde .icns to new; rm \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\"; \
                         ln -s \"audioscrobbler.icns\" \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\";
 
-    QMAKE_POST_LINK += echo Breakpad dump sys \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/$${TARGET}\".; \
-                        \"$$ROOT_DIR/admin/dist/mac/dump_syms\" -a x86_64 \"$${DESTDIR}/$${TARGET}.app/Contents/MacOS/$${TARGET}\" > \"$${TARGET} x86_64.breakpad\";
-
     ## copy the public key for updates
     QMAKE_POST_LINK += echo Copying dsa_pub.pem file..; \
                         cp \"$$ROOT_DIR/admin/dist/mac/dsa_pub.pem\" \"$$BUNDLE_DIR/Contents/Resources\";
@@ -97,12 +111,9 @@ macx:CONFIG( app_bundle ): contains( TEMPLATE, app ) {
     QMAKE_POST_LINK += mkdir -p \"$${BUNDLE_DIR}/Contents/Resources/qm/\"; \
                         mv -f \"$${ROOT_DIR}/i18n/\"*.qm \"$${BUNDLE_DIR}/Contents/Resources/qm/\";
 
-    ## install_name_tool / copy frameworks, dylibs etc
-    QMAKE_POST_LINK += $$DISTDIR/bundleFrameworks.sh \'$$BUNDLE_DIR\';
+    ## Framework/dylib bundling is no longer done at post-link.
+    ## Run macdeployqt on the bundle to package it for distribution.
 
-    QMAKE_POST_LINK += find \'$$BUNDLE_DIR\' -iname \\*Headers -print0| xargs -0 rm -rf; \
-                        find \'$$BUNDLE_DIR\' -iname \\*_debug -print0|xargs -0 rm
-    
     QMAKE_INFO_PLIST = $$DISTDIR/Standard.plist
 }
 

@@ -5,72 +5,100 @@ Channel: #last.desktop
 
 # Build Dependencies
 
-* Qt >= 4.8 (http://download.qt.io/archive/qt/4.8/4.8.7/qt-opensource-windows-x86-vs2010-4.8.7.exe)
-* liblastfm >= 1.0.7
+* Qt 5.15 (the client app; Qt4 is no longer supported)
+* liblastfm >= 1.1 built with Qt5 (https://github.com/lastfm/liblastfm)
 
 You will also need depending on your chosen platform:-
 
-## Mac OS X
+## macOS
 
-### Homebrew
+Builds natively on Apple Silicon (arm64) and Intel with Qt 5.15 from Homebrew.
 
-We recommend that you use Homebrew to install most of the dependencies.
-
-We recommend you have XCode set as your build toolchain.
+We recommend you have Xcode set as your build toolchain.
 
 ```
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-
 ```
 
 ```
-brew install ffmpeg coreutils cmake fftw libsamplerate
+brew install qt@5 cmake pkg-config
 ```
 
-
-We recommend Qt 4.8.7, the last version with Webkit support.
-
-```
-brew install cartr/qt4/qt@4
-brew install cartr/qt4/qt-webkit@2.3
-```
+(`ffmpeg`, `fftw` and `libsamplerate` are only needed if you also build the
+fingerprinter, which is currently disabled in Last.fm.pro.)
 
 ### liblastfm
 
-Download liblastfm from https://github.com/lastfm/liblastfm parallel to the build of lastfm-desktop.
+Clone liblastfm from https://github.com/lastfm/liblastfm parallel to your
+lastfm-desktop checkout and build it with Qt5 (the default) into a local
+install prefix:
 
-As the Desktop Client supports only Qt4 at the moment, you will need to set it to Qt4 mode.
-
-In CMakeLists.txt, change
-```
-option(BUILD_WITH_QT4 "Build liblastfm with Qt4" ON)
-
-```
-
-Then build and make.
 ```
 cd liblastfm
 mkdir _build && cd _build
-cmake ..
-make -j4
+cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt@5) \
+         -DCMAKE_INSTALL_PREFIX=$PWD/../_install \
+         -DBUILD_TESTS=OFF -DBUILD_DEMOS=OFF \
+         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+make -j8
 make install
+ln -s lastfm5 ../_install/include/lastfm
 ```
 
-### Other dependencies
+The desktop build looks for liblastfm in `../liblastfm/_install` relative to
+the lastfm-desktop root. You can override this by passing
+`LIBLASTFM_ROOT=/path/to/prefix` to qmake.
 
-You'll also need the Growl and libsparkle frameworks.
+### Optional frameworks
 
-Get the latest Growl SDk from here http://code.google.com/p/growl/downloads/list - latest tested 1.2.2
+Growl and Sparkle are optional these days. Track notifications use the native
+macOS notification centre. If Sparkle.framework (2.x) is present in either
+/Library/Frameworks or ~/Library/Frameworks the auto-updater is compiled in
+(HAVE_SPARKLE), otherwise it is a no-op. Likewise Growl.framework enables the
+legacy Growl path (HAVE_GROWL), which you almost certainly don't want.
 
-Get the latest Sparkle from here http://sparkle.andymatuschak.org/ - latest tested 1.21.3
+To enable the updater, download the latest Sparkle 2 release from
+https://github.com/sparkle-project/Sparkle/releases and copy
+Sparkle.framework into ~/Library/Frameworks.
 
-Unzip both and put their frameworks in /Library/Frameworks/ so the build will find them.
+Note for release managers: Sparkle 2 dropped DSA appcast signatures. To ship
+updates through Sparkle 2 clients the appcast entries must be signed with an
+EdDSA key (add SUPublicEDKey to admin/dist/mac/Standard.plist and sign with
+Sparkle's generate_keys/sign_update tools); the bundled dsa_pub.pem only
+covers legacy 2.1.x clients.
 
-You may need to symlink the headers files into the lastfm-desktop directory:
+### API keys
+
+The build bakes your Last.fm API credentials in from the environment at
+compile time, so export these before running make:
 
 ```
-ln -s /Library/Frameworks/Sparkle.framework/Headers Sparkle
-ln -s /Library/Frameworks/Growl.framework/Headers Growl
+export LASTFM_API_KEY=your_api_key
+export LASTFM_API_SECRET=your_api_secret
+```
+
+### Building
+
+```
+cd lastfm-desktop
+$(brew --prefix qt@5)/bin/qmake -r
+make -j8
+open "_bin/Last.fm Scrobbler.app"
+```
+
+### Packaging
+
+To make a self-contained, distributable bundle:
+
+```
+cp -R "_bin/Last.fm Scrobbler.app" dist-folder/
+$(brew --prefix qt@5)/bin/macdeployqt "dist-folder/Last.fm Scrobbler.app" \
+    -executable="dist-folder/Last.fm Scrobbler.app/Contents/Helpers/iPodScrobbler"
+# macdeployqt does not follow @rpath deps of our dylibs, so if you built with
+# Sparkle, copy the framework in yourself before signing:
+cp -R ~/Library/Frameworks/Sparkle.framework \
+    "dist-folder/Last.fm Scrobbler.app/Contents/Frameworks/"
+codesign --force --deep -s - "dist-folder/Last.fm Scrobbler.app"   # or your Developer ID
 ```
 
 ### Now you're ready!

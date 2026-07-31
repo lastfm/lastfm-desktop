@@ -70,7 +70,7 @@ AdvancedSettingsWidget::AdvancedSettingsWidget( QWidget* parent )
     ui->cache->hide();
 
     ui->ssl->setVisible( QSslSocket::supportsSsl() );
-    ui->ssl->setChecked( settings.value( "enableSsl", false ).toBool() );
+    ui->ssl->setChecked( settings.value( "enableSsl", true ).toBool() );
     connect( ui->ssl, SIGNAL(clicked()), SLOT(onSettingsChanged()));
     connect( ui->proxySettings, SIGNAL(changed()), SLOT(onSettingsChanged()));
 }
