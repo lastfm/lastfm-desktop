@@ -24,8 +24,9 @@
 	<integer>86400</integer>
 	<key>SUAllowsAutomaticUpdates</key>
 	<false/>
-	<key>SUPublicDSAKeyFile</key>
-	<string>dsa_pub.pem</string>
+	<!-- Add SUPublicEDKey (base64 EdDSA public key from Sparkle's
+	     generate_keys) before shipping updates - see README "Notes for
+	     release managers". Sparkle 2 cannot verify the legacy DSA key. -->
 	<key>CFBundleDisplayName</key>
 	<string>@EXECUTABLE@</string>
 	<key>OSAScriptingDefinition</key>

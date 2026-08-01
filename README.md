@@ -81,11 +81,28 @@ macOS Notification Center.)
 
 Notes for release managers:
 
-* Sparkle 2 dropped DSA appcast signatures. To ship updates to 2.2.x
-  clients the appcast entries must be signed with an EdDSA key (add
-  `SUPublicEDKey` to admin/dist/mac/Standard.plist and sign with Sparkle's
-  generate_keys/sign_update tools); the bundled dsa_pub.pem only covers
-  legacy 2.1.x clients.
+* **The DSA → EdDSA transition needs two signing keys.** A Sparkle client
+  verifies each downloaded update against the public key inside the app
+  the user is *currently running* — so every release must be signed in a
+  way the previous release can verify:
+
+  * 2.1.39 clients in the field run Sparkle 1.x and trust the old **DSA**
+    key (their bundled dsa_pub.pem). The appcast entry for 2.2.0 must
+    therefore carry a `sparkle:dsaSignature` made with the legacy
+    dsa_priv.pem — it is the only signature they can check.
+  * 2.2.x clients run Sparkle 2, which cannot verify DSA at all. They
+    trust a new **EdDSA** key: generate the key pair once with Sparkle's
+    `generate_keys`, put the public half (a short base64 string) in
+    admin/dist/mac/Standard.plist as `SUPublicEDKey` **before building
+    2.2.0**, and sign every subsequent release with `sign_update`, which
+    emits the `sparkle:edSignature` appcast attribute.
+  * One appcast item can carry both attributes, so during the transition
+    each release is signed with both private keys; once no 2.1.x users
+    remain, retire the DSA key.
+
+  The 2.2.0 bundle itself no longer ships dsa_pub.pem — Sparkle 2 ignores
+  it, and old clients verify with their own copy, never the new bundle's.
+  (The legacy public key remains in admin/dist/mac/ for reference.)
 * The feed the app actually checks is hardcoded in
   `lib/unicorn/Updater/Updater.h` (UPDATE_URL_MAC / UPDATE_URL_MAC_BETA) —
   the `SUFeedURL` in the Info.plist is overridden at startup.

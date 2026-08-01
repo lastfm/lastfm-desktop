@@ -101,10 +101,6 @@ macx:CONFIG( app_bundle ): contains( TEMPLATE, app ) {
     QMAKE_POST_LINK += echo Symlink olde .icns to new; rm \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\"; \
                         ln -s \"audioscrobbler.icns\" \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\";
 
-    ## copy the DSA public key: only used by legacy Sparkle 1.x (2.1.x-era)
-    ## clients; Sparkle 2 requires EdDSA (SUPublicEDKey) instead
-    QMAKE_POST_LINK += echo Copying dsa_pub.pem file..; \
-                        cp \"$$ROOT_DIR/admin/dist/mac/dsa_pub.pem\" \"$$BUNDLE_DIR/Contents/Resources\";
 
     ## copy the apple script suite definition
     QMAKE_POST_LINK += echo Copying apple script suite definition file..; \
