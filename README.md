@@ -17,7 +17,10 @@ you as much on those platforms.
 ## macOS
 
 Builds natively on Apple Silicon (arm64) and Intel with Qt 5.15 from
-Homebrew. Last verified with Qt 5.15.19, CMake 4.x and the macOS 26 SDK.
+Homebrew. Note that each build is single-architecture: Homebrew ships
+arch-specific bottles, so you get an arm64 app on Apple Silicon and an
+x86_64 app on Intel — not a universal binary. Last verified with
+Qt 5.15.19, CMake 4.x and the macOS 26 SDK.
 (Note: Homebrew has deprecated `qt@5` and plans to disable it in May 2027;
 at that point this build will need a different Qt 5.15 source or a Qt 6
 port.)
@@ -93,6 +96,11 @@ Notes for release managers:
   declares `LSMinimumSystemVersion` accordingly. Give appcast entries a
   `sparkle:minimumSystemVersion` so 2.1.x users on older macOS don't get
   offered an update they cannot run.
+* Sparkle appcasts cannot filter by CPU architecture, and the existing
+  2.1.39 user base includes Intel Macs. Do NOT publish a single-arch
+  (arm64-only) 2.2.0 to the existing feed: Intel users would be pushed an
+  update that cannot launch. Either produce a universal build, or give the
+  arm64 build its own feed URL and leave Intel pinned at 2.1.39.
 
 ### API keys (optional)
 
