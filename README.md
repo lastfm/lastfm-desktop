@@ -145,17 +145,26 @@ $(brew --prefix qt@5)/bin/macdeployqt "dist-folder/Last.fm Scrobbler.app" \
 cp -R ~/Library/Frameworks/Sparkle.framework \
     "dist-folder/Last.fm Scrobbler.app/Contents/Frameworks/"
 
+# The dev build bakes absolute rpaths (your checkout, your Sparkle dir)
+# into the binaries, and macdeployqt only strips some of them. They make
+# a bundle with a missing framework run fine on YOUR machine and crash on
+# everyone else's - and they're a dylib-planting surface. Strip them:
+find "dist-folder/Last.fm Scrobbler.app" -type f | while read -r f; do
+    file "$f" | grep -q 'Mach-O' || continue
+    otool -l "$f" | grep -A2 LC_RPATH | awk '$1=="path" && $2 ~ "^/" {print $2}' |
+    while read -r rp; do install_name_tool -delete_rpath "$rp" "$f"; done
+done
+
 codesign --force --deep -s - "dist-folder/Last.fm Scrobbler.app"
 ```
 
-Then verify the result really is self-contained — the dev build bakes
-absolute rpaths to your checkout and Sparkle location into the binaries,
-so a bundle with a missing framework still runs fine *on your machine* and
-crashes at launch on everyone else's:
+Then verify the result really is self-contained:
 
 ```
-otool -l "dist-folder/Last.fm Scrobbler.app/Contents/MacOS/Last.fm Scrobbler" | grep -A2 LC_RPATH
-ls "dist-folder/Last.fm Scrobbler.app/Contents/Frameworks/" | grep Sparkle
+# no output from either = clean
+find "dist-folder/Last.fm Scrobbler.app" -type f -exec sh -c \
+    'file "$1" | grep -q Mach-O && otool -l "$1" | grep -A2 LC_RPATH | grep "path /"' _ {} \;
+ls "dist-folder/Last.fm Scrobbler.app/Contents/Frameworks/" | grep -c Sparkle
 ```
 
 For actual distribution (not just local testing) you additionally need a
