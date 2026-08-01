@@ -76,9 +76,8 @@ Sparkle 2 release (last tested: 2.9.4) from
 https://github.com/sparkle-project/Sparkle/releases and copy
 Sparkle.framework into ~/Library/Frameworks, then re-run qmake.
 
-Growl support still compiles if Growl.framework is present (HAVE_GROWL),
-but the code path is unreachable at runtime — notifications always go
-through Notification Center on the supported macOS versions. Don't bother.
+(Growl support has been removed entirely — notifications go through the
+macOS Notification Center.)
 
 Notes for release managers:
 

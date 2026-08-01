@@ -1,6 +1,6 @@
 TARGET = unicorn
 TEMPLATE = lib
-CONFIG += dll lastfm sparkle growl logger
+CONFIG += dll lastfm sparkle logger
 unix:!mac {
     CONFIG -= dll
     CONFIG += staticlib

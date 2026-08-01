@@ -59,22 +59,6 @@ CONFIG( break ) {
     }
 }
 
-CONFIG( growl ) {
-    mac {
-        # Growl is long dead and this code path is unreachable at runtime -
-        # NSUserNotificationCenter always exists on the supported macOS
-        # versions, so notifications go through Notification Center. This
-        # only remains for building against historic setups.
-        exists( /Library/Frameworks/Growl.framework ) {
-            message( "Growl.framework found - compiling the (unreachable) Growl path" )
-            DEFINES += HAVE_GROWL
-            QMAKE_CXXFLAGS += -F/Library/Frameworks
-            QMAKE_OBJECTIVE_CFLAGS += -F/Library/Frameworks
-            LIBS += -F/Library/Frameworks -framework Growl
-        }
-    }
-}
-
 CONFIG( sparkle ) {
     win32{
         CONFIG += link_pkgconfig

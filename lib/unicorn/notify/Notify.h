@@ -51,7 +51,7 @@ private slots:
     void onFinished( const QPixmap& pixmap );
 
 public:
-    void growlNotificationWasClicked();
+    void notificationWasClicked();
 
 private:
     QPointer<TrackImageFetcher> m_trackImageFetcher;

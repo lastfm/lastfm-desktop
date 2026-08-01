@@ -28,10 +28,6 @@
 #include <QDebug>
 #include <QPixmap>
 
-#ifdef HAVE_GROWL
-#include <Growl/Growl.h>
-#endif
-
 #include <lastfm/Track.h>
 
 #include "Notify.h"
@@ -60,37 +56,10 @@
 {
     Q_UNUSED(center)
     Q_UNUSED(notification)
-    self->m_observer->growlNotificationWasClicked();
+    self->m_observer->notificationWasClicked();
 }
 @end
 #endif
-
-#ifdef HAVE_GROWL
-@interface GrowlClickDelegate : NSObject <GrowlApplicationBridgeDelegate> {
-    unicorn::Notify* m_observer;
-}
-    - (GrowlClickDelegate*) init:(unicorn::Notify*)observer;
-    - (void) growlNotificationWasClicked:(id)clickContext;
-@end
-
-@implementation GrowlClickDelegate
-- (GrowlClickDelegate*) init:(unicorn::Notify*)observer
-{
-    if ( (self = [super init]) )
-    {
-        self->m_observer = observer;
-    }
-
-    return self;
-}
-
-- (void) growlNotificationWasClicked:(id)clickContext
-{
-    Q_UNUSED(clickContext)
-    self->m_observer->growlNotificationWasClicked();
-}
-@end
-#endif // HAVE_GROWL
 
 unicorn::Notify::Notify(QObject *parent) :
     QObject(parent)
@@ -102,14 +71,7 @@ unicorn::Notify::Notify(QObject *parent) :
         [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:macDelegate];
         [[NSUserNotificationCenter defaultUserNotificationCenter] removeAllDeliveredNotifications];
     }
-    else
 #endif
-    {
-#ifdef HAVE_GROWL
-        GrowlClickDelegate* growlDelegate = [[GrowlClickDelegate alloc] init: this];
-        [GrowlApplicationBridge setGrowlDelegate:growlDelegate];
-#endif
-    }
 }
 
 unicorn::Notify::~Notify()
@@ -138,13 +100,9 @@ unicorn::Notify::newTrack( const lastfm::Track& track )
     else
 #endif
     {
-#ifdef HAVE_GROWL
-        m_trackImageFetcher->startAlbum();
-#else
-        // No notification backend: NSUserNotificationCenter is gone and Growl
-        // isn't compiled in. Don't fetch artwork nothing will display.
+        // No notification backend: NSUserNotificationCenter is gone from the
+        // OS. Don't fetch artwork nothing will display.
         qDebug() << "Notify: no notification backend available, dropping notification for" << track.toString();
-#endif
     }
 }
 
@@ -187,6 +145,10 @@ unicorn::Notify::stopped()
 void
 unicorn::Notify::onFinished( const QPixmap& pixmap )
 {
+    // Notification Center has no use for the artwork pixmap; the parameter
+    // stays because TrackImageFetcher's finished(QPixmap) signal delivers it
+    Q_UNUSED( pixmap )
+
     Track track = m_trackImageFetcher->track();
 
     QString title = track.title();
@@ -209,30 +171,12 @@ unicorn::Notify::onFinished( const QPixmap& pixmap )
         [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:userNotification];
         [userNotification release];
     }
-    else
 #endif
-    {
-#ifdef HAVE_GROWL
-        Q_UNUSED(pixmap)
-
-        // Growl can't take the QPixmap directly and QPixmap::toMacCGImageRef
-        // no longer exists in Qt5, so the notification goes without an icon
-        [GrowlApplicationBridge notifyWithTitle:(NSString *)nsTitle
-          description:(NSString *)nsDescription
-          notificationName:(NSString *)@"New track"
-                                    iconData:(NSData *)nil
-                                    priority:(signed int)0
-                                    isSticky:(BOOL)NO
-                                    clickContext:(id)@"context"
-                                    identifier:(NSString*)@"identifier" ];
-#endif
-    }
-
 }
 
 
 void
-unicorn::Notify::growlNotificationWasClicked()
+unicorn::Notify::notificationWasClicked()
 {
     emit clicked();
 }
