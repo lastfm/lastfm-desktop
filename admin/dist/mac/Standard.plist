@@ -24,9 +24,13 @@
 	<integer>86400</integer>
 	<key>SUAllowsAutomaticUpdates</key>
 	<false/>
-	<!-- Add SUPublicEDKey (base64 EdDSA public key from Sparkle's
-	     generate_keys) before shipping updates - see README "Notes for
-	     release managers". Sparkle 2 cannot verify the legacy DSA key. -->
+	<!-- We deliberately pin Sparkle 1.27.x (universal, DSA-capable) so the
+	     existing DSA-signed appcast keeps working unchanged. When Last.fm
+	     migrates to Sparkle 2, DSA verification goes away: replace this key
+	     with SUPublicEDKey (base64 EdDSA public key from Sparkle's
+	     generate_keys) - see README "Notes for release managers". -->
+	<key>SUPublicDSAKeyFile</key>
+	<string>dsa_pub.pem</string>
 	<key>CFBundleDisplayName</key>
 	<string>@EXECUTABLE@</string>
 	<key>OSAScriptingDefinition</key>

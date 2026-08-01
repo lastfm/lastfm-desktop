@@ -68,41 +68,49 @@ the lastfm-desktop root. You can override this by passing
 
 ### Sparkle (auto-updates, optional)
 
-If Sparkle.framework (2.x) is present in /Library/Frameworks or
+If Sparkle.framework is present in /Library/Frameworks or
 ~/Library/Frameworks at qmake time, the auto-updater is compiled in
 (HAVE_SPARKLE); otherwise qmake prints a warning and the "Check for
-Updates" menu item just opens the download page. To enable it, download a
-Sparkle 2 release (last tested: 2.9.4) from
+Updates" menu item just opens the download page.
+
+**Use Sparkle 1.27.3** (the final 1.x release — universal x86_64+arm64):
+download Sparkle-1.27.3.tar.xz from
 https://github.com/sparkle-project/Sparkle/releases and copy
 Sparkle.framework into ~/Library/Frameworks, then re-run qmake.
+
+Sparkle 1.x is pinned deliberately: it still verifies the **DSA**
+signatures the existing update infrastructure produces, so 2.2.x releases
+can be signed and published to the current appcast exactly like 2.1.x —
+no new keys, no feed changes. The code also uses Sparkle 1.x's native
+`SUUpdater` API. Note the trade-off: Sparkle 1.x is end-of-life and
+unmaintained, so this is a bridge, not a destination.
 
 (Growl support has been removed entirely — notifications go through the
 macOS Notification Center.)
 
 Notes for release managers:
 
-* **The DSA → EdDSA transition needs two signing keys.** A Sparkle client
-  verifies each downloaded update against the public key inside the app
-  the user is *currently running* — so every release must be signed in a
-  way the previous release can verify:
+* **Today (Sparkle 1.x pinned):** sign 2.2.x update archives with the
+  legacy DSA private key and publish to the existing appcast, same as
+  2.1.x. Both 2.1.x and 2.2.x clients verify with their bundled
+  dsa_pub.pem. Nothing changes on the infra side.
+* **When you decide to move to Sparkle 2** (worth doing eventually — DSA
+  is weak and 1.x is unmaintained), the transition needs two signing
+  keys, because a Sparkle client verifies each downloaded update against
+  the public key inside the app the user is *currently running*:
 
-  * 2.1.39 clients in the field run Sparkle 1.x and trust the old **DSA**
-    key (their bundled dsa_pub.pem). The appcast entry for 2.2.0 must
-    therefore carry a `sparkle:dsaSignature` made with the legacy
-    dsa_priv.pem — it is the only signature they can check.
-  * 2.2.x clients run Sparkle 2, which cannot verify DSA at all. They
-    trust a new **EdDSA** key: generate the key pair once with Sparkle's
-    `generate_keys`, put the public half (a short base64 string) in
-    admin/dist/mac/Standard.plist as `SUPublicEDKey` **before building
-    2.2.0**, and sign every subsequent release with `sign_update`, which
-    emits the `sparkle:edSignature` appcast attribute.
+  * Clients in the field trust the old **DSA** key, so the appcast entry
+    for the first Sparkle-2 release must still carry a
+    `sparkle:dsaSignature` made with the legacy dsa_priv.pem.
+  * Sparkle 2 cannot verify DSA at all. Generate an **EdDSA** key pair
+    once with Sparkle's `generate_keys`, replace `SUPublicDSAKeyFile`
+    with `SUPublicEDKey` (a base64 string) in
+    admin/dist/mac/Standard.plist before building that release, and sign
+    it and every later release with `sign_update`
+    (`sparkle:edSignature`).
   * One appcast item can carry both attributes, so during the transition
-    each release is signed with both private keys; once no 2.1.x users
-    remain, retire the DSA key.
-
-  The 2.2.0 bundle itself no longer ships dsa_pub.pem — Sparkle 2 ignores
-  it, and old clients verify with their own copy, never the new bundle's.
-  (The legacy public key remains in admin/dist/mac/ for reference.)
+    each release is signed with both private keys; once no DSA-era
+    clients remain, retire the DSA key.
 * The feed the app actually checks is hardcoded in
   `lib/unicorn/Updater/Updater.h` (UPDATE_URL_MAC / UPDATE_URL_MAC_BETA) —
   the `SUFeedURL` in the Info.plist is overridden at startup.

@@ -101,6 +101,10 @@ macx:CONFIG( app_bundle ): contains( TEMPLATE, app ) {
     QMAKE_POST_LINK += echo Symlink olde .icns to new; rm \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\"; \
                         ln -s \"audioscrobbler.icns\" \"$$BUNDLE_DIR/Contents/Resources/lastfm.icns\";
 
+    ## the DSA public key Sparkle 1.x verifies update signatures with
+    ## (SUPublicDSAKeyFile in the Info.plist points at it)
+    QMAKE_POST_LINK += echo Copying dsa_pub.pem file..; \
+                        cp \"$$ROOT_DIR/admin/dist/mac/dsa_pub.pem\" \"$$BUNDLE_DIR/Contents/Resources\";
 
     ## copy the apple script suite definition
     QMAKE_POST_LINK += echo Copying apple script suite definition file..; \

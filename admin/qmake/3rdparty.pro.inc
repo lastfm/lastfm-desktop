@@ -71,9 +71,11 @@ CONFIG( sparkle ) {
         }
     }
     else:mac{
-        # Sparkle 2.x from https://github.com/sparkle-project/Sparkle/releases
-        # installed into either framework search location. If it isn't there
-        # the updater compiles as a no-op (see Updater_mac.mm).
+        # Sparkle from https://github.com/sparkle-project/Sparkle/releases
+        # installed into either framework search location; if it isn't there
+        # the updater compiles as a no-op (see Updater_mac.mm). Deliberately
+        # pinned to 1.27.x for now so the existing DSA-signed appcast keeps
+        # working - see the README release-manager notes before upgrading.
         SPARKLE_DIR =
         exists( /Library/Frameworks/Sparkle.framework ):SPARKLE_DIR = /Library/Frameworks
         else:exists( $$(HOME)/Library/Frameworks/Sparkle.framework ):SPARKLE_DIR = $$(HOME)/Library/Frameworks
