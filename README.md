@@ -17,10 +17,11 @@ you as much on those platforms.
 ## macOS
 
 Builds natively on Apple Silicon (arm64) and Intel with Qt 5.15 from
-Homebrew. Note that each build is single-architecture: Homebrew ships
-arch-specific bottles, so you get an arm64 app on Apple Silicon and an
-x86_64 app on Intel — not a universal binary. Last verified with
-Qt 5.15.19, CMake 4.x and the macOS 26 SDK.
+Homebrew. Note that a Homebrew-Qt build is single-architecture: Homebrew
+ships arch-specific bottles, so you get an arm64 app on Apple Silicon and
+an x86_64 app on Intel. For a universal (fat) binary see "Universal
+builds" below. Last verified with Qt 5.15.19, CMake 4.x and the
+macOS 26 SDK.
 (Note: Homebrew has deprecated `qt@5` and plans to disable it in May 2027;
 at that point this build will need a different Qt 5.15 source or a Qt 6
 port.)
@@ -161,6 +162,51 @@ For actual distribution (not just local testing) you additionally need a
 Developer ID signature with hardened runtime and notarization; sign nested
 code inside-out rather than relying on the deprecated `--deep` flag, which
 also clobbers Sparkle's own signatures.
+
+### Universal builds (Intel + Apple Silicon in one bundle)
+
+Homebrew's Qt is single-arch, so a universal app needs a universal Qt
+built from source. `admin/mac/build-universal-qt.sh` does this
+reproducibly: it unpacks Homebrew's qt@5 source *with Homebrew's
+modern-SDK patches applied* (`brew unpack --patch`), fixes the two things
+the macOS 26 SDK broke (the removed AGL framework; qdoc's single-arch
+libclang), and configures qtbase + qttools with
+`QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"` into `~/Qt/5.15-universal`.
+Takes around an hour and ~10GB of scratch space, once.
+
+Then rebuild liblastfm universal (fingerprint off — Homebrew's fftw and
+libsamplerate are single-arch):
+
+```
+cd liblastfm && mkdir _build-universal && cd _build-universal
+cmake .. -DCMAKE_PREFIX_PATH=$HOME/Qt/5.15-universal \
+         -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+         -DCMAKE_INSTALL_PREFIX=$PWD/../_install \
+         -DBUILD_TESTS=OFF -DBUILD_FINGERPRINT=OFF \
+         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+make -j8 && make install
+```
+
+and build the app with the universal Qt's qmake:
+
+```
+cd lastfm-desktop
+~/Qt/5.15-universal/bin/qmake -r CONFIG+=universal
+make -j8
+```
+
+Package with `~/Qt/5.15-universal/bin/macdeployqt` exactly as above.
+Verify with:
+
+```
+find "dist-folder/Last.fm Scrobbler.app" -type f \
+    -exec sh -c 'file "$1" | grep -q Mach-O && lipo -info "$1"' _ {} \; \
+    | grep -v 'x86_64 arm64'
+```
+
+(no output = every binary in the bundle is universal). A universal 2.2.x
+is the safe thing to publish to the existing Sparkle feed, since 2.1.39
+users include Intel Macs and appcasts cannot filter by architecture.
 
 
 ## Windows (not yet ported to Qt5)

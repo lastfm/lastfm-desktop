@@ -23,6 +23,12 @@ macx* {
     QMAKE_PKGINFO_TYPEINFO = last
     QMAKE_MACOSX_DEPLOYMENT_TARGET = 11.0
 
+    # qmake CONFIG+=universal builds x86_64+arm64 fat binaries. Requires a
+    # universal Qt (Homebrew's is single-arch) - see admin/mac/build-universal-qt.sh
+    CONFIG( universal ) {
+        QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
+    }
+
     # Modern dylib handling: @rpath install names for our own libs, and
     # rpaths on the apps so dev builds run from _bin and macdeployqt can
     # resolve everything except third-party frameworks (Sparkle - see the
