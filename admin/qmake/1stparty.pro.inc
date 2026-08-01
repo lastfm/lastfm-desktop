@@ -1,6 +1,6 @@
 CONFIG( unicorn ) {
     LIBS += -lunicorn
-    QT += gui
+    QT += gui widgets
     CONFIG += lastfm
 }
 CONFIG( listener ) {
@@ -8,7 +8,7 @@ CONFIG( listener ) {
     CONFIG += lastfm
 }
 CONFIG( fingerprint ) {
-    LIBS += -llastfm_fingerprint
+    LIBS += -llastfm_fingerprint5
     CONFIG += lastfm
 }
 CONFIG( logger ) {
@@ -17,7 +17,7 @@ CONFIG( logger ) {
 }
 CONFIG( lastfm ) {
     QT += core network xml
-    LIBS += -llastfm
+    LIBS += -llastfm5
     win32 {
         CONFIG += link_pkgconfig
 
@@ -30,17 +30,13 @@ CONFIG( lastfm ) {
 
     }
     mac{
-        CONFIG( notifications ) {
-            MAC_SDK  = $$system(xcode-select --print-path)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
-
-            if( !exists( $$MAC_SDK) ) {
-                message("You do not have the MacOSX10.8 SDK installed. User Notifications will not be built.")
-            }
-            else {
-                macx:QMAKE_MAC_SDK = $$MAC_SDK
-                DEFINES += LASTFM_USER_NOTIFICATIONS
-            }
-        }
+        # Notification Center support. This used to be gated behind
+        # CONFIG(notifications), which nothing ever set, so the NSUserNotification
+        # path had never actually been compiled before the Qt5 port.
+        # NSUserNotification is deprecated since macOS 11 - port
+        # lib/unicorn/notify/Notify.mm to UNUserNotificationCenter before an
+        # SDK finally drops it.
+        DEFINES += LASTFM_USER_NOTIFICATIONS
 
         LIBS += -weak_framework Carbon -weak_framework CoreFoundation -weak_framework Foundation
     }

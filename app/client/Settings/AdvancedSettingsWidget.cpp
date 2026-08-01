@@ -56,7 +56,7 @@ AdvancedSettingsWidget::AdvancedSettingsWidget( QWidget* parent )
 
     AudioscrobblerSettings settings;
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     ui->shortcuts->hide();
 #else
 
@@ -70,7 +70,7 @@ AdvancedSettingsWidget::AdvancedSettingsWidget( QWidget* parent )
     ui->cache->hide();
 
     ui->ssl->setVisible( QSslSocket::supportsSsl() );
-    ui->ssl->setChecked( settings.value( "enableSsl", false ).toBool() );
+    ui->ssl->setChecked( settings.value( "enableSsl", QSslSocket::supportsSsl() ).toBool() );
     connect( ui->ssl, SIGNAL(clicked()), SLOT(onSettingsChanged()));
     connect( ui->proxySettings, SIGNAL(changed()), SLOT(onSettingsChanged()));
 }

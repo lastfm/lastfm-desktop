@@ -2,6 +2,8 @@
 
 #include "NothingPlayingWidget.h"
 
+#import <AppKit/AppKit.h>
+
 void
 NothingPlayingWidget::oniTunesClicked()
 {

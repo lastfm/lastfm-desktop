@@ -1,6 +1,14 @@
 mac {
-    LIBS += -L/usr/local/lib
-    INCLUDEPATH += /usr/local/include
+    # Homebrew: /opt/homebrew on Apple Silicon, /usr/local on Intel
+    LIBS += -L/opt/homebrew/lib -L/usr/local/lib
+    INCLUDEPATH += /opt/homebrew/include /usr/local/include
+
+    # liblastfm built parallel to this repo (Qt5 build, see README)
+    isEmpty(LIBLASTFM_ROOT):LIBLASTFM_ROOT = $$ROOT_DIR/../liblastfm/_install
+    exists( $$LIBLASTFM_ROOT/lib ) {
+        LIBS += -L$$LIBLASTFM_ROOT/lib
+        INCLUDEPATH += $$LIBLASTFM_ROOT/include
+    }
 }
 
 CONFIG( taglib ) {
@@ -30,10 +38,6 @@ CONFIG( ffmpeg ) {
     }
 }
 
-CONFIG( analytics ) {
-    QT += webkit
-    DEFINES += LASTFM_ANALYTICS
-}
 
 CONFIG( boost ) {
     mac:CONFIG(app_bundle){
@@ -55,13 +59,6 @@ CONFIG( break ) {
     }
 }
 
-CONFIG( growl ) {
-    mac {
-        INCLUDEPATH += -F/Library/Frameworks
-        LIBS += -F/Library/Frameworks -framework Growl
-    }
-}
-
 CONFIG( sparkle ) {
     win32{
         CONFIG += link_pkgconfig
@@ -74,8 +71,29 @@ CONFIG( sparkle ) {
         }
     }
     else:mac{
-        INCLUDEPATH += -F/Library/Frameworks
-        LIBS += -F/Library/Frameworks -framework Sparkle -Wl -rpath @loader_path/../Frameworks
+        # Sparkle from https://github.com/sparkle-project/Sparkle/releases
+        # installed into either framework search location; if it isn't there
+        # the updater compiles as a no-op (see Updater_mac.mm). Deliberately
+        # pinned to 1.27.x for now so the existing DSA-signed appcast keeps
+        # working - see the README release-manager notes before upgrading.
+        SPARKLE_DIR =
+        exists( /Library/Frameworks/Sparkle.framework ):SPARKLE_DIR = /Library/Frameworks
+        else:exists( $$(HOME)/Library/Frameworks/Sparkle.framework ):SPARKLE_DIR = $$(HOME)/Library/Frameworks
+
+        !isEmpty( SPARKLE_DIR ) {
+            message( "Sparkle found in $$SPARKLE_DIR - auto-update enabled" )
+            DEFINES += HAVE_SPARKLE
+            QMAKE_CXXFLAGS += -F$$SPARKLE_DIR
+            QMAKE_OBJECTIVE_CFLAGS += -F$$SPARKLE_DIR
+            LIBS += -F$$SPARKLE_DIR -framework Sparkle
+            # Sparkle's install name is @rpath/Sparkle.framework/..., so both
+            # dev runs and macdeployqt need this on the rpath to resolve it.
+            # NB an absolute developer path baked into the binary - macdeployqt
+            # strips it from the app, see the README packaging notes.
+            QMAKE_RPATHDIR += $$SPARKLE_DIR
+        } else {
+            warning( "Sparkle.framework not found - the auto-updater will be compiled OUT of this build" )
+        }
     }
 }
 

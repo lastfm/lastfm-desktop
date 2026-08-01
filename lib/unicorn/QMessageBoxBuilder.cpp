@@ -84,7 +84,7 @@ unicorn::MessageDialog::onButtonClicked(QAbstractButton* b)
 QMessageBoxBuilder& 
 QMessageBoxBuilder::setTitle( const QString& title )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     box.setText( title + "\t\t\t" );
 #else
     box.setWindowTitle( title );
@@ -96,7 +96,7 @@ QMessageBoxBuilder::setTitle( const QString& title )
 QMessageBoxBuilder&
 QMessageBoxBuilder::setText( const QString& text )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     box.setInformativeText( text );
 #else
     box.setText( text );

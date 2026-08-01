@@ -1,13 +1,13 @@
 TARGET = unicorn
 TEMPLATE = lib
-CONFIG += dll lastfm sparkle growl logger
+CONFIG += dll lastfm sparkle logger
 unix:!mac {
     CONFIG -= dll
     CONFIG += staticlib
     QMAKE_DISTCLEAN += -f ../../_bin/libunicorn.a
 }
 
-QT = core gui xml network
+QT = core gui widgets xml network
 include( ../../admin/include.qmake )
 DEFINES += _UNICORN_DLLEXPORT LASTFM_COLLAPSE_NAMESPACE
 

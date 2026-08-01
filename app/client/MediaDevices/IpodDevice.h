@@ -32,7 +32,7 @@ public:
     virtual QString deviceId() const;
     virtual QString deviceName() const;
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     /**
      * @return The mount path of the device.
      */

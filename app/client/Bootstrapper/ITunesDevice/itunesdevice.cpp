@@ -39,7 +39,7 @@ ITunesDevice::LibraryPath()
     QString path;
     QString confPath;
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QSettings ist( "apple.com", "iTunes" );
     path = ist.value( "AppleNavServices:ChooseObject:0:Path" ).toString();
     path = path.remove( "file://localhost" );

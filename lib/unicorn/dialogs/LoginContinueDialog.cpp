@@ -20,6 +20,7 @@
 #include "LoginContinueDialog.h"
 
 #include <QtGui>
+#include <QtWidgets>
 #include <QDialogButtonBox>
 
 LoginContinueDialog::LoginContinueDialog( QWidget* parent )

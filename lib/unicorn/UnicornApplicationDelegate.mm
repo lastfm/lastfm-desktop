@@ -23,6 +23,7 @@
 
 #include <QWidget>
 #include <QApplication>
+#include <QBuffer>
 #include <QDebug>
 
 #import <Cocoa/Cocoa.h>
@@ -140,17 +141,28 @@ enum {
 
         if ( !pixmap.isNull() )
         {
-            CGImageRef cgImage = pixmap.toMacCGImageRef();
-            NSImage* nsImage = [[NSImage alloc] initWithCGImage:(CGImageRef)cgImage size:(NSSize)NSZeroSize];
-            NSData* data = [nsImage TIFFRepresentation];
-            return data;
+            // QPixmap::toMacCGImageRef no longer exists in Qt5, so encode to
+            // PNG and let NSImage convert it back to the TIFF that consumers
+            // of this property (CommandReciever declares typeTIFF, and the
+            // AppleScript sdef promises "Image data in TIFF format") expect
+            QByteArray bytes;
+            QBuffer buffer( &bytes );
+
+            if ( buffer.open( QIODevice::WriteOnly ) && pixmap.save( &buffer, "PNG" ) && !bytes.isEmpty() )
+            {
+                NSData* png = [NSData dataWithBytes:bytes.constData() length:bytes.size()];
+                NSImage* nsImage = [[[NSImage alloc] initWithData:png] autorelease];
+
+                if ( nsImage )
+                    return [nsImage TIFFRepresentation];
+            }
+
+            qDebug() << "artwork: PNG encode failed for pixmap of size" << pixmap.size() << "- falling back to the app icon";
         }
-        else
-        {
-            NSImage* img = [NSImage imageNamed: NSImageNameApplicationIcon];
-            NSData* data = [img TIFFRepresentation];
-            return data;
-        }
+
+        NSImage* img = [NSImage imageNamed: NSImageNameApplicationIcon];
+        NSData* data = [img TIFFRepresentation];
+        return data;
     }
 
     return nil;

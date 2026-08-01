@@ -3,10 +3,14 @@ TARGET = "Last.fm Scrobbler"
 unix:!mac {
     TARGET = lastfm-scrobbler
 }
-VERSION = 2.1.39
+VERSION = 2.2.0
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
-QT = core gui xml network sql
-CONFIG += lastfm unicorn listener logger phonon analytics
+QT = core gui widgets xml network sql
+CONFIG += lastfm unicorn listener logger
+
+# Analytics needed QtWebKit (removed in Qt 5.6) and fed Google Universal
+# Analytics, which was itself shut down in 2023. LASTFM_ANALYTICS is never
+# defined, so AnalyticsService still compiles but every method is a no-op.
 win32:LIBS += user32.lib kernel32.lib psapi.lib
 DEFINES += LASTFM_COLLAPSE_NAMESPACE
 

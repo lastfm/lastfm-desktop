@@ -29,7 +29,7 @@
 #include <lastfm/User.h>
 #include "IpodDevice.h"
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 #include <QPointer>
 #include "IpodDevice_linux.h"
 #endif
@@ -61,12 +61,12 @@ signals:
     void error( const QString& message );
 
 public slots:
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     void onScrobbleIpodTriggered();
 #endif
 
 private slots:
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     void onCalculatingScrobbles( int trackCount );
     void scrobbleIpodTracks( int trackCount );
     void onIpodScrobblingError();
@@ -83,7 +83,7 @@ public:
     void iPodDetected( const QStringList& arguments );
 
 private:
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     QPointer<IpodDeviceLinux> iPod;
 #endif
     bool isITunesPluginInstalled();

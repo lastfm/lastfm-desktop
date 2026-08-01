@@ -64,7 +64,7 @@ QByteArray
 unicorn::PlayBus::sendQuery( QByteArray request, int timeout )
 {
     QUuid quuid = QUuid::createUuid();
-    QString uuid = quuid;
+    QString uuid = quuid.toString();
     m_dispatchedQueries << uuid;
     sendMessage( (uuid + " " + request).toUtf8() );
 

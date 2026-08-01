@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QUrlQuery>
 #include <QDesktopServices>
 #include <QCoreApplication>
 #include <QUrl>
@@ -36,17 +37,19 @@ unicorn::DesktopServices::openUrl( QUrl url )
 {
     if ( lastfm::UrlBuilder::isHost( url ) )
     {
-        url.addQueryItem( "utm_source", "last.fm" );
-        url.addQueryItem( "utm_medium", "application" );
-        url.addQueryItem( "utm_campaign", "last.fm_desktop_application" );
-        url.addQueryItem( "utm_content", QCoreApplication::applicationVersion() );
+        QUrlQuery query( url );
+        query.addQueryItem( "utm_source", "last.fm" );
+        query.addQueryItem( "utm_medium", "application" );
+        query.addQueryItem( "utm_campaign", "last.fm_desktop_application" );
+        query.addQueryItem( "utm_content", QCoreApplication::applicationVersion() );
 #ifdef WIN32
-        url.addQueryItem( "utm_term", "WIN" );
+        query.addQueryItem( "utm_term", "WIN" );
 #elif __APPLE__
-        url.addQueryItem( "utm_term", "OSX" );
-#elif defined (Q_WS_X11)
-        url.addQueryItem( "utm_term", "X11" );
+        query.addQueryItem( "utm_term", "OSX" );
+#else
+        query.addQueryItem( "utm_term", "X11" );
 #endif
+        url.setQuery( query );
     }
 
     QDesktopServices::openUrl( url );

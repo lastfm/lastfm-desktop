@@ -46,7 +46,7 @@ class UserManagerDialog;
 namespace unicorn { class Notify; }
 using unicorn::Notify;
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     class IpodDeviceLinux;
 #endif
 

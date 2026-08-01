@@ -5,86 +5,244 @@ Channel: #last.desktop
 
 # Build Dependencies
 
-* Qt >= 4.8 (http://download.qt.io/archive/qt/4.8/4.8.7/qt-opensource-windows-x86-vs2010-4.8.7.exe)
-* liblastfm >= 1.0.7
+* Qt 5.15 (Qt4 is no longer supported)
+* liblastfm >= 1.1 built with Qt5 (https://github.com/lastfm/liblastfm)
 
-You will also need depending on your chosen platform:-
+**Only the macOS build has been ported to Qt5 so far.** The Windows and
+Linux sections below are historical: they describe the Qt4-era build and
+those platforms need porting work (Qt4-only APIs and `Q_WS_*` era guards
+remain in their platform code) before they build again. `qmake` will tell
+you as much on those platforms.
 
-## Mac OS X
+## macOS
 
-### Homebrew
+Builds natively on Apple Silicon (arm64) and Intel with Qt 5.15 from
+Homebrew. Note that a Homebrew-Qt build is single-architecture: Homebrew
+ships arch-specific bottles, so you get an arm64 app on Apple Silicon and
+an x86_64 app on Intel. For a universal (fat) binary see "Universal
+builds" below. Last verified with Qt 5.15.19, CMake 4.x and the
+macOS 26 SDK.
+(Note: Homebrew has deprecated `qt@5` and plans to disable it in May 2027;
+at that point this build will need a different Qt 5.15 source or a Qt 6
+port.)
 
-We recommend that you use Homebrew to install most of the dependencies.
-
-We recommend you have XCode set as your build toolchain.
+We recommend you have Xcode set as your build toolchain.
 
 ```
 sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-
 ```
 
 ```
-brew install ffmpeg coreutils cmake fftw libsamplerate
+brew install qt@5 cmake pkg-config fftw libsamplerate
 ```
 
-
-We recommend Qt 4.8.7, the last version with Webkit support.
-
-```
-brew install cartr/qt4/qt@4
-brew install cartr/qt4/qt-webkit@2.3
-```
+`fftw` and `libsamplerate` are needed by liblastfm's fingerprint library,
+which its CMake build enables by default — pass `-DBUILD_FINGERPRINT=OFF` to
+skip them. `ffmpeg` is only needed for `app/fingerprinter`, which is
+currently disabled in `Last.fm.pro`.
 
 ### liblastfm
 
-Download liblastfm from https://github.com/lastfm/liblastfm parallel to the build of lastfm-desktop.
+Clone liblastfm from https://github.com/lastfm/liblastfm parallel to your
+lastfm-desktop checkout and build it with Qt5 (the default) into a local
+install prefix:
 
-As the Desktop Client supports only Qt4 at the moment, you will need to set it to Qt4 mode.
-
-In CMakeLists.txt, change
-```
-option(BUILD_WITH_QT4 "Build liblastfm with Qt4" ON)
-
-```
-
-Then build and make.
 ```
 cd liblastfm
 mkdir _build && cd _build
-cmake ..
-make -j4
+cmake .. -DCMAKE_PREFIX_PATH=$(brew --prefix qt@5) \
+         -DCMAKE_INSTALL_PREFIX=$PWD/../_install \
+         -DBUILD_TESTS=OFF \
+         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+make -j8
 make install
+ln -s lastfm5 ../_install/include/lastfm
 ```
 
-### Other dependencies
+(`CMAKE_POLICY_VERSION_MINIMUM` is needed because liblastfm still declares
+`cmake_minimum_required(VERSION 2.8.6)`, which CMake 4 refuses outright.)
 
-You'll also need the Growl and libsparkle frameworks.
+The desktop build looks for liblastfm in `../liblastfm/_install` relative to
+the lastfm-desktop root. You can override this by passing
+`LIBLASTFM_ROOT=/path/to/prefix` to qmake.
 
-Get the latest Growl SDk from here http://code.google.com/p/growl/downloads/list - latest tested 1.2.2
+### Sparkle (auto-updates, optional)
 
-Get the latest Sparkle from here http://sparkle.andymatuschak.org/ - latest tested 1.21.3
+If Sparkle.framework is present in /Library/Frameworks or
+~/Library/Frameworks at qmake time, the auto-updater is compiled in
+(HAVE_SPARKLE); otherwise qmake prints a warning and the "Check for
+Updates" menu item just opens the download page.
 
-Unzip both and put their frameworks in /Library/Frameworks/ so the build will find them.
+**Use Sparkle 1.27.3** (the final 1.x release — universal x86_64+arm64):
+download Sparkle-1.27.3.tar.xz from
+https://github.com/sparkle-project/Sparkle/releases and copy
+Sparkle.framework into ~/Library/Frameworks, then re-run qmake.
 
-You may need to symlink the headers files into the lastfm-desktop directory:
+Sparkle 1.x is pinned deliberately: it still verifies the **DSA**
+signatures the existing update infrastructure produces, so 2.2.x releases
+can be signed and published to the current appcast exactly like 2.1.x —
+no new keys, no feed changes. The code also uses Sparkle 1.x's native
+`SUUpdater` API. Note the trade-off: Sparkle 1.x is end-of-life and
+unmaintained, so this is a bridge, not a destination.
+
+(Growl support has been removed entirely — notifications go through the
+macOS Notification Center.)
+
+Notes for release managers:
+
+* **Today (Sparkle 1.x pinned):** sign 2.2.x update archives with the
+  legacy DSA private key and publish to the existing appcast, same as
+  2.1.x. Both 2.1.x and 2.2.x clients verify with their bundled
+  dsa_pub.pem. Nothing changes on the infra side.
+* **When you decide to move to Sparkle 2** (worth doing eventually — DSA
+  is weak and 1.x is unmaintained), the transition needs two signing
+  keys, because a Sparkle client verifies each downloaded update against
+  the public key inside the app the user is *currently running*:
+
+  * Clients in the field trust the old **DSA** key, so the appcast entry
+    for the first Sparkle-2 release must still carry a
+    `sparkle:dsaSignature` made with the legacy dsa_priv.pem.
+  * Sparkle 2 cannot verify DSA at all. Generate an **EdDSA** key pair
+    once with Sparkle's `generate_keys`, replace `SUPublicDSAKeyFile`
+    with `SUPublicEDKey` (a base64 string) in
+    admin/dist/mac/Standard.plist before building that release, and sign
+    it and every later release with `sign_update`
+    (`sparkle:edSignature`).
+  * One appcast item can carry both attributes, so during the transition
+    each release is signed with both private keys; once no DSA-era
+    clients remain, retire the DSA key.
+* The feed the app actually checks is hardcoded in
+  `lib/unicorn/Updater/Updater.h` (UPDATE_URL_MAC / UPDATE_URL_MAC_BETA) —
+  the `SUFeedURL` in the Info.plist is overridden at startup.
+* The updater still uses Sparkle 1.x's `SUUpdater` API via Sparkle 2's
+  deprecated compatibility shim; port Updater_mac.mm to
+  `SPUStandardUpdaterController` before Sparkle removes it.
+* 2.2.0 raised the deployment target to macOS 11, and the Info.plist
+  declares `LSMinimumSystemVersion` accordingly. Give appcast entries a
+  `sparkle:minimumSystemVersion` so 2.1.x users on older macOS don't get
+  offered an update they cannot run.
+* Sparkle appcasts cannot filter by CPU architecture, and the existing
+  2.1.39 user base includes Intel Macs. Do NOT publish a single-arch
+  (arm64-only) 2.2.0 to the existing feed: Intel users would be pushed an
+  update that cannot launch. Either produce a universal build, or give the
+  arm64 build its own feed URL and leave Intel pinned at 2.1.39.
+
+### API keys (optional)
+
+If `LASTFM_API_KEY` / `LASTFM_API_SECRET` are exported when you run `make`
+(they are expanded by make, not qmake — see lib/unicorn/unicorn.pro), they
+are baked into the binary. If unset, the client falls back to the shared
+public key in lib/unicorn/UnicornCoreApplication.cpp.
 
 ```
-ln -s /Library/Frameworks/Sparkle.framework/Headers Sparkle
-ln -s /Library/Frameworks/Growl.framework/Headers Growl
+export LASTFM_API_KEY=your_api_key
+export LASTFM_API_SECRET=your_api_secret
 ```
 
-### Now you're ready!
+### Building
 
 ```
 cd lastfm-desktop
-rm -r _bin
-qmake -r
-make clean
-make -j4
+$(brew --prefix qt@5)/bin/qmake -r
+make -j8
+open "_bin/Last.fm Scrobbler.app"
 ```
 
+Note: `qt@5` is keg-only, so a bare `qmake` on your PATH is probably the
+wrong one — always use the full path. For a clean rebuild, `rm -rf _bin`
+and re-run qmake and make.
 
-## Windows
+### Packaging
+
+To make a locally runnable, self-contained bundle:
+
+```
+cp -R "_bin/Last.fm Scrobbler.app" dist-folder/
+$(brew --prefix qt@5)/bin/macdeployqt "dist-folder/Last.fm Scrobbler.app" \
+    -executable="dist-folder/Last.fm Scrobbler.app/Contents/Helpers/iPodScrobbler"
+
+# macdeployqt deploys Qt frameworks and plain dylibs (including ours), but
+# not third-party frameworks: Sparkle.framework is never copied. If you
+# built with Sparkle, copy it in from wherever the build found it. No
+# install_name_tool step is needed - the app already carries an
+# @executable_path/../Frameworks rpath.
+cp -R ~/Library/Frameworks/Sparkle.framework \
+    "dist-folder/Last.fm Scrobbler.app/Contents/Frameworks/"
+
+# The dev build bakes absolute rpaths (your checkout, your Sparkle dir)
+# into the binaries, and macdeployqt only strips some of them. They make
+# a bundle with a missing framework run fine on YOUR machine and crash on
+# everyone else's - and they're a dylib-planting surface. Strip them:
+find "dist-folder/Last.fm Scrobbler.app" -type f | while read -r f; do
+    file "$f" | grep -q 'Mach-O' || continue
+    otool -l "$f" | grep -A2 LC_RPATH | awk '$1=="path" && $2 ~ "^/" {print $2}' |
+    while read -r rp; do install_name_tool -delete_rpath "$rp" "$f"; done
+done
+
+codesign --force --deep -s - "dist-folder/Last.fm Scrobbler.app"
+```
+
+Then verify the result really is self-contained:
+
+```
+# no output from either = clean
+find "dist-folder/Last.fm Scrobbler.app" -type f -exec sh -c \
+    'file "$1" | grep -q Mach-O && otool -l "$1" | grep -A2 LC_RPATH | grep "path /"' _ {} \;
+ls "dist-folder/Last.fm Scrobbler.app/Contents/Frameworks/" | grep -c Sparkle
+```
+
+For actual distribution (not just local testing) you additionally need a
+Developer ID signature with hardened runtime and notarization; sign nested
+code inside-out rather than relying on the deprecated `--deep` flag, which
+also clobbers Sparkle's own signatures.
+
+### Universal builds (Intel + Apple Silicon in one bundle)
+
+Homebrew's Qt is single-arch, so a universal app needs a universal Qt
+built from source. `admin/mac/build-universal-qt.sh` does this
+reproducibly: it unpacks Homebrew's qt@5 source *with Homebrew's
+modern-SDK patches applied* (`brew unpack --patch`), fixes the two things
+the macOS 26 SDK broke (the removed AGL framework; qdoc's single-arch
+libclang), and configures qtbase + qttools with
+`QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"` into `~/Qt/5.15-universal`.
+Takes around an hour and ~10GB of scratch space, once.
+
+Then rebuild liblastfm universal (fingerprint off — Homebrew's fftw and
+libsamplerate are single-arch):
+
+```
+cd liblastfm && mkdir _build-universal && cd _build-universal
+cmake .. -DCMAKE_PREFIX_PATH=$HOME/Qt/5.15-universal \
+         -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
+         -DCMAKE_INSTALL_PREFIX=$PWD/../_install \
+         -DBUILD_TESTS=OFF -DBUILD_FINGERPRINT=OFF \
+         -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+make -j8 && make install
+```
+
+and build the app with the universal Qt's qmake:
+
+```
+cd lastfm-desktop
+~/Qt/5.15-universal/bin/qmake -r CONFIG+=universal
+make -j8
+```
+
+Package with `~/Qt/5.15-universal/bin/macdeployqt` exactly as above.
+Verify with:
+
+```
+find "dist-folder/Last.fm Scrobbler.app" -type f \
+    -exec sh -c 'file "$1" | grep -q Mach-O && lipo -info "$1"' _ {} \; \
+    | grep -v 'x86_64 arm64'
+```
+
+(no output = every binary in the bundle is universal). A universal 2.2.x
+is the safe thing to publish to the existing Sparkle feed, since 2.1.39
+users include Intel Macs and appcasts cannot filter by architecture.
+
+
+## Windows (not yet ported to Qt5)
 
 We used to build using Cygwin, but now we prefer not to.
 
@@ -118,7 +276,7 @@ I found that I also needed to copy the dll into the lastfm-desktop/_bin folder. 
     Libs: -LC:/dev/Install/WinSparkle/Release -lWinSparkle
     Cflags: -IC:/dev/Install/WinSparkle/include
 
-## Linux
+## Linux (not yet ported to Qt5)
 
 On Debian or Ubuntu, you can download all the build dependencies by running:
 

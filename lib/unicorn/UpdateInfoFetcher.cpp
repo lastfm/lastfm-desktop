@@ -27,10 +27,10 @@
 
 #ifdef WIN32
     static const char *PLATFORM = "win";
-#elif defined Q_WS_X11
-    static const char *PLATFORM = "linux";
-#elif defined Q_WS_MAC
+#elif defined Q_OS_MAC
     static const char *PLATFORM = "mac";
+#elif defined Q_OS_UNIX
+    static const char *PLATFORM = "linux";
 #else
     static const char *PLATFORM = "unknown";
 #endif

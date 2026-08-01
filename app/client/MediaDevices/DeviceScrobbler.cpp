@@ -29,7 +29,7 @@
 #include "DeviceScrobbler.h"
 #include "../Services/ScrobbleService/ScrobbleService.h"
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 #include <QFileDialog>
 #endif
 #include <QDebug>
@@ -93,7 +93,7 @@ DeviceScrobbler::twiddle()
 DeviceScrobbler::DoTwiddlyResult
 DeviceScrobbler::doTwiddle( bool manual )
 {
-#ifndef Q_WS_X11
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC)
     if ( unicorn::CloseAppsDialog::isITunesRunning() )
     {
         if ( isITunesPluginInstalled() )
@@ -137,7 +137,7 @@ DeviceScrobbler::doTwiddle( bool manual )
         else
             return ITunesPluginNotInstalled;
     }
-#endif //  Q_WS_X11
+#endif // not linux
     return ITunesNotRunning;
 }
 
@@ -339,7 +339,7 @@ DeviceScrobbler::onScrobblesConfirmationFinished( int result )
     m_confirmDialog->deleteLater();
 }
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 void 
 DeviceScrobbler::onScrobbleIpodTriggered() {
     if ( iPod )

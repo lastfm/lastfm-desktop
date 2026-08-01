@@ -19,6 +19,7 @@
 */
 #include "PickDirsDialog.h"
 #include <QtGui>
+#include <QtWidgets>
 
 #define kBlurb "Boffin creates Last.fm radio from the music on your computer."
 

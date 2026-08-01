@@ -21,6 +21,7 @@
 #include <lastfm/ws.h>
 #include <types/Track.h>
 #include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 
 /** all quite messy, apologies --mxcl */

@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QStyle>
 #include "../Application.h"
 #include "../Services/ScrobbleService.h"
 #include "../Services/AnalyticsService.h"
@@ -300,7 +301,7 @@ PlaybackControlsWidget::onFrameChanged( int frame )
         int scrobbleValue = frame >= ui->scrobbleMeter->maximum() ? ui->scrobbleMeter->maximum() : frame;
         ui->scrobbleMeter->setRange( 0, ScrobbleService::instance().stopWatch()->scrobblePoint() * 1000 );
         ui->scrobbleMeter->setValue( scrobbleValue );
-        ui->scrobbleMeter->setToolTip( tr( "Scrobble meter: %1%" ).arg( qRound( ( 100 * scrobbleValue ) / ui->scrobbleMeter->maximum() ) )  );
+        ui->scrobbleMeter->setToolTip( tr( "Scrobble meter: %1%" ).arg( qRound( ( 100.0 * scrobbleValue ) / ui->scrobbleMeter->maximum() ) )  );
     }
 }
 

@@ -55,7 +55,7 @@ GeneralSettingsWidget::GeneralSettingsWidget( QWidget* parent )
     ui->showAs->setChecked( unicorn::Settings().showAS() );
 #endif
 
-#ifndef Q_WS_X11
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC)
     ui->launch->setChecked( unicorn::OldeAppSettings().launchWithMediaPlayers() );
     ui->updates->setChecked( unicorn::Settings().checkForUpdates() );
 #else

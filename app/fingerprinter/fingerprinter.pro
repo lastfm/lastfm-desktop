@@ -9,7 +9,7 @@ include( ../../admin/include.qmake )
 # TODO: FIX THIS: I think this means that we can only build bundles
 mac {
     DESTDIR = "../../_bin/Last.fm Scrobbler.app/Contents/Helpers"
-    QMAKE_POST_LINK += ../../admin/dist/mac/bundleFrameworks.sh \"$$DESTDIR/$$TARGET\"
+    # dylib bundling is handled by macdeployqt now, not bundleFrameworks.sh
 }
 
 SOURCES += main.cpp \

@@ -11,7 +11,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>fm.last.Scrobbler</string>
 	<key>CFBundleVersion</key>
-	<string>2.1.39</string>
+	<string>2.2.0</string>
 	<key>SUFeedURL</key>
 	<string>https://cdn.last.fm/client/Mac/updates.xml</string>
 	<key>SUEnableAutomaticChecks</key>
@@ -24,6 +24,11 @@
 	<integer>86400</integer>
 	<key>SUAllowsAutomaticUpdates</key>
 	<false/>
+	<!-- We deliberately pin Sparkle 1.27.x (universal, DSA-capable) so the
+	     existing DSA-signed appcast keeps working unchanged. When Last.fm
+	     migrates to Sparkle 2, DSA verification goes away: replace this key
+	     with SUPublicEDKey (base64 EdDSA public key from Sparkle's
+	     generate_keys) - see README "Notes for release managers". -->
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>CFBundleDisplayName</key>
@@ -47,6 +52,12 @@
 	<key>CFBundleName</key>
 	<string>Last.fm Scrobbler</string>
 	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>LSMinimumSystemVersion</key>
+	<string>11.0</string>
+	<!-- The app stylesheet is a light-only design; without this the dark
+	     system palette bleeds into unstyled panes as black-on-black text -->
+	<key>NSRequiresAquaSystemAppearance</key>
 	<true/>
     <key>CFBundleURLTypes</key>
 	<array>

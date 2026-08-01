@@ -21,7 +21,7 @@
 #include "ui_IpodSettingsWidget.h"
 #include "IpodSettingsWidget.h"
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
 #include "../MediaDevices/IpodDevice_linux.h"
 #endif
 
@@ -62,7 +62,7 @@ IpodSettingsWidget::IpodSettingsWidget( QWidget* parent )
     ui->alwaysAsk->setChecked( unicorn::AppSettings().alwaysAsk() );
     connect( ui->alwaysAsk, SIGNAL(clicked(bool)), SLOT(onSettingsChanged()));
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     ui->deviceScrobblingEnabled->hide();
 #else
     ui->deviceScrobblingEnabled->setChecked( unicorn::OldeAppSettings().deviceScrobblingEnabled() );
@@ -88,7 +88,7 @@ IpodSettingsWidget::saveSettings()
         // we need to restart iTunes for this setting to take affect
         bool currentlyEnabled = unicorn::OldeAppSettings().deviceScrobblingEnabled();
 
-#ifndef Q_WS_X11
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC)
         if ( currentlyEnabled != ui->deviceScrobblingEnabled->isChecked() )
         {
 #ifdef Q_OS_WIN

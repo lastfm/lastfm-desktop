@@ -49,7 +49,7 @@ PlayerCommandParser::PlayerCommandParser( QString line ) throw( std::invalid_arg
     {
         QChar const c = required[i];
         if (!args.contains( c ))
-            throw invalid_argument( "Mandatory argument unspecified: " + c.toAscii() );
+            throw invalid_argument( std::string( "Mandatory argument unspecified: " ) + c.toLatin1() );
     }
 
     m_playerId = args['c'];
@@ -144,10 +144,10 @@ PlayerCommandParser::extractArgs( const QString& line )
     foreach (Pair pair, mxcl::split( line ))
     {
         if (pair.key == QChar()) 
-            throw invalid_argument( "Invalid pair: " + pair.key.toAscii() + '=' + std::string(pair.value.toUtf8().data()) );
+            throw invalid_argument( std::string( "Invalid pair: " ) + pair.key.toLatin1() + '=' + std::string(pair.value.toUtf8().data()) );
 
         if (map.contains( pair.key ))
-            throw invalid_argument( "Field identifier occurred twice in request: " + pair.key.toAscii() );
+            throw invalid_argument( std::string( "Field identifier occurred twice in request: " ) + pair.key.toLatin1() );
 
         map[pair.key] = pair.value.trimmed();
     }

@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QLoggingCategory>
 #include <QDebug>
 #include <QLocale>
 
@@ -31,8 +32,8 @@
 
 using namespace lastfm;
 
-#ifdef WIN32
-extern void qWinMsgHandler( QtMsgType t, const char* msg );
+#ifdef Q_OS_WIN
+#include <windows.h>
 #endif
 
 unicorn::CoreApplication::CoreApplication( const QString& id, int& argc, char** argv )
@@ -53,8 +54,10 @@ unicorn::CoreApplication::init()
     QCoreApplication::setOrganizationName( "Last.fm" /*unicorn::organizationName() */ );
     QCoreApplication::setOrganizationDomain( "last.fm" /*unicorn::organizationDomain()*/ );
 
-    // you can override this api key and secret by setting the
-    // environment variables LASTFM_API_KEY and LASTFM_API_SECRET
+    // API_KEY/API_SECRET are baked in at BUILD time from the environment
+    // variables LASTFM_API_KEY and LASTFM_API_SECRET (make expands them, see
+    // lib/unicorn/unicorn.pro). They are NOT read from the environment at
+    // runtime; if unset at build time, the shared fallback key below is used.
     lastfm::ws::ApiKey = QString( API_KEY ).isEmpty() ? "9e89b44de1ff37c5246ad0af18406454" : API_KEY;
     lastfm::ws::SharedSecret = QString( API_SECRET ).isEmpty() ? "147320ea9b8930fe196a4231da50ada4" : API_SECRET;
 
@@ -85,7 +88,11 @@ unicorn::CoreApplication::init()
 #endif
     new Logger( path );
 
-    qInstallMsgHandler( qMsgHandler );
+    // The logfile is the support channel: stop QT_LOGGING_RULES or a stray
+    // qtlogging.ini from silently filtering qDebug before it reaches us
+    QLoggingCategory::setFilterRules( QStringLiteral( "default.debug=true" ) );
+
+    qInstallMessageHandler( qMsgHandler );
     qDebug() << "Introducing" << applicationName()+' '+applicationVersion();
     qDebug() << "Directed by" << lastfm::platform();
 #if defined(Q_OS_MAC) || defined(Q_OS_WIN)
@@ -95,19 +102,32 @@ unicorn::CoreApplication::init()
 
 
 void
-unicorn::CoreApplication::qMsgHandler( QtMsgType type, const char* msg )
+unicorn::CoreApplication::qMsgHandler( QtMsgType type, const QMessageLogContext& context, const QString& message )
 {
+    // QtMsgType order: Debug, Warning, Critical, Fatal, then Info (appended
+    // in Qt 5.5 for binary compatibility), hence the explicit indexing
+    static const char* const levels[] = { "DEBUG", "WARN", "CRITICAL", "FATAL", "INFO" };
+    const char* level = ( type >= 0 && type <= QtInfoMsg ) ? levels[ type ] : "?";
+
+    QString decorated = QString( "[%1] %2" ).arg( level, message );
+
+    if ( type != QtDebugMsg && context.file )
+        decorated += QString( " (%1:%2)" ).arg( context.file ).arg( context.line );
+
+    QByteArray msg = decorated.toLocal8Bit();
+
 #ifndef NDEBUG
-#ifdef WIN32
-    qWinMsgHandler( type, msg );
-#else
-    Q_UNUSED( type );
-    fprintf( stderr, "%s\n", msg );
+    fprintf( stderr, "%s\n", msg.constData() );
     fflush( stderr );
 #endif
+
+#ifdef Q_OS_WIN
+    // GUI apps have no stderr on Windows; this reaches DebugView etc.
+    OutputDebugStringA( msg.constData() );
+    OutputDebugStringA( "\n" );
 #endif
-      
-    Logger::the().log( msg );
+
+    Logger::the().log( msg.constData() );
 }
 
 
@@ -135,9 +155,14 @@ unicorn::CoreApplication::notify(QObject* receiver, QEvent* event )
         qApp->quit();
     }
 #endif
+    catch( const std::exception& e )
+    {
+       qCritical() << "Fatal exception:" << e.what();
+       qApp->quit();
+    }
     catch(...)
     {
-       qDebug() << "Exception caught.";
+       qCritical() << "Fatal exception of unknown type caught.";
        qApp->quit();
     }
 

@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QUrlQuery>
 #include <QApplication>
 #include <QPainter>
 #include <QTimer>
@@ -126,11 +127,17 @@ ShareDialog::accept()
 void
 ShareDialog::shareTwitter( const Track& track )
 {
+    // NB: the values are percent-encoded up front, exactly as the old
+    // QUrl::addEncodedQueryItem code did. QUrlQuery preserves valid %XX
+    // sequences, and share endpoints form-decode '+' as space, so passing
+    // raw text here would corrupt names like "AC/DC" or "C+C Music Factory".
     QUrl twitterShareIntent( "http://twitter.com/intent/tweet" );
-    twitterShareIntent.addEncodedQueryItem( "text", QUrl::toPercentEncoding( tr("Check out %1").arg( track.toString() ) ) );
-    twitterShareIntent.addEncodedQueryItem( "url", QUrl::toPercentEncoding( track.www().toEncoded() ) );
-    twitterShareIntent.addQueryItem( "via", "lastfm" );
-    twitterShareIntent.addQueryItem( "related", "lastfm,lastfmpresents" );
+    QUrlQuery query;
+    query.addQueryItem( "text", QString::fromLatin1( QUrl::toPercentEncoding( tr("Check out %1").arg( track.toString() ) ) ) );
+    query.addQueryItem( "url", QString::fromLatin1( QUrl::toPercentEncoding( QString::fromUtf8( track.www().toEncoded() ) ) ) );
+    query.addQueryItem( "via", "lastfm" );
+    query.addQueryItem( "related", "lastfm,lastfmpresents" );
+    twitterShareIntent.setQuery( query );
     unicorn::DesktopServices::openUrl( twitterShareIntent );
 
 }
@@ -138,9 +145,12 @@ ShareDialog::shareTwitter( const Track& track )
 void
 ShareDialog::shareFacebook( const Track& track )
 {
+    // Pre-encoded for the same reason as shareTwitter above
     QUrl facebookShareIntent( "http://www.facebook.com/sharer.php" );
-    facebookShareIntent.addEncodedQueryItem( "t", QUrl::toPercentEncoding( track.toString() ) );
-    facebookShareIntent.addEncodedQueryItem( "u", QUrl::toPercentEncoding( track.www().toEncoded() ) );
+    QUrlQuery query;
+    query.addQueryItem( "t", QString::fromLatin1( QUrl::toPercentEncoding( track.toString() ) ) );
+    query.addQueryItem( "u", QString::fromLatin1( QUrl::toPercentEncoding( QString::fromUtf8( track.www().toEncoded() ) ) ) );
+    facebookShareIntent.setQuery( query );
     unicorn::DesktopServices::openUrl( facebookShareIntent );
 }
 

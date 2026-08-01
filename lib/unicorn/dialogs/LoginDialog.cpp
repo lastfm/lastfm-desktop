@@ -20,6 +20,7 @@
 #include "LoginDialog.h"
 #include "lib/unicorn/QMessageBoxBuilder.h"
 #include <QtGui>
+#include <QtWidgets>
 
 LoginDialog::LoginDialog( QWidget* parent )
             :QDialog( parent )

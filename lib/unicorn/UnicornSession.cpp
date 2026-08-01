@@ -18,6 +18,7 @@
    along with lastfm-desktop.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QDataStream>
 #include <QApplication>
 #include <QDebug>
 #include <QTimer>

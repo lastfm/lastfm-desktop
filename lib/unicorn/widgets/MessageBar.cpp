@@ -19,6 +19,7 @@
 */
 
 #include <QtGui>
+#include <QtWidgets>
 #include <QLabel>
 
 #include "lib/unicorn/dialogs/ScrobbleConfirmationDialog.h"

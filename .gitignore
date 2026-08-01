@@ -17,5 +17,5 @@ admin/dist/mac/dsa_priv.pem
 *.qm
 *.exe
 *.vscode
-Growl
-Sparkle
+.qmake.stash
+/_dist/

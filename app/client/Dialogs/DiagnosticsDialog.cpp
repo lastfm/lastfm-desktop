@@ -46,15 +46,15 @@ DiagnosticsDialog::DiagnosticsDialog( QWidget *parent )
 
     setAttribute( Qt::WA_DeleteOnClose );
 
-    ui->cached->header()->setResizeMode( QHeaderView::Stretch );
-    ui->fingerprints->header()->setResizeMode( QHeaderView::Stretch );
+    ui->cached->header()->setSectionResizeMode( QHeaderView::Stretch );
+    ui->fingerprints->header()->setSectionResizeMode( QHeaderView::Stretch );
     
     m_delay = new DelayedLabelText( ui->subs_status );
 
     ui->tabs->removeTab( 0 );
     ui->tabs->removeTab( 0 );
 
-#ifdef Q_WS_X11
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     ui->tabs->removeTab( 0 );
 #endif
 
@@ -78,7 +78,7 @@ DiagnosticsDialog::DiagnosticsDialog( QWidget *parent )
 
     onScrobblePointReached();
 
-#ifndef Q_WS_X11
+#if !defined(Q_OS_UNIX) || defined(Q_OS_MAC)
     QString path = unicorn::CoreApplication::log( "iPodScrobbler" ).absoluteFilePath();
 
     // we seek to the end below, but then twiddly's logger pretruncates the file

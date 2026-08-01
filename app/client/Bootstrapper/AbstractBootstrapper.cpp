@@ -18,6 +18,7 @@
 *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
 ***************************************************************************/
 
+#include <QUrlQuery>
 #include "AbstractBootstrapper.h"
 
 #include <lastfm/ws.h>
@@ -86,14 +87,14 @@ AbstractBootstrapper::sendZip( const QString& inFile )
 
     QUrl url( "http://bootstrap.last.fm/bootstrap/index.php" );
 
+    QUrlQuery urlQuery;
     QMapIterator<QString, QString> i( params );
     while ( i.hasNext() )
     {
         i.next();
-        QByteArray const key = QUrl::toPercentEncoding( i.key() );
-        QByteArray const value = QUrl::toPercentEncoding( i.value() );
-        url.addEncodedQueryItem( key, value );
+        urlQuery.addQueryItem( i.key(), i.value() );
     }
+    url.setQuery( urlQuery );
 
     QFile* zipFile = new QFile( this );
     zipFile->setFileName( inFile );

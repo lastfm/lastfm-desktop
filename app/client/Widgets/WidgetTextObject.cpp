@@ -30,14 +30,14 @@ WidgetTextObject::WidgetTextObject()
 QSizeF
 WidgetTextObject::intrinsicSize(QTextDocument*, int /*posInDocument*/, const QTextFormat& format)
 {
-    QWidget* widget = qVariantValue<QWidget*>(format.property(1));
+    QWidget* widget = qvariant_cast<QWidget*>(format.property(1));
     return QSizeF( widget->size() + kMargin );
 }
 
 void
 WidgetTextObject::drawObject(QPainter *painter, const QRectF &rect, QTextDocument * /*doc*/, int /*posInDocument*/, const QTextFormat &format)
 {
-    QWidget* widget = qVariantValue<QWidget*>(format.property( 1 ));
+    QWidget* widget = qvariant_cast<QWidget*>(format.property( 1 ));
     widget->render( painter, QPoint( 0, 0 ));
 
     //Adjusted to allow for the margin

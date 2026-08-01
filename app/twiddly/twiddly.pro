@@ -1,5 +1,5 @@
 TARGET = iPodScrobbler
-LIBS += -lunicorn -llastfm
+LIBS += -lunicorn
 QT = core xml sql
 
 CONFIG += lastfm logger
@@ -10,7 +10,6 @@ include( ../../admin/include.qmake )
 # TODO: FIX THIS: I think this means that we can only build bundles
 mac {
     DESTDIR = "../../_bin/Last.fm Scrobbler.app/Contents/Helpers"
-    QMAKE_POST_LINK += ../../admin/dist/mac/bundleFrameworks.sh \"$$DESTDIR/$$TARGET\"
 }
 
 DEFINES += LASTFM_COLLAPSE_NAMESPACE
